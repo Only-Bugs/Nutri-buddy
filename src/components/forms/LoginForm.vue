@@ -2,7 +2,7 @@
 /**
  * LoginForm.vue
  *
- * Handles user login with UX-friendly validations.
+ * Handles user login with role-based redirect.
  */
 import { useForm, useField } from 'vee-validate'
 import * as yup from 'yup'
@@ -25,7 +25,11 @@ const { value: password, errorMessage: passwordError, meta: passwordMeta } = use
 const onSubmit = handleSubmit((formValues) => {
   const success = auth.login(formValues)
   if (success) {
-    router.push('/dashboard')
+    if (auth.user.role === 'admin') {
+      router.push('/admin')
+    } else {
+      router.push('/dashboard')
+    }
   } else {
     alert('Invalid credentials')
   }

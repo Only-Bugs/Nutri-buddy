@@ -3,12 +3,14 @@ import { defineStore } from 'pinia'
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: null,
-    users: [{ email: 'test@example.com', password: '123456' }], // mock user
+    users: [
+      { email: 'test@example.com', password: '123456', role: 'user' },
+      { email: 'admin@admin.com', password: 'admin123', role: 'admin' },
+    ],
   }),
   actions: {
     register(newUser) {
-      this.users.push(newUser)
-      console.log('✅ Registered users:', this.users)
+      this.users.push({ ...newUser, role: 'user' }) // default role
     },
     login(credentials) {
       const match = this.users.find(
@@ -16,7 +18,6 @@ export const useAuthStore = defineStore('auth', {
       )
       if (match) {
         this.user = match
-        console.log('✅ Logged in:', this.user)
         return true
       }
       return false
