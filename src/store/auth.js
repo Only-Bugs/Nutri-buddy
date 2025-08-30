@@ -4,7 +4,7 @@ export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: null,
     users: [
-      { email: 'test@example.com', password: '123456', role: 'user' },
+      { email: 'email@email.com', password: '123456', role: 'user' },
       { email: 'admin@admin.com', password: 'admin123', role: 'admin' },
     ],
   }),

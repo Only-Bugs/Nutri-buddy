@@ -1,0 +1,7 @@
+[
+  { "id": 1, "name": "Apple", "calories": 95, "category": "Fruit" },
+  { "id": 2, "name": "Chicken Breast", "calories": 165, "category": "Protein" },
+  { "id": 3, "name": "Brown Rice", "calories": 216, "category": "Grain" },
+  { "id": 4, "name": "Broccoli", "calories": 55, "category": "Vegetable" },
+  { "id": 5, "name": "Almonds (10pcs)", "calories": 70, "category": "Snack" }
+]
