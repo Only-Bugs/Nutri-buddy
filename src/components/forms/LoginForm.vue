@@ -45,7 +45,9 @@ const onSubmit = handleSubmit((formValues) => {
         placeholder="Email"
         class="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
-      <span v-if="emailMeta.touched" class="text-red-500 text-sm">{{ emailError }}</span>
+      <div class="min-h-[20px]">
+        <span v-if="emailMeta.touched" class="text-red-500 text-sm">{{ emailError }}</span>
+      </div>
     </div>
     <div>
       <input
@@ -54,7 +56,9 @@ const onSubmit = handleSubmit((formValues) => {
         placeholder="Password"
         class="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
-      <span v-if="passwordMeta.touched" class="text-red-500 text-sm">{{ passwordError }}</span>
+      <div class="min-h-[20px]">
+        <span v-if="passwordMeta.touched" class="text-red-500 text-sm">{{ passwordError }}</span>
+      </div>
     </div>
     <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded w-full">
       Login
