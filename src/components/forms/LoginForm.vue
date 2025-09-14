@@ -1,11 +1,7 @@
 <script setup>
-/**
- * LoginForm.vue
- *
- * Handles user login with role-based redirect.
- */
 import { useForm, useField } from 'vee-validate'
 import * as yup from 'yup'
+import DOMPurify from 'dompurify'
 import { useAuthStore } from '../../store/auth'
 import { useRouter } from 'vue-router'
 
@@ -23,7 +19,12 @@ const { value: email, errorMessage: emailError, meta: emailMeta } = useField('em
 const { value: password, errorMessage: passwordError, meta: passwordMeta } = useField('password')
 
 const onSubmit = handleSubmit((formValues) => {
-  const success = auth.login(formValues)
+  const sanitized = {
+    email: DOMPurify.sanitize(formValues.email.trim()),
+    password: DOMPurify.sanitize(formValues.password.trim()),
+  }
+
+  const success = auth.login(sanitized)
   if (success) {
     if (auth.user.role === 'admin') {
       router.push('/admin')

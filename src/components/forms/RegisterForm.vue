@@ -1,11 +1,7 @@
 <script setup>
-/**
- * RegisterForm.vue
- *
- * Handles user registration with UX-friendly validations.
- */
 import { useForm, useField } from 'vee-validate'
 import * as yup from 'yup'
+import DOMPurify from 'dompurify'
 import { useAuthStore } from '../../store/auth'
 import { useRouter } from 'vue-router'
 
@@ -15,16 +11,29 @@ const router = useRouter()
 const schema = yup.object({
   email: yup.string().email('Invalid email').required('Email is required'),
   password: yup.string().min(6, 'Min 6 characters').required('Password is required'),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref('password')], 'Passwords must match')
+    .required('Confirm Password is required'),
 })
 
 const { handleSubmit } = useForm({ validationSchema: schema })
 
 const { value: email, errorMessage: emailError, meta: emailMeta } = useField('email')
 const { value: password, errorMessage: passwordError, meta: passwordMeta } = useField('password')
+const {
+  value: confirmPassword,
+  errorMessage: confirmError,
+  meta: confirmMeta,
+} = useField('confirmPassword')
 
 const onSubmit = handleSubmit((formValues) => {
-  auth.register(formValues)
-  router.push('/login')
+  const sanitized = {
+    email: DOMPurify.sanitize(formValues.email.trim()),
+    password: DOMPurify.sanitize(formValues.password.trim()),
+  }
+  auth.register(sanitized)
+  router.push('/auth')
 })
 </script>
 
@@ -50,6 +59,17 @@ const onSubmit = handleSubmit((formValues) => {
       />
       <div class="min-h-[20px]">
         <span v-if="passwordMeta.touched" class="text-red-500 text-sm">{{ passwordError }}</span>
+      </div>
+    </div>
+    <div>
+      <input
+        v-model="confirmPassword"
+        type="password"
+        placeholder="Confirm Password"
+        class="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+      />
+      <div class="min-h-[20px]">
+        <span v-if="confirmMeta.touched" class="text-red-500 text-sm">{{ confirmError }}</span>
       </div>
     </div>
     <button
