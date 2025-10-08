@@ -1,14 +1,6 @@
 <script setup>
-import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/store/auth'
-
-const router = useRouter()
-const auth = useAuthStore()
-
-async function handleLogout() {
-  await auth.logout()
-  router.push('/')
-}
+import { useAuthActions } from '@/composables/useAuthActions'
+const { handleLogout } = useAuthActions()
 </script>
 
 <template>
@@ -45,3 +37,4 @@ async function handleLogout() {
     </button>
   </aside>
 </template>
+<!-- # Generated under NutriBuddy SpecGuard v1.0.0 -->

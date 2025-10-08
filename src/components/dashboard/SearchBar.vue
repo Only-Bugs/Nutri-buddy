@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import { getNutritionData } from '@/services/nutritionService'
 
 const query = ref('')
 const results = ref(null)
@@ -13,13 +14,9 @@ async function search() {
   results.value = null
 
   try {
-    const res = await fetch(
-      `http://localhost:5000/api/nutrition?query=${encodeURIComponent(query.value)}`,
-    )
-    if (!res.ok) throw new Error('Failed to fetch')
-    results.value = await res.json()
+    results.value = await getNutritionData(query.value)
   } catch (err) {
-    error.value = err.message
+    error.value = err?.message || 'Failed to fetch'
   } finally {
     loading.value = false
   }
@@ -28,7 +25,6 @@ async function search() {
 
 <template>
   <div class="bg-white shadow-sm rounded-xl p-4 mb-6">
-    <!-- Search Input -->
     <div class="flex gap-2">
       <input
         v-model="query"
@@ -44,11 +40,9 @@ async function search() {
       </button>
     </div>
 
-    <!-- Status -->
     <div v-if="loading" class="text-gray-500 mt-3">Loading...</div>
     <div v-if="error" class="text-red-500 mt-3">{{ error }}</div>
 
-    <!-- Results -->
     <div v-if="results" class="mt-4 text-sm">
       <p><strong>Query:</strong> {{ results.query }}</p>
       <p><strong>Calories:</strong> {{ results.calories }}</p>
@@ -64,3 +58,4 @@ async function search() {
     </div>
   </div>
 </template>
+<!-- # Generated under NutriBuddy SpecGuard v1.0.0 -->

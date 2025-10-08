@@ -28,12 +28,13 @@ const {
 } = useField('confirmPassword')
 
 const onSubmit = handleSubmit((formValues) => {
+  console.log('Register form submitted:', formValues)
   const sanitized = {
     email: DOMPurify.sanitize(formValues.email.trim()),
     password: DOMPurify.sanitize(formValues.password.trim()),
   }
   auth.register(sanitized)
-  router.push('/auth')
+  router.push('/dashboard')
 })
 </script>
 

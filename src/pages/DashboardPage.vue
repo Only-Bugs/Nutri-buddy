@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useAuthStore } from '@/store/auth'
+import { fetchFoods } from '@/services/dashboardService'
 
 import UserHeaderCard from '@/components/dashboard/UserHeaderCard.vue'
 import SearchBar from '@/components/dashboard/SearchBar.vue'
@@ -13,34 +14,25 @@ const auth = useAuthStore()
 const foods = ref([])
 
 onMounted(async () => {
-  const res = await fetch('/data/foods.json')
-  foods.value = await res.json()
+  foods.value = await fetchFoods()
 })
 </script>
 
 <template>
   <div class="flex min-h-screen">
-    <!-- Sidebar -->
-
-    <!-- Main content -->
     <main class="flex-1 bg-gray-50 p-6">
-      <!-- User header -->
       <UserHeaderCard
         :name="auth.user?.email?.split('@')[0] || 'User'"
         :email="auth.user?.email"
         goal="2,000 Kcal"
       />
 
-      <!-- Main grid: table left, charts right -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-        <!-- Left: Search + Food Table -->
         <div class="lg:col-span-2 space-y-6">
           <SearchBar />
-          <!-- 👈 Floating widget above FoodTable -->
           <FoodTable :foods="foods" />
         </div>
 
-        <!-- Right: Charts & Stats -->
         <div class="space-y-6">
           <CalorieChart />
           <TopRatedChart />
@@ -50,3 +42,4 @@ onMounted(async () => {
     </main>
   </div>
 </template>
+<!-- # Generated under NutriBuddy SpecGuard v1.0.0 -->

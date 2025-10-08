@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useAuthStore } from '@/store/auth'
+import { applyAuthGuards } from '@/router/guards/authGuards'
 
 import LandingPage from '@/pages/LandingPage.vue'
 import AuthPage from '@/pages/AuthPage.vue'
@@ -28,10 +28,7 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach((to) => {
-  const auth = useAuthStore()
-  if (to.meta.requiresAuth && !auth.user) return '/auth'
-  if (to.meta.requiresAdmin && auth.user?.role !== 'admin') return '/dashboard'
-})
+applyAuthGuards(router)
 
 export default router
+// # Generated under NutriBuddy SpecGuard v1.0.0

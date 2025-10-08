@@ -1,21 +1,18 @@
 import { defineStore } from 'pinia'
+import { registerUser, loginUser, logoutUser } from '@/services/authService'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: null,
-    users: [
-      { email: 'email@email.com', password: '123456', role: 'user' },
-      { email: 'admin@admin.com', password: 'admin123', role: 'admin' },
-    ],
   }),
   actions: {
     register(newUser) {
-      this.users.push({ ...newUser, role: 'user' }) // default role
+      const created = registerUser(newUser)
+      this.user = created
+      return true
     },
     login(credentials) {
-      const match = this.users.find(
-        (u) => u.email === credentials.email && u.password === credentials.password,
-      )
+      const match = loginUser(credentials)
       if (match) {
         this.user = match
         return true
@@ -23,7 +20,10 @@ export const useAuthStore = defineStore('auth', {
       return false
     },
     logout() {
+      logoutUser()
       this.user = null
+      return true
     },
   },
 })
+// # Generated under NutriBuddy SpecGuard v1.0.0
