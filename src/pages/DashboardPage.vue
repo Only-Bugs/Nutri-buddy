@@ -54,4 +54,3 @@ function rateFood(foodId, score) {
     </div>
   </div>
 </template>
-<!-- # Generated under NutriBuddy SpecGuard v1.0.0 -->
