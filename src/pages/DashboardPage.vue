@@ -1,45 +1,57 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useAuthStore } from '@/store/auth'
-import { fetchFoods } from '@/services/dashboardService'
-
-import UserHeaderCard from '@/components/dashboard/UserHeaderCard.vue'
-import SearchBar from '@/components/dashboard/SearchBar.vue'
-import FoodTable from '@/components/dashboard/FoodTable.vue'
-import CalorieChart from '@/components/dashboard/CalorieChart.vue'
-import TopRatedChart from '@/components/dashboard/TopRatedChart.vue'
-import QuickStats from '@/components/dashboard/QuickStats.vue'
+import { useAuthStore } from '../store/auth'
+import { useRatingsStore } from '../store/ratings'
+import RatingStars from '../components/RatingStars.vue'
 
 const auth = useAuthStore()
+const ratings = useRatingsStore()
+
 const foods = ref([])
 
 onMounted(async () => {
-  foods.value = await fetchFoods()
+  const res = await fetch('/data/foods.json')
+  foods.value = await res.json()
 })
+
+function rateFood(foodId, score) {
+  ratings.addRating(foodId, score)
+}
 </script>
 
 <template>
-  <div class="flex min-h-screen">
-    <main class="flex-1 bg-gray-50 p-6">
-      <UserHeaderCard
-        :name="auth.user?.email?.split('@')[0] || 'User'"
-        :email="auth.user?.email"
-        goal="2,000 Kcal"
-      />
+  <div class="space-y-6 w-full max-w-3xl mx-auto">
+    <div class="text-center">
+      <h2 class="text-3xl font-bold">Welcome to NutriBuddy</h2>
+      <p class="mt-2">
+        Logged in as: <strong>{{ auth.user?.email }}</strong>
+      </p>
+    </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-        <div class="lg:col-span-2 space-y-6">
-          <SearchBar />
-          <FoodTable :foods="foods" />
-        </div>
-
-        <div class="space-y-6">
-          <CalorieChart />
-          <TopRatedChart />
-          <QuickStats :foodsRated="24" :avgRating="4.1" favoriteCategory="Protein" />
-        </div>
-      </div>
-    </main>
+    <div>
+      <h3 class="text-xl font-semibold mb-2">Nutrition List</h3>
+      <table class="w-full border-collapse border border-gray-300">
+        <thead>
+          <tr class="bg-gray-100">
+            <th class="border px-3 py-2 text-left">Name</th>
+            <th class="border px-3 py-2 text-left">Category</th>
+            <th class="border px-3 py-2 text-left">Calories</th>
+            <th class="border px-3 py-2 text-left">Rating</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="food in foods" :key="food.id" class="odd:bg-white even:bg-gray-50">
+            <td class="border px-3 py-2">{{ food.name }}</td>
+            <td class="border px-3 py-2">{{ food.category }}</td>
+            <td class="border px-3 py-2">{{ food.calories }}</td>
+            <td class="border px-3 py-2">
+              <RatingStars :modelValue="0" @update:modelValue="rateFood(food.id, $event)" />
+              <div class="text-sm text-gray-600 mt-1">Avg: {{ ratings.getAverage(food.id) }}</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 <!-- # Generated under NutriBuddy SpecGuard v1.0.0 -->
