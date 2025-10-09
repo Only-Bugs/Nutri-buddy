@@ -1,21 +1,34 @@
 <script setup>
-/**
- * AuthPage.vue
- *
- * Combines LoginForm and RegisterForm with a modern UI.
- * Provides tab-based navigation between login and registration.
- */
 import { ref } from 'vue'
-import LoginForm from '../components/forms/LoginForm.vue'
-import RegisterForm from '../components/forms/RegisterForm.vue'
+import { useAuthStore } from '@/store/auth'
+import { useRouter } from 'vue-router'
+import { useToast } from '@/composables/useToast'
+import LoginForm from '@/components/forms/LoginForm.vue'
+import RegisterForm from '@/components/forms/RegisterForm.vue'
 
 const activeTab = ref('login')
+const auth = useAuthStore()
+const router = useRouter()
+const { showToast } = useToast()
+
+async function handleGoogleLogin() {
+  try {
+    const success = await auth.loginWithGoogle()
+    if (success) {
+      showToast('Signed in with Google!', 'success')
+      router.push('/dashboard')
+    } else {
+      showToast('Google login failed. Please try again.', 'error')
+    }
+  } catch (err) {
+    showToast(err.message || 'Google login failed', 'error')
+  }
+}
 </script>
 
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gray-50 px-4">
     <div class="w-full max-w-md bg-white shadow-lg rounded-xl p-8">
-      <!-- Logo / Header -->
       <div class="text-center mb-6">
         <div
           class="mx-auto h-12 w-12 bg-green-600 text-white flex items-center justify-center rounded-full text-lg font-bold"
@@ -50,7 +63,6 @@ const activeTab = ref('login')
         </button>
       </div>
 
-      <!-- Dynamic Form -->
       <div>
         <LoginForm v-if="activeTab === 'login'" />
         <RegisterForm v-else />
@@ -63,10 +75,11 @@ const activeTab = ref('login')
         <div class="flex-grow h-px bg-gray-200"></div>
       </div>
 
-      <!-- Social Login Buttons -->
+      <!-- Social Buttons -->
       <div class="mt-6 grid grid-cols-2 gap-4">
         <button
           type="button"
+          @click="handleGoogleLogin"
           class="w-full flex items-center justify-center gap-2 border rounded-lg py-2 hover:bg-gray-50 text-sm text-gray-700"
         >
           <img src="" alt="Google" class="h-5 w-5" />
@@ -74,7 +87,8 @@ const activeTab = ref('login')
         </button>
         <button
           type="button"
-          class="w-full flex items-center justify-center gap-2 border rounded-lg py-2 hover:bg-gray-50 text-sm text-gray-700"
+          disabled
+          class="w-full flex items-center justify-center gap-2 border rounded-lg py-2 bg-gray-100 text-gray-400 cursor-not-allowed text-sm"
         >
           <img src="" alt="Apple" class="h-5 w-5" />
           Apple

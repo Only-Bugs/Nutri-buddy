@@ -1,43 +1,80 @@
 /**
  * @service authService
- * Single-responsibility: encapsulate auth workflows (login/register/logout).
+ * Handles all authentication workflows via Firebase Auth.
+ * Maintains backward-compatible interface with previous local mock.
  * # Generated under NutriBuddy SpecGuard v1.0.0
  */
 
-// In-memory store fallback (replace with real API later)
-const _db = {
-  users: [
-    { email: 'email@email.com', password: '123456', role: 'user' },
-    { email: 'admin@admin.com', password: 'admin123', role: 'admin' },
-  ],
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  signInWithPopup,
+  GoogleAuthProvider,
+} from 'firebase/auth'
+import { firebaseAuth } from '@/config/firebase'
+
+/**
+ * Register user via Firebase.
+ * @param {{email: string, password: string}} newUser
+ * @returns {Promise<{email: string, uid: string, role: string}>}
+ */
+export async function registerUser(newUser) {
+  try {
+    const { user } = await createUserWithEmailAndPassword(
+      firebaseAuth,
+      newUser.email,
+      newUser.password,
+    )
+    return { email: user.email, uid: user.uid, role: 'user' }
+  } catch (error) {
+    throw new Error(error.message || 'Failed to register user')
+  }
 }
 
 /**
- * Register user.
- * @param {{email:string,password:string}} newUser
- * @returns {{email:string,role:string}}
+ * Login user via Firebase.
+ * @param {{email: string, password: string}} credentials
+ * @returns {Promise<{email: string, uid: string, role: string}|null>}
  */
-export function registerUser(newUser) {
-  const exists = _db.users.some(u => u.email === newUser.email)
-  if (exists) throw new Error('User already exists')
-  const user = { email: newUser.email, password: newUser.password, role: 'user' }
-  _db.users.push(user)
-  return { email: user.email, role: user.role }
+export async function loginUser(credentials) {
+  try {
+    const { user } = await signInWithEmailAndPassword(
+      firebaseAuth,
+      credentials.email,
+      credentials.password,
+    )
+    return { email: user.email, uid: user.uid, role: 'user' }
+  } catch (error) {
+    console.error('Firebase login failed:', error.message)
+    return null
+  }
 }
 
 /**
- * Login user.
- * @param {{email:string,password:string}} credentials
- * @returns {{email:string,role:string}|null}
+ * ⚡ Login user with Google popup.
+ * @returns {Promise<{email:string, uid:string, provider:string}>}
  */
-export function loginUser(credentials) {
-  const match = _db.users.find(
-    u => u.email === credentials.email && u.password === credentials.password
-  )
-  return match ? { email: match.email, role: match.role } : null
+export async function loginWithGoogle() {
+  try {
+    const provider = new GoogleAuthProvider()
+    const { user } = await signInWithPopup(firebaseAuth, provider)
+    return { email: user.email, uid: user.uid, provider: 'google' }
+  } catch (error) {
+    throw new Error(error.message || 'Google login failed')
+  }
 }
 
-/** Logout is a no-op for this stub */
-export function logoutUser() {
-  return true
+/**
+ * Logout the current Firebase user.
+ * @returns {Promise<boolean>}
+ */
+export async function logoutUser() {
+  try {
+    await signOut(firebaseAuth)
+    return true
+  } catch (error) {
+    console.error('Logout failed:', error.message)
+    return false
+  }
 }

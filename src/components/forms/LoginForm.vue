@@ -2,11 +2,13 @@
 import { useForm, useField } from 'vee-validate'
 import * as yup from 'yup'
 import DOMPurify from 'dompurify'
-import { useAuthStore } from '../../store/auth'
+import { useAuthStore } from '@/store/auth'
 import { useRouter } from 'vue-router'
+import { useToast } from '@/composables/useToast'
 
 const auth = useAuthStore()
 const router = useRouter()
+const { showToast } = useToast()
 
 const schema = yup.object({
   email: yup.string().email('Invalid email').required('Email is required'),
@@ -18,21 +20,22 @@ const { handleSubmit } = useForm({ validationSchema: schema })
 const { value: email, errorMessage: emailError, meta: emailMeta } = useField('email')
 const { value: password, errorMessage: passwordError, meta: passwordMeta } = useField('password')
 
-const onSubmit = handleSubmit((formValues) => {
+const onSubmit = handleSubmit(async (formValues) => {
   const sanitized = {
     email: DOMPurify.sanitize(formValues.email.trim()),
     password: DOMPurify.sanitize(formValues.password.trim()),
   }
 
-  const success = auth.login(sanitized)
-  if (success) {
-    if (auth.user.role === 'admin') {
-      router.push('/admin')
-    } else {
+  try {
+    const success = await auth.login(sanitized)
+    if (success) {
+      showToast('Welcome back!', 'success')
       router.push('/dashboard')
+    } else {
+      showToast('Invalid credentials or user not found', 'error')
     }
-  } else {
-    alert('Invalid credentials')
+  } catch (err) {
+    showToast(err.message || 'Login failed', 'error')
   }
 })
 </script>
@@ -50,6 +53,7 @@ const onSubmit = handleSubmit((formValues) => {
         <span v-if="emailMeta.touched" class="text-red-500 text-sm">{{ emailError }}</span>
       </div>
     </div>
+
     <div>
       <input
         v-model="password"
@@ -61,6 +65,7 @@ const onSubmit = handleSubmit((formValues) => {
         <span v-if="passwordMeta.touched" class="text-red-500 text-sm">{{ passwordError }}</span>
       </div>
     </div>
+
     <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded w-full">
       Login
     </button>
