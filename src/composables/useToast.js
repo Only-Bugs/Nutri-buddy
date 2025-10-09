@@ -4,13 +4,7 @@
  * # Generated under NutriBuddy SpecGuard v1.0.0
  */
 import { reactive } from 'vue'
-
-const state = reactive({
-  message: '',
-  type: 'info', // 'info' | 'success' | 'error'
-  visible: false,
-})
-
+const state = reactive({ message: '', type: 'info', visible: false })
 export function useToast() {
   function showToast(message, type = 'info', duration = 3000) {
     state.message = message

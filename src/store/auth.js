@@ -7,25 +7,17 @@ export const useAuthStore = defineStore('auth', {
   }),
 
   actions: {
-    /**
-     * Register a new user via Firebase.
-     * @param {{email:string,password:string}} newUser
-     */
     async register(newUser) {
       try {
         const created = await registerUser(newUser)
         this.user = created
         return true
       } catch (err) {
-        console.error('Registration failed:', err.message)
+        console.error('Registration failed:', err?.message || err)
         return false
       }
     },
 
-    /**
-     * Login an existing user via Firebase.
-     * @param {{email:string,password:string}} credentials
-     */
     async login(credentials) {
       try {
         const match = await loginUser(credentials)
@@ -35,37 +27,32 @@ export const useAuthStore = defineStore('auth', {
         }
         return false
       } catch (err) {
-        console.error('Login failed:', err.message)
+        console.error('Login failed:', err?.message || err)
         return false
       }
     },
 
-    /**
-     * Login with Google popup.
-     */
     async loginWithGoogle() {
       try {
         const user = await loginWithGoogle()
         this.user = user
         return true
       } catch (err) {
-        console.error('Google login failed:', err.message)
+        console.error('Google login failed:', err?.message || err)
         return false
       }
     },
 
-    /**
-     * Logout current Firebase user.
-     */
     async logout() {
       try {
         await logoutUser()
         this.user = null
         return true
       } catch (err) {
-        console.error('Logout failed:', err.message)
+        console.error('Logout failed:', err?.message || err)
         return false
       }
     },
   },
 })
+// # Generated under NutriBuddy SpecGuard v1.0.0

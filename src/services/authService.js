@@ -4,7 +4,6 @@
  * Maintains backward-compatible interface with previous local mock.
  * # Generated under NutriBuddy SpecGuard v1.0.0
  */
-
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -20,16 +19,8 @@ import { firebaseAuth } from '@/config/firebase'
  * @returns {Promise<{email: string, uid: string, role: string}>}
  */
 export async function registerUser(newUser) {
-  try {
-    const { user } = await createUserWithEmailAndPassword(
-      firebaseAuth,
-      newUser.email,
-      newUser.password,
-    )
-    return { email: user.email, uid: user.uid, role: 'user' }
-  } catch (error) {
-    throw new Error(error.message || 'Failed to register user')
-  }
+  const { user } = await createUserWithEmailAndPassword(firebaseAuth, newUser.email, newUser.password)
+  return { email: user.email, uid: user.uid, role: 'user' }
 }
 
 /**
@@ -39,30 +30,21 @@ export async function registerUser(newUser) {
  */
 export async function loginUser(credentials) {
   try {
-    const { user } = await signInWithEmailAndPassword(
-      firebaseAuth,
-      credentials.email,
-      credentials.password,
-    )
+    const { user } = await signInWithEmailAndPassword(firebaseAuth, credentials.email, credentials.password)
     return { email: user.email, uid: user.uid, role: 'user' }
-  } catch (error) {
-    console.error('Firebase login failed:', error.message)
+  } catch {
     return null
   }
 }
 
 /**
- * ⚡ Login user with Google popup.
+ * Login user with Google popup.
  * @returns {Promise<{email:string, uid:string, provider:string}>}
  */
 export async function loginWithGoogle() {
-  try {
-    const provider = new GoogleAuthProvider()
-    const { user } = await signInWithPopup(firebaseAuth, provider)
-    return { email: user.email, uid: user.uid, provider: 'google' }
-  } catch (error) {
-    throw new Error(error.message || 'Google login failed')
-  }
+  const provider = new GoogleAuthProvider()
+  const { user } = await signInWithPopup(firebaseAuth, provider)
+  return { email: user.email, uid: user.uid, provider: 'google' }
 }
 
 /**
@@ -70,11 +52,6 @@ export async function loginWithGoogle() {
  * @returns {Promise<boolean>}
  */
 export async function logoutUser() {
-  try {
-    await signOut(firebaseAuth)
-    return true
-  } catch (error) {
-    console.error('Logout failed:', error.message)
-    return false
-  }
+  await signOut(firebaseAuth)
+  return true
 }

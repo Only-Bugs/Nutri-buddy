@@ -1,6 +1,5 @@
 <script setup>
 import { useToast } from '@/composables/useToast'
-
 const { state } = useToast()
 </script>
 
@@ -21,12 +20,6 @@ const { state } = useToast()
 </template>
 
 <style scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s;
-}
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
+.fade-enter-active,.fade-leave-active{ transition: opacity .3s; }
+.fade-enter-from,.fade-leave-to{ opacity:0; }
 </style>

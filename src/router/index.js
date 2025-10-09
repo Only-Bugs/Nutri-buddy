@@ -18,7 +18,6 @@ const routes = [
     children: [
       { path: 'dashboard', component: DashboardPage },
       { path: 'meal-plans', component: MealsPage },
-      { path: 'admin', component: AdminPage, meta: { requiresAdmin: true } },
     ],
   },
 ]
