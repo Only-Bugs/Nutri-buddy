@@ -1,29 +1,58 @@
 import { defineStore } from 'pinia'
+import { registerUser, loginUser, logoutUser, loginWithGoogle } from '@/services/authService'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: null,
-    users: [
-      { email: 'email@email.com', password: '123456', role: 'user' },
-      { email: 'admin@admin.com', password: 'admin123', role: 'admin' },
-    ],
   }),
+
   actions: {
-    register(newUser) {
-      this.users.push({ ...newUser, role: 'user' }) // default role
-    },
-    login(credentials) {
-      const match = this.users.find(
-        (u) => u.email === credentials.email && u.password === credentials.password,
-      )
-      if (match) {
-        this.user = match
+    async register(newUser) {
+      try {
+        const created = await registerUser(newUser)
+        this.user = created
         return true
+      } catch (err) {
+        console.error('Registration failed:', err?.message || err)
+        return false
       }
-      return false
     },
-    logout() {
-      this.user = null
+
+    async login(credentials) {
+      try {
+        const match = await loginUser(credentials)
+        if (match) {
+          this.user = match
+          return true
+        }
+        return false
+      } catch (err) {
+        console.error('Login failed:', err?.message || err)
+        return false
+      }
+    },
+
+    async loginWithGoogle() {
+      try {
+        const user = await loginWithGoogle()
+        this.user = user
+        return true
+      } catch (err) {
+        console.error('Google login failed:', err?.message || err)
+        return false
+      }
+    },
+
+    async logout() {
+      try {
+        await logoutUser()
+        this.user = null
+        return true
+      } catch (err) {
+        console.error('Logout failed:', err?.message || err)
+        return false
+      }
     },
   },
 })
+// # Generated under NutriBuddy SpecGuard v1.0.0

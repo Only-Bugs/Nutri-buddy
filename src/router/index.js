@@ -1,17 +1,24 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useAuthStore } from '../store/auth'
+import { applyAuthGuards } from '@/router/guards/authGuards'
 
-import LoginPage from '../pages/LoginPage.vue'
-import RegisterPage from '../pages/RegisterPage.vue'
-import DashboardPage from '../pages/DashboardPage.vue'
-import AdminPage from '../pages/AdminPage.vue'
+import LandingPage from '@/pages/LandingPage.vue'
+import AuthPage from '@/pages/AuthPage.vue'
+import DashboardLayout from '@/layouts/DashboardLayout.vue'
+import DashboardPage from '@/pages/DashboardPage.vue'
+import MealsPage from '@/pages/MealsPage.vue'
 
 const routes = [
-  { path: '/', redirect: '/login' },
-  { path: '/login', component: LoginPage },
-  { path: '/register', component: RegisterPage },
-  { path: '/dashboard', component: DashboardPage, meta: { requiresAuth: true } },
-  { path: '/admin', component: AdminPage, meta: { requiresAuth: true, requiresAdmin: true } },
+  { path: '/', component: LandingPage },
+  { path: '/auth', component: AuthPage },
+  {
+    path: '/',
+    component: DashboardLayout,
+    meta: { requiresAuth: true },
+    children: [
+      { path: 'dashboard', component: DashboardPage },
+      { path: 'meal-plans', component: MealsPage },
+    ],
+  },
 ]
 
 const router = createRouter({
@@ -19,17 +26,6 @@ const router = createRouter({
   routes,
 })
 
-// Route guard
-router.beforeEach((to) => {
-  const auth = useAuthStore()
-
-  if (to.meta.requiresAuth && !auth.user) {
-    return '/login' // not logged in → send to login
-  }
-
-  if (to.meta.requiresAdmin && auth.user?.role !== 'admin') {
-    return '/dashboard' // logged in but not admin → back to dashboard
-  }
-})
+applyAuthGuards(router)
 
 export default router
