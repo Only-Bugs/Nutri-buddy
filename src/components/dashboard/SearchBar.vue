@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { getNutritionData } from '@/services/nutritionService'
+import { getNutritionData } from '../../services/nutritionService'
 
 const query = ref('')
 const results = ref(null)
@@ -58,4 +58,4 @@ async function search() {
     </div>
   </div>
 </template>
-<!-- # Generated under NutriBuddy SpecGuard v1.0.0 -->
+<!--   -->

@@ -1,7 +1,7 @@
 /**
  * @composable useRatings
  * Wrap ratings store with helper APIs
- * # Generated under NutriBuddy SpecGuard v1.0.0
+ *
  */
 import { useRatingsStore } from '@/store/ratings'
 import { calcAverageRating } from '@/utils/ratingsUtils'

@@ -20,4 +20,4 @@ const props = defineProps({
     "
   />
 </template>
-<!-- # Generated under NutriBuddy SpecGuard v1.0.0 -->
+<!--   -->

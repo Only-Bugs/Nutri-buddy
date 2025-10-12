@@ -7,7 +7,7 @@
  */
 
 import { defineStore } from 'pinia'
-import { registerUser, loginUser, logoutUser, loginWithGoogle } from '@/services/authService'
+import { registerUser, loginUser, logoutUser, loginWithGoogle } from '../services/authService'
 
 /**
  * @typedef {Object} User

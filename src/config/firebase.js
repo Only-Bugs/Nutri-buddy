@@ -1,7 +1,7 @@
 /**
  * @config firebase
  * Initializes Firebase App and Auth instance using Vite env vars.
- * # Generated under NutriBuddy SpecGuard v1.0.0
+ *
  */
 import { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'

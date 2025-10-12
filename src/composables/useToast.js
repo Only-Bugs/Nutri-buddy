@@ -1,7 +1,7 @@
 /**
  * @composable useToast
  * Lightweight global toast handler (no dependencies)
- * # Generated under NutriBuddy SpecGuard v1.0.0
+ *
  */
 import { reactive } from 'vue'
 const state = reactive({ message: '', type: 'info', visible: false })

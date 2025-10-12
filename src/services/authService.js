@@ -2,7 +2,7 @@
  * @service authService
  * Handles all authentication workflows via Firebase Auth.
  * Maintains backward-compatible interface with previous local mock.
- * # Generated under NutriBuddy SpecGuard v1.0.0
+ *
  */
 import {
   createUserWithEmailAndPassword,
@@ -19,7 +19,11 @@ import { firebaseAuth } from '@/config/firebase'
  * @returns {Promise<{email: string, uid: string, role: string}>}
  */
 export async function registerUser(newUser) {
-  const { user } = await createUserWithEmailAndPassword(firebaseAuth, newUser.email, newUser.password)
+  const { user } = await createUserWithEmailAndPassword(
+    firebaseAuth,
+    newUser.email,
+    newUser.password,
+  )
   return { email: user.email, uid: user.uid, role: 'user' }
 }
 
@@ -30,7 +34,11 @@ export async function registerUser(newUser) {
  */
 export async function loginUser(credentials) {
   try {
-    const { user } = await signInWithEmailAndPassword(firebaseAuth, credentials.email, credentials.password)
+    const { user } = await signInWithEmailAndPassword(
+      firebaseAuth,
+      credentials.email,
+      credentials.password,
+    )
     return { email: user.email, uid: user.uid, role: 'user' }
   } catch {
     return null
