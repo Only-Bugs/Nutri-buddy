@@ -1,44 +1,36 @@
+/** * @file DashboardPage.vue * @description Focused dashboard overview — shows user stats, charts,
+and recent activity. * Removes API search workflow (moved to MealsPage). * @module
+pages/DashboardPage * */
+
 <script setup>
-import { ref } from 'vue'
 import { useAuthStore } from '@/store/auth'
-import { useDashboardStore } from '@/store/dashboard'
 import { useRatingsStore } from '@/store/ratings'
 import DashboardHeader from '@/components/dashboard/DashboardHeader.vue'
-import SearchBar from '@/components/dashboard/SearchBar.vue'
-import NutritionResultCard from '@/components/dashboard/NutritionResultCard.vue'
+import QuickStats from '@/components/dashboard/QuickStats.vue'
+import CalorieChart from '@/components/dashboard/CalorieChart.vue'
+import TopRatedChart from '@/components/dashboard/TopRatedChart.vue'
 import NutritionHistoryTable from '@/components/dashboard/NutritionHistoryTable.vue'
 
 const auth = useAuthStore()
-const dashboard = useDashboardStore()
 const ratings = useRatingsStore()
-
-const query = ref('')
-
-function handleSearch() {
-  dashboard.searchFood(query.value)
-}
-function rateFood(foodId, score) {
-  ratings.addRating(foodId, score)
-}
 </script>
 
 <template>
-  <div class="space-y-6 w-full max-w-4xl mx-auto">
+  <section class="dash-section w-full">
     <DashboardHeader :userEmail="auth.user?.email" />
 
-    <SearchBar
-      v-model="query"
-      :loading="dashboard.loading"
-      :error="dashboard.error"
-      @search="handleSearch"
-    />
+    <!-- Overview grid -->
+    <div class="grid md:grid-cols-3 gap-[var(--dash-gap)]">
+      <QuickStats
+        :foodsRated="Object.keys(ratings.ratings).length"
+        :avgRating="ratings.getAverage('all')"
+        favoriteCategory="Protein"
+      />
+      <CalorieChart />
+      <TopRatedChart />
+    </div>
 
-    <NutritionResultCard
-      v-if="!dashboard.loading"
-      :foodData="dashboard.latestResult"
-      :query="query"
-    />
-
-    <NutritionHistoryTable :foods="dashboard.foods" @rate="rateFood" />
-  </div>
+    <!-- Recent activity -->
+    <NutritionHistoryTable :foods="[]" />
+  </section>
 </template>

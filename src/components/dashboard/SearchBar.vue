@@ -26,6 +26,6 @@ const emit = defineEmits(['update:modelValue', 'search'])
       </button>
     </div>
 
-    <p v-if="error" class="text-sm text-red-500">{{ error }}</p>
+    <p v-if="error" class="text-lg text-red-500">{{ error }}</p>
   </div>
 </template>

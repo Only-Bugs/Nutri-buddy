@@ -1,14 +1,14 @@
-<script setup>
-/**
- * @file NutritionResultCard.vue
- * @description Polished nutrition result card — matches design spec with FontAwesome icons.
- */
+/** * @file NutritionResultCard.vue * @description Unified nutrition result card using DashboardCard
+wrapper. * Visual consistency: shared padding, shadow, and typography baseline. * @module
+components/dashboard/NutritionResultCard * */
 
+<script setup>
 import { computed } from 'vue'
 import { Doughnut } from 'vue-chartjs'
 import { groupNutrients } from '@utils/nutrientGroups'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { Chart as ChartJS, Title, Tooltip, ArcElement, Legend } from 'chart.js'
+import DashboardCard from '@/components/dashboard/DashboardCard.vue'
 
 ChartJS.register(Title, Tooltip, ArcElement, Legend)
 
@@ -17,10 +17,8 @@ const props = defineProps({
   query: { type: String, default: '' },
 })
 
-/** Grouped nutrients */
 const { vitamins, minerals, others } = groupNutrients(props.foodData?.nutrients || {})
 
-/** Extract macros */
 const macros = computed(() => {
   const n = props.foodData?.nutrients || {}
   return {
@@ -31,7 +29,6 @@ const macros = computed(() => {
   }
 })
 
-/** Donut chart data */
 const chartData = computed(() => ({
   labels: ['Protein', 'Carbs', 'Fats', 'Fiber'],
   datasets: [
@@ -51,24 +48,23 @@ const chartOptions = {
 </script>
 
 <template>
-  <div v-if="foodData && foodData.nutrients" class="bg-white rounded-2xl shadow-md p-6 mt-6">
+  <!-- Main content -->
+  <DashboardCard v-if="foodData && foodData.nutrients">
     <!-- Header -->
     <div class="flex justify-between items-start mb-5">
       <div>
-        <h2 class="text-2xl font-bold text-gray-800 capitalize">
-          {{ foodData.food }}
-        </h2>
-        <p class="text-sm text-gray-500">Raw, Fresh</p>
+        <h2 class="dash-title capitalize">{{ foodData.food }}</h2>
+        <p class="dash-subtitle">Raw, Fresh</p>
       </div>
-      <span class="text-xs font-semibold bg-green-100 text-green-700 px-3 py-1 rounded-full">
+      <span class="text-base font-semibold bg-green-100 text-green-700 px-3 py-1 rounded-full">
         USDA
       </span>
     </div>
 
     <!-- Quick stats -->
-    <div class="flex flex-wrap gap-4 text-sm text-gray-700 mb-6">
+    <div class="flex flex-wrap gap-4 text-lg text-gray-700 mb-6">
       <div class="flex items-center gap-2">
-        <FontAwesomeIcon icon="apple-whole" class="text-green-600" />
+        <FontAwesomeIcon icon="apple-whole" class="dash-accent" />
         <span>{{ foodData.quantity }} {{ foodData.measure }}</span>
       </div>
       <div class="flex items-center gap-2">
@@ -77,10 +73,7 @@ const chartOptions = {
       </div>
       <div class="flex items-center gap-2">
         <FontAwesomeIcon icon="chart-line" class="text-red-500" />
-        <span>
-          {{ (foodData.calories / foodData.weight).toFixed(1) }}
-          kcal/g density
-        </span>
+        <span> {{ (foodData.calories / foodData.weight).toFixed(1) }} kcal/g density </span>
       </div>
     </div>
 
@@ -93,27 +86,27 @@ const chartOptions = {
         <Doughnut :data="chartData" :options="chartOptions" />
         <div class="absolute inset-0 flex flex-col items-center justify-center text-gray-800">
           <p class="text-3xl font-bold">{{ foodData.calories }}</p>
-          <p class="text-xs uppercase text-gray-500">kcal</p>
+          <p class="text-base uppercase text-gray-500">kcal</p>
         </div>
       </div>
 
       <!-- Macro cards -->
       <div class="grid grid-cols-2 gap-3">
         <div class="rounded-lg bg-red-50 p-3 text-center font-semibold text-red-600">
-          {{ macros.protein.toFixed(1) }}g
-          <p class="text-xs text-gray-500">Protein</p>
+          {{ macros.protein.toFixed(1) }} g
+          <p class="text-base text-gray-500">Protein</p>
         </div>
         <div class="rounded-lg bg-blue-50 p-3 text-center font-semibold text-blue-600">
-          {{ macros.carbs.toFixed(1) }}g
-          <p class="text-xs text-gray-500">Carbs</p>
+          {{ macros.carbs.toFixed(1) }} g
+          <p class="text-base text-gray-500">Carbs</p>
         </div>
         <div class="rounded-lg bg-yellow-50 p-3 text-center font-semibold text-yellow-600">
-          {{ macros.fats.toFixed(1) }}g
-          <p class="text-xs text-gray-500">Fats</p>
+          {{ macros.fats.toFixed(1) }} g
+          <p class="text-base text-gray-500">Fats</p>
         </div>
         <div class="rounded-lg bg-green-50 p-3 text-center font-semibold text-green-600">
-          {{ macros.fiber.toFixed(1) }}g
-          <p class="text-xs text-gray-500">Fiber</p>
+          {{ macros.fiber.toFixed(1) }} g
+          <p class="text-base text-gray-500">Fiber</p>
         </div>
       </div>
     </div>
@@ -124,7 +117,7 @@ const chartOptions = {
         <summary class="cursor-pointer font-semibold flex items-center gap-2 text-orange-600">
           <FontAwesomeIcon icon="bolt" /> Vitamins
         </summary>
-        <ul class="grid grid-cols-2 gap-y-1 mt-2 text-sm text-gray-600">
+        <ul class="grid grid-cols-2 gap-y-1 mt-2 text-lg text-gray-600">
           <li v-for="v in vitamins" :key="v.label">
             {{ v.label }} — {{ v.quantity.toFixed(1) }} {{ v.unit }}
           </li>
@@ -135,7 +128,7 @@ const chartOptions = {
         <summary class="cursor-pointer font-semibold flex items-center gap-2 text-purple-600">
           <FontAwesomeIcon icon="diamond" /> Minerals
         </summary>
-        <ul class="grid grid-cols-2 gap-y-1 mt-2 text-sm text-gray-600">
+        <ul class="grid grid-cols-2 gap-y-1 mt-2 text-lg text-gray-600">
           <li v-for="m in minerals" :key="m.label">
             {{ m.label }} — {{ m.quantity.toFixed(1) }} {{ m.unit }}
           </li>
@@ -146,7 +139,7 @@ const chartOptions = {
         <summary class="cursor-pointer font-semibold flex items-center gap-2 text-teal-600">
           <FontAwesomeIcon icon="vial" /> Other Nutrients
         </summary>
-        <ul class="grid grid-cols-2 gap-y-1 mt-2 text-sm text-gray-600">
+        <ul class="grid grid-cols-2 gap-y-1 mt-2 text-lg text-gray-600">
           <li v-for="n in others" :key="n.label">
             {{ n.label }} — {{ n.quantity.toFixed(1) }} {{ n.unit }}
           </li>
@@ -167,13 +160,13 @@ const chartOptions = {
         <FontAwesomeIcon icon="bookmark" /> Save to Favorites
       </button>
     </div>
-  </div>
+  </DashboardCard>
 
   <!-- Fallback -->
   <div v-else-if="query" class="text-center text-gray-600 mt-6">
     <p class="font-medium">We’re updating our database. Check again soon.</p>
-    <p class="text-sm text-gray-500 mt-1">
-      For best results, be specific — e.g., “100g grilled chicken breast”.
+    <p class="text-lg text-gray-500 mt-1">
+      For best results, be specific — e.g., “100 g grilled chicken breast”.
     </p>
   </div>
 </template>

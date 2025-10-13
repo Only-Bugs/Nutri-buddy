@@ -1,6 +1,6 @@
 <script setup>
 const props = defineProps({
-  plans: Array
+  plans: Array,
 })
 </script>
 
@@ -15,11 +15,13 @@ const props = defineProps({
       >
         <div>
           <p class="font-medium">{{ plan.title }}</p>
-          <p class="text-xs text-gray-500">{{ plan.date }}</p>
+          <p class="text-base text-gray-500">{{ plan.date }}</p>
         </div>
         <span class="text-gray-400">→</span>
       </li>
     </ul>
-    <button class="text-green-600 text-sm font-medium mt-3 hover:underline">View All History</button>
+    <button class="text-green-600 text-lg font-medium mt-3 hover:underline">
+      View All History
+    </button>
   </div>
 </template>

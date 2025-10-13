@@ -1,7 +1,7 @@
 /** * @file RegisterForm.vue * @description User registration form for NutriBuddy using Firebase
 Authentication. * Handles email and password registration through the Pinia auth store and *
 provides client-side validation via vee-validate and yup. * Displays feedback using the global toast
-notification system. * @module components/forms/RegisterForm */
+notification system. * @module components/auth/RegisterForm */
 
 <script setup>
 import { useForm, useField } from 'vee-validate'
@@ -71,7 +71,7 @@ const onSubmit = handleSubmit(async (formValues) => {
         class="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-green-500"
       />
       <div class="min-h-[20px]">
-        <span v-if="emailMeta.touched" class="text-red-500 text-sm">
+        <span v-if="emailMeta.touched" class="text-red-500 text-lg">
           {{ emailError }}
         </span>
       </div>
@@ -86,7 +86,7 @@ const onSubmit = handleSubmit(async (formValues) => {
         class="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-green-500"
       />
       <div class="min-h-[20px]">
-        <span v-if="passwordMeta.touched" class="text-red-500 text-sm">
+        <span v-if="passwordMeta.touched" class="text-red-500 text-lg">
           {{ passwordError }}
         </span>
       </div>
@@ -101,7 +101,7 @@ const onSubmit = handleSubmit(async (formValues) => {
         class="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-green-500"
       />
       <div class="min-h-[20px]">
-        <span v-if="confirmMeta.touched" class="text-red-500 text-sm">
+        <span v-if="confirmMeta.touched" class="text-red-500 text-lg">
           {{ confirmError }}
         </span>
       </div>

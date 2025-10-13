@@ -23,21 +23,25 @@ import MealsPage from '@/pages/MealsPage.vue'
 const routes = [
   {
     path: '/',
+    name: 'Home',
     component: LandingPage,
   },
   {
     path: '/auth',
+    name: 'Auth',
     component: AuthPage,
   },
   {
-    path: '/',
+    path: '/app',
     component: DashboardLayout,
     meta: { requiresAuth: true },
     children: [
-      { path: 'dashboard', component: DashboardPage },
-      { path: 'meal-plans', component: MealsPage },
+      { path: 'dashboard', name: 'Dashboard', component: DashboardPage },
+      { path: 'meal-plans', name: 'MealPlans', component: MealsPage },
     ],
   },
+  { path: '/dashboard', redirect: '/app/dashboard' },
+  { path: '/meal-plans', redirect: '/app/meal-plans' },
 ]
 
 /**

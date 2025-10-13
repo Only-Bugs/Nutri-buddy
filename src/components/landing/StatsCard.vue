@@ -13,6 +13,6 @@ const props = defineProps({
 <template>
   <div class="text-center">
     <p class="text-2xl font-bold text-gray-900">{{ value }}</p>
-    <p class="text-sm text-gray-600">{{ label }}</p>
+    <p class="text-lg text-gray-600">{{ label }}</p>
   </div>
 </template>

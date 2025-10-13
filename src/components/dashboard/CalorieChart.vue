@@ -1,8 +1,12 @@
+/** * @file CalorieChart.vue * @description Consistent dashboard chart card using shared
+DashboardCard wrapper. * Applies unified padding, radius, and header style from dashboard theme. *
+@module components/dashboard/CalorieChart * */
+
 <script setup>
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement } from 'chart.js'
 import { Pie } from 'vue-chartjs'
+import DashboardCard from '@/components/dashboard/DashboardCard.vue'
 
-// Register chart.js modules
 ChartJS.register(Title, Tooltip, Legend, ArcElement)
 
 const props = defineProps({
@@ -23,8 +27,9 @@ const props = defineProps({
 </script>
 
 <template>
-  <div class="bg-white shadow-sm rounded-xl p-6">
-    <h3 class="text-lg font-semibold mb-4">Calorie Distribution</h3>
-    <Pie :data="data" />
-  </div>
+  <DashboardCard title="Calorie Distribution">
+    <div class="h-64">
+      <Pie :data="data" />
+    </div>
+  </DashboardCard>
 </template>

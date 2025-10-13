@@ -20,6 +20,11 @@ import {
   faChartPie,
   faPlus,
   faBookmark,
+  // 👇 add these new ones
+  faUser,
+  faChevronDown,
+  faGear,
+  faArrowRightFromBracket,
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(
@@ -37,6 +42,10 @@ library.add(
   faChartPie,
   faPlus,
   faBookmark,
+  faUser,
+  faChevronDown,
+  faGear,
+  faArrowRightFromBracket,
 )
 
 export default {

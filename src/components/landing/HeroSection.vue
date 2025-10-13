@@ -60,7 +60,7 @@ function scrollToFeatures() {
         alt="NutriBuddy preview"
         class="w-full rounded-lg shadow"
       />
-      <span class="absolute top-4 right-4 bg-white text-green-600 px-3 py-1 text-sm rounded shadow">
+      <span class="absolute top-4 right-4 bg-white text-green-600 px-3 py-1 text-lg rounded shadow">
         ● Live Tracking
       </span>
     </div>

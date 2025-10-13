@@ -1,3 +1,7 @@
+/** * @file TopRatedChart.vue * @description Consistent “Top Rated Foods” chart card using
+DashboardCard wrapper. * Aligns with unified padding, shadow, and typography from dashboard theme. *
+@module components/dashboard/TopRatedChart * */
+
 <script setup>
 import {
   Chart as ChartJS,
@@ -9,6 +13,7 @@ import {
   LinearScale,
 } from 'chart.js'
 import { Bar } from 'vue-chartjs'
+import DashboardCard from '@/components/dashboard/DashboardCard.vue'
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
@@ -31,8 +36,9 @@ const props = defineProps({
 </script>
 
 <template>
-  <div class="bg-white shadow-sm rounded-xl p-6">
-    <h3 class="text-lg font-semibold mb-4">Top Rated Foods</h3>
-    <Bar :data="data" />
-  </div>
+  <DashboardCard title="Top Rated Foods">
+    <div class="h-64">
+      <Bar :data="data" />
+    </div>
+  </DashboardCard>
 </template>

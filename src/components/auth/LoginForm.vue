@@ -1,7 +1,7 @@
 /** * @file LoginForm.vue * @description Login form component using Firebase Authentication. *
 Handles email/password login via Pinia store and provides * client-side validation with vee-validate
 and yup. * Displays real-time feedback using the global toast system. * @module
-components/forms/LoginForm */
+components/auth/LoginForm */
 
 <script setup>
 import { useForm, useField } from 'vee-validate'
@@ -61,7 +61,7 @@ const onSubmit = handleSubmit(async (formValues) => {
         class="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       <div class="min-h-[20px]">
-        <span v-if="emailMeta.touched" class="text-red-500 text-sm">
+        <span v-if="emailMeta.touched" class="text-red-500 text-lg">
           {{ emailError }}
         </span>
       </div>
@@ -76,7 +76,7 @@ const onSubmit = handleSubmit(async (formValues) => {
         class="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       <div class="min-h-[20px]">
-        <span v-if="passwordMeta.touched" class="text-red-500 text-sm">
+        <span v-if="passwordMeta.touched" class="text-red-500 text-lg">
           {{ passwordError }}
         </span>
       </div>
