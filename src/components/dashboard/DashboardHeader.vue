@@ -1,6 +1,6 @@
 /** * @file DashboardHeader.vue * @description Header with greeting left, calorie limit + profile
 dropdown right. * Uses Firebase photoURL if available, else a default user icon. * @module
-components/dashboard/DashboardHeader * */
+components/dashboard/DashboardHeader */
 
 <script setup>
 import { ref, computed } from 'vue'
@@ -40,7 +40,7 @@ function toggleMenu() {
     <div class="flex items-center gap-5 relative">
       <!-- Calorie limit -->
       <div class="text-right">
-        <p class="text-lg text-gray-500 leading-tight">Daily Limit</p>
+        <p class="text-base text-gray-500 leading-tight">Daily Limit</p>
         <p class="text-lg font-bold text-green-600">{{ calorieLimit }} kcal</p>
       </div>
 
@@ -57,7 +57,7 @@ function toggleMenu() {
             <img :src="user.photoURL" alt="User avatar" class="w-full h-full object-cover" />
           </template>
           <template v-else>
-            <FontAwesomeIcon icon="user" class="text-gray-500 text-lg" />
+            <FontAwesomeIcon icon="user" class="text-gray-500 text-base" />
           </template>
         </div>
         <FontAwesomeIcon
@@ -77,13 +77,13 @@ function toggleMenu() {
             Logged in as {{ user.email || 'unknown user' }}
           </p>
           <button
-            class="flex items-center gap-2 w-full text-left px-4 py-2 text-lg text-gray-700 hover:bg-gray-50"
+            class="flex items-center gap-2 w-full text-left px-4 py-2 text-base text-gray-700 hover:bg-gray-50"
           >
             <FontAwesomeIcon icon="gear" /> Settings
           </button>
           <button
             @click="handleLogout"
-            class="flex items-center gap-2 w-full text-left px-4 py-2 text-lg text-red-600 hover:bg-red-50"
+            class="flex items-center gap-2 w-full text-left px-4 py-2 text-base text-red-600 hover:bg-red-50"
           >
             <FontAwesomeIcon icon="arrow-right-from-bracket" /> Logout
           </button>

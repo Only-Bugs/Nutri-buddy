@@ -3,26 +3,8 @@
 under NutriBuddy SpecGuard v1.0.0 */
 
 <script setup>
-import { ref } from 'vue'
-import { useDashboardStore } from '@/store/dashboard'
-import { useRatingsStore } from '@/store/ratings'
 import MealPlanHeader from '@/components/mealPlans/MealPlanHeader.vue'
 import MealsList from '@/components/mealPlans/MealsList.vue'
-import SearchBar from '@/components/dashboard/SearchBar.vue'
-import NutritionResultCard from '@/components/dashboard/NutritionResultCard.vue'
-import NutritionHistoryTable from '@/components/dashboard/NutritionHistoryTable.vue'
-
-const dashboard = useDashboardStore()
-const ratings = useRatingsStore()
-
-const query = ref('')
-
-function handleSearch() {
-  dashboard.searchFood(query.value)
-}
-function rateFood(foodId, score) {
-  ratings.addRating(foodId, score)
-}
 
 const mealPlan = {
   title: 'Mediterranean Delight Plan',
@@ -64,22 +46,7 @@ const meals = [
     />
 
     <!-- Search + Results -->
-    <div class="space-y-[var(--dash-gap)]">
-      <SearchBar
-        v-model="query"
-        :loading="dashboard.loading"
-        :error="dashboard.error"
-        @search="handleSearch"
-      />
-
-      <NutritionResultCard
-        v-if="!dashboard.loading"
-        :foodData="dashboard.latestResult"
-        :query="query"
-      />
-
-      <NutritionHistoryTable :foods="dashboard.foods" @rate="rateFood" />
-    </div>
+    <div class="space-y-[var(--dash-gap)]"></div>
 
     <!-- Current plan preview -->
     <div class="mt-[var(--dash-gap)]">
