@@ -12,6 +12,8 @@ const props = defineProps({
   calorieLimit: { type: Number, default: 2000 },
 })
 
+const emit = defineEmits(['open-search'])
+
 const auth = useAuthStore()
 const showMenu = ref(false)
 const { handleLogout } = useAuthActions()
@@ -26,6 +28,10 @@ const firstName = computed(() =>
 function toggleMenu() {
   showMenu.value = !showMenu.value
 }
+
+function openSearchOverlay() {
+  emit('open-search')
+}
 </script>
 
 <template>
@@ -38,6 +44,14 @@ function toggleMenu() {
 
     <!-- Right: Profile cluster -->
     <div class="flex items-center gap-5 relative">
+      <button
+        @click="openSearchOverlay"
+        class="w-11 h-11 rounded-full border-2 border-green-600 text-green-600 flex items-center justify-center hover:bg-green-600 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-green-500"
+        aria-label="Open search"
+      >
+        <FontAwesomeIcon icon="magnifying-glass" class="text-lg" />
+      </button>
+
       <!-- Calorie limit -->
       <div class="text-right">
         <p class="text-base text-gray-500 leading-tight">Daily Limit</p>

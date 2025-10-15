@@ -20,6 +20,7 @@ import {
   faChartPie,
   faPlus,
   faBookmark,
+  faMagnifyingGlass,
   // 👇 add these new ones
   faUser,
   faChevronDown,
@@ -42,6 +43,7 @@ library.add(
   faChartPie,
   faPlus,
   faBookmark,
+  faMagnifyingGlass,
   faUser,
   faChevronDown,
   faGear,

@@ -6,18 +6,18 @@ components/dashboard/QuickStats * */
 import DashboardCard from '@/components/dashboard/DashboardCard.vue'
 
 const props = defineProps({
-  foodsRated: Number,
-  avgRating: Number,
-  favoriteCategory: String,
+  totalSearches: { type: Number, default: 0 },
+  averageCalories: { type: Number, default: 0 },
+  recentFood: { type: String, default: '—' },
 })
 </script>
 
 <template>
   <DashboardCard title="Quick Stats">
     <ul class="space-y-2 text-lg text-gray-700">
-      <li><strong>Foods Rated:</strong> {{ foodsRated }}</li>
-      <li><strong>Avg Rating Given:</strong> {{ avgRating }}</li>
-      <li><strong>Favorite Category:</strong> {{ favoriteCategory }}</li>
+      <li><strong>Total Searches:</strong> {{ totalSearches }}</li>
+      <li><strong>Avg Calories:</strong> {{ averageCalories.toFixed(1) }}</li>
+      <li><strong>Latest Food:</strong> {{ recentFood }}</li>
     </ul>
   </DashboardCard>
 </template>

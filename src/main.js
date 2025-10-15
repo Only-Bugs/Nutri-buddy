@@ -27,6 +27,12 @@ app.use(pinia)
 /** Register global plugins. */
 app.use(Icons)
 
+if (import.meta.env?.VITE_DEBUG_SEARCH === 'true') {
+  app.config.errorHandler = (err, instance, info) => {
+    console.error('[Vue error handler]', { err, instance, info, stack: err?.stack })
+  }
+}
+
 /**
  * Initializes Firebase Authentication listener.
  * Syncs the authenticated user into Pinia store before mounting the app.

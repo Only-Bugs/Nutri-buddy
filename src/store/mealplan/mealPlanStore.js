@@ -139,7 +139,9 @@ export const useMealPlanStore = defineStore('mealPlan', {
         this.plans.unshift(plan)
       }
 
-      this.activePlanId = plan.id
+      if (!this.activePlanId || plan.status === 'active') {
+        this.activePlanId = plan.id
+      }
       persistPlans(this.userId, this.plans)
       return plan
     },
@@ -162,6 +164,8 @@ export const useMealPlanStore = defineStore('mealPlan', {
 
       if (status === 'active') {
         this.activePlanId = planId
+      } else if (this.activePlanId === planId) {
+        this.activePlanId = null
       }
 
       persistPlans(this.userId, this.plans)

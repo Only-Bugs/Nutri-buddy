@@ -17,6 +17,8 @@ const props = defineProps({
   query: { type: String, default: '' },
 })
 
+const emit = defineEmits(['add-to-plan'])
+
 const { vitamins, minerals, others } = groupNutrients(props.foodData?.nutrients || {})
 
 const macros = computed(() => {
@@ -151,6 +153,7 @@ const chartOptions = {
     <div class="flex flex-wrap gap-3 mt-6">
       <button
         class="flex-1 bg-green-600 text-white rounded-lg py-2 hover:bg-green-700 flex items-center justify-center gap-2"
+        @click="emit('add-to-plan')"
       >
         <FontAwesomeIcon icon="plus" /> Add to Meal
       </button>
