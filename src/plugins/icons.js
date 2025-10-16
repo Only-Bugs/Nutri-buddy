@@ -21,6 +21,8 @@ import {
   faPlus,
   faBookmark,
   faMagnifyingGlass,
+  faArrowLeft,
+  faArrowRight,
   // 👇 add these new ones
   faUser,
   faChevronDown,
@@ -44,6 +46,8 @@ library.add(
   faPlus,
   faBookmark,
   faMagnifyingGlass,
+  faArrowLeft,
+  faArrowRight,
   faUser,
   faChevronDown,
   faGear,

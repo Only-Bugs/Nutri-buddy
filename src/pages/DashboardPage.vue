@@ -11,19 +11,25 @@ import NutritionHistoryTable from '@/components/dashboard/NutritionHistoryTable.
 import CaloriesDistribution from '@/components/dashboard/CaloriesDistribution.vue'
 import NutritionDistribution from '@/components/dashboard/NutritionDistribution.vue'
 import SearchOverlay from '@/components/dashboard/SearchOverlay.vue'
+import FavoriteRecipesSection from '@/components/dashboard/FavoriteRecipesSection.vue'
 import AddToMealPlanModal from '@/components/mealPlans/AddToMealPlanModal.vue'
 import { computed, ref, watch, onBeforeUnmount } from 'vue'
+import { useRouter } from 'vue-router'
 import { useDashboardStore } from '@/store/dashboard'
 import { useMealPlanStore } from '@/store/mealplan/mealPlanStore'
+import { useRecipeStore } from '@/store/recipes'
 
 const auth = useAuthStore()
 const dashboard = useDashboardStore()
 const mealPlans = useMealPlanStore()
+const recipeStore = useRecipeStore()
+const router = useRouter()
+recipeStore.initialize()
 
 const query = ref('')
 const searchOverlayOpen = ref(false)
 const addModalOpen = ref(false)
-const selectedFood = ref(null)
+const selectedItem = ref(null)
 const selectedTotals = ref(null)
 
 const totalSearches = computed(() => dashboard.foods.length)
@@ -51,7 +57,7 @@ function closeSearchOverlay() {
 }
 
 function openAddModal(payload = {}) {
-  selectedFood.value = payload.food || null
+  selectedItem.value = payload.item || null
   selectedTotals.value = payload.totals || null
   addModalOpen.value = true
 }
@@ -67,7 +73,7 @@ function handleItemLinked() {
 function handleOverlayAddToPlan() {
   if (!dashboard.latestResult) return
   openAddModal({
-    food: dashboard.latestResult,
+    item: { ...dashboard.latestResult, type: 'food' },
     totals: dashboard.totalNutrition,
   })
   closeSearchOverlay()
@@ -76,7 +82,7 @@ function handleOverlayAddToPlan() {
 function handleHistoryAddToPlan(food) {
   if (!food) return
   openAddModal({
-    food,
+    item: { ...food, type: 'food' },
     totals: {
       calories: Number(food.calories || 0),
       protein: Number(food.protein || 0),
@@ -85,6 +91,22 @@ function handleHistoryAddToPlan(food) {
       fiber: Number(food.fiber || 0),
       sugar: Number(food.sugar || 0),
       sodium: Number(food.sodium || 0),
+    },
+  })
+}
+
+function handleFavoriteRecipeAdd(recipe) {
+  if (!recipe) return
+  openAddModal({
+    item: { ...recipe, type: 'recipe', recipeId: recipe.id },
+    totals: {
+      calories: Number(recipe.nutrition?.calories || 0),
+      protein: Number(recipe.nutrition?.protein || 0),
+      carbs: Number(recipe.nutrition?.carbs || 0),
+      fats: Number(recipe.nutrition?.fat || 0),
+      fiber: 0,
+      sugar: Number(recipe.nutrition?.sugar || 0),
+      sodium: Number(recipe.nutrition?.sodium || 0),
     },
   })
 }
@@ -99,7 +121,7 @@ watch(
 
 watch(addModalOpen, (isOpen) => {
   if (!isOpen) {
-    selectedFood.value = null
+    selectedItem.value = null
     selectedTotals.value = null
   }
 })
@@ -137,6 +159,12 @@ onBeforeUnmount(() => {
         <NutritionHistoryTable :foods="dashboard.foods" @add-to-plan="handleHistoryAddToPlan" />
       </div>
 
+      <FavoriteRecipesSection
+        class="lg:col-span-3"
+        @add-to-plan="handleFavoriteRecipeAdd"
+        @view-detail="(recipe) => router.push({ name: 'RecipeDetail', params: { id: recipe.id } })"
+      />
+
       <TopRatedChart />
     </div>
 
@@ -154,7 +182,7 @@ onBeforeUnmount(() => {
 
     <AddToMealPlanModal
       :show="addModalOpen"
-      :food="selectedFood"
+      :item="selectedItem"
       :totals="selectedTotals || dashboard.totalNutrition"
       @close="closeAddModal"
       @added="handleItemLinked"

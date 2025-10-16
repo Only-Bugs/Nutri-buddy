@@ -7,9 +7,10 @@
 - `meal_plan_items`
 - `recipes`
 - `recipe_ingredients`
+- `recipe_favorites`
+- `meal_plan_recipes`
 
 ## Optional Tables
-- `recipe_bookmarks`
 - `blog_posts`
 - `db_health`
 
@@ -100,15 +101,18 @@ Central recipe catalog, including user favourites.
 | id            | UUID/SERIAL| Primary key                                        |
 | user_id       | UUID/TEXT | Optional (for user-generated recipes)              |
 | name          | TEXT      |                                                    |
+| description   | TEXT      | Optional summary shown on detail pages             |
 | prep_time     | INTEGER   | Minutes                                            |
 | cook_time     | INTEGER   | Minutes                                            |
 | total_time    | INTEGER   | Minutes                                            |
 | step_count    | INTEGER   |                                                    |
 | servings      | INTEGER   |                                                    |
-| categories    | JSONB     | Array of strings                                   |
+| meal_types    | JSONB     | Array of strings (Breakfast, Lunch, etc.)          |
+| categories    | JSONB     | Array of tags / classifications                    |
 | cuisines      | JSONB     | Array of strings                                   |
 | instructions  | JSONB     | Array of steps                                    |
 | nutrition     | JSONB     | calories, fat, sugar, sodium, protein, satFat, fibre |
+| image_url     | TEXT      | Nullable display image                             |
 
 ### 3.1 `recipe_ingredients`
 
@@ -121,20 +125,39 @@ Central recipe catalog, including user favourites.
 | unit      | TEXT      |                                |
 | misc      | TEXT      | Extra description (e.g., “chopped”) |
 
-### 3.2 `recipe_bookmarks` (optional)
-Stores user favourites.
+### 3.2 `recipe_favorites`
+Stores the recipes a user has favourited inside the app.
 
-| Column    | Type      | Notes                           |
-|-----------|-----------|---------------------------------|
-| recipe_id | FK        | → `recipes.id`                 |
-| user_id   | UUID/TEXT | Owner                           |
-| saved_at  | TIMESTAMP | Default `now()`                 |
+| Column     | Type        | Notes                           |
+|------------|-------------|---------------------------------|
+| id         | UUID/TEXT   | Primary key                     |
+| user_id    | UUID/TEXT   | FK → users.id                   |
+| recipe_id  | UUID/TEXT   | FK → `recipes.id`               |
+| meal_types | JSONB       | Cached list of meal types       |
+| created_at | TIMESTAMP   | Default `now()`                 |
 
-Indexes: `(user_id, recipe_id)` unique.
+Indexes: Unique `(user_id, recipe_id)` and `(user_id, created_at DESC)` for quick fetch.
 
 ---
 
-## 4. `blog_posts`
+## 4. `meal_plan_recipes`
+Links a saved recipe to a specific meal slot within a plan.
+
+| Column    | Type        | Notes                                         |
+|-----------|-------------|-----------------------------------------------|
+| id        | UUID/TEXT   | Primary key                                   |
+| meal_id   | UUID/TEXT   | FK → `meal_plan_meals.id`                     |
+| recipe_id | UUID/TEXT   | FK → `recipes.id`                             |
+| servings  | NUMERIC     | Number of servings added to the plan          |
+| notes     | TEXT        | Optional adjustments (e.g., substitutions)    |
+| added_at  | TIMESTAMP   | Default `now()`                               |
+| nutrition_snapshot | JSONB | Cached macros at time of linking (calories, protein, carbs, fat, sugar, sodium, fibre) |
+
+Indexes: `(meal_id)`, `(recipe_id)`, `(meal_id, recipe_id)` unique to prevent duplicates.
+
+---
+
+## 5. `blog_posts`
 Used if we decide to serve blog content from the backend.
 
 | Column       | Type    | Notes                                     |
@@ -151,7 +174,7 @@ Used if we decide to serve blog content from the backend.
 
 ---
 
-## 5. `db_health`
+## 6. `db_health`
 A simple heartbeat table (optional if health check is stateless).
 
 | Column     | Type      | Notes                         |
@@ -165,5 +188,6 @@ A simple heartbeat table (optional if health check is stateless).
 - Add foreign key constraints between parent/child tables (cascade deletes on meals/items if a plan is removed).
 - Index `user_id` columns to support per-user queries.
 - JSONB columns allow us to store nutrient hashes exactly as the Lambda returns them, while still enabling aggregated SQL if needed later.
+- Initial recipe content currently lives in `src/data/recipes-temp.json`. When the database is wired up, seed `recipes`, `recipe_ingredients`, and `recipe_favorites` from that payload so the UI has immediate data. Future migrations can replace this with an ETL that ingests the authoritative dataset.
 
 This structure mirrors the objects already used in the frontend Pinia stores, so once the tables exist we can swap the local storage for real API calls without further schema changes.

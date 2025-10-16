@@ -28,13 +28,22 @@ function aggregateNutritionTotals(meals = []) {
 
   meals.forEach((meal) => {
     (meal.items || []).forEach((item) => {
-      totals.calories += item.calories || 0
-      totals.protein += item.protein || 0
-      totals.carbs += item.carbs || 0
-      totals.fats += item.fat || 0
-      totals.sugar += item.sugar || 0
-      totals.sodium += item.sodium || 0
-      totals.fiber += item.fiber || 0
+      const nutrition = item.nutrition || {}
+      const calories = Number(item.calories ?? nutrition.calories ?? 0) || 0
+      const protein = Number(item.protein ?? nutrition.protein ?? 0) || 0
+      const carbs = Number(item.carbs ?? nutrition.carbs ?? 0) || 0
+      const fat = Number(item.fat ?? nutrition.fat ?? 0) || 0
+      const sugar = Number(item.sugar ?? nutrition.sugar ?? 0) || 0
+      const sodium = Number(item.sodium ?? nutrition.sodium ?? 0) || 0
+      const fiber = Number(item.fiber ?? nutrition.fiber ?? 0) || 0
+
+      totals.calories += calories
+      totals.protein += protein
+      totals.carbs += carbs
+      totals.fats += fat
+      totals.sugar += sugar
+      totals.sodium += sodium
+      totals.fiber += fiber
     })
   })
 

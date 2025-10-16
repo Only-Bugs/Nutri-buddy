@@ -14,6 +14,8 @@ import AuthPage from '@/pages/AuthPage.vue'
 import DashboardLayout from '@/layouts/DashboardLayout.vue'
 import DashboardPage from '@/pages/DashboardPage.vue'
 import MealsPage from '@/pages/MealsPage.vue'
+import RecipesPage from '@/pages/RecipesPage.vue'
+import RecipeDetailPage from '@/pages/RecipeDetailPage.vue'
 
 /**
  * @constant {import('vue-router').RouteRecordRaw[]} routes
@@ -38,10 +40,13 @@ const routes = [
     children: [
       { path: 'dashboard', name: 'Dashboard', component: DashboardPage },
       { path: 'meal-plans', name: 'MealPlans', component: MealsPage },
+      { path: 'recipes', name: 'Recipes', component: RecipesPage },
+      { path: 'recipes/:id', name: 'RecipeDetail', component: RecipeDetailPage },
     ],
   },
   { path: '/dashboard', redirect: '/app/dashboard' },
   { path: '/meal-plans', redirect: '/app/meal-plans' },
+  { path: '/recipes', redirect: '/app/recipes' },
 ]
 
 /**

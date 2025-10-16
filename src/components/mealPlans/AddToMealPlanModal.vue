@@ -4,7 +4,7 @@ import { useMealPlanStore } from '@/store/mealplan/mealPlanStore'
 
 const props = defineProps({
   show: { type: Boolean, default: false },
-  food: { type: Object, default: null },
+  item: { type: Object, default: null },
   totals: {
     type: Object,
     default: () => ({
@@ -74,6 +74,11 @@ watch(
           mealPlanStore.selectPlan(selectedPlanId.value)
         }
       }
+      if (props.item?.primaryMealType) {
+        selectedMealType.value = props.item.primaryMealType
+      } else if (!selectedMealType.value) {
+        selectedMealType.value = ''
+      }
     } else {
       resetState()
     }
@@ -122,23 +127,47 @@ async function createPlan() {
   }
 }
 
+const itemName = computed(() => {
+  if (!props.item) return 'this item'
+  return props.item.food || props.item.name || props.item.recipe_name || 'this item'
+})
+
 function buildMealPayload() {
-  const item = props.food || {}
+  const item = props.item || {}
   const totals = props.totals || {}
 
-  const name = item.food || item.name || 'Meal item'
-  const quantity = item.quantity ?? item.servingSize ?? ''
-  const measure = item.measure ?? item.servingUnit ?? ''
+  const type = item.type || (item.recipe_name || item.ingredients ? 'recipe' : 'food')
+  const name = item.food || item.name || item.recipe_name || 'Meal item'
+  const quantity =
+    item.quantity ??
+    item.servingSize ??
+    (type === 'recipe' && item.servings ? `${item.servings} serving(s)` : '')
+  const measure = item.measure ?? item.servingUnit ?? (type === 'recipe' ? '' : '')
+
+  const macros = {
+    calories:
+      Number(totals.calories ?? item.calories ?? item.nutrition?.calories ?? 0) || 0,
+    protein:
+      Number(totals.protein ?? item.protein ?? item.nutrition?.protein ?? 0) || 0,
+    carbs: Number(totals.carbs ?? item.carbs ?? item.nutrition?.carbs ?? 0) || 0,
+    fat: Number(totals.fats ?? totals.fat ?? item.fat ?? item.nutrition?.fat ?? 0) || 0,
+    fiber: Number(totals.fiber ?? item.fiber ?? item.nutrition?.fiber ?? 0) || 0,
+    sugar: Number(totals.sugar ?? item.sugar ?? item.nutrition?.sugar ?? 0) || 0,
+    sodium: Number(totals.sodium ?? item.sodium ?? item.nutrition?.sodium ?? 0) || 0,
+  }
 
   return {
     name,
-    calories: Number(totals.calories ?? item.calories ?? 0),
-    protein: Number(totals.protein ?? item.protein ?? 0),
-    carbs: Number(totals.carbs ?? item.carbs ?? 0),
-    fat: Number(totals.fats ?? item.fat ?? 0),
-    fiber: Number(totals.fiber ?? item.fiber ?? 0),
-    sugar: Number(totals.sugar ?? item.sugar ?? 0),
-    sodium: Number(totals.sodium ?? item.sodium ?? 0),
+    type,
+    recipeId: type === 'recipe' ? item.recipeId || item.id || null : null,
+    calories: macros.calories,
+    protein: macros.protein,
+    carbs: macros.carbs,
+    fat: macros.fat,
+    fiber: macros.fiber,
+    sugar: macros.sugar,
+    sodium: macros.sodium,
+    nutrition: { ...macros },
     quantity: quantity ? `${quantity} ${measure}`.trim() : 'Serving',
     measure: measure || 'serving',
     weight: Number(item.weight ?? 0),
@@ -155,8 +184,8 @@ async function linkToPlan() {
     linkError.value = 'Select a meal type before saving.'
     return
   }
-  if (!props.food) {
-    linkError.value = 'Search for a food to add.'
+  if (!props.item) {
+    linkError.value = 'Select something to add.'
     return
   }
 
@@ -192,7 +221,7 @@ async function linkToPlan() {
           <div>
             <h2 class="text-2xl font-semibold text-gray-900">Add to Meal Plan</h2>
             <p class="text-base text-gray-500">
-              Link <span class="font-medium text-gray-700">{{ food?.food || 'this item' }}</span> to
+              Link <span class="font-medium text-gray-700">{{ itemName }}</span> to
               your meal planning workspace.
             </p>
           </div>
@@ -348,7 +377,7 @@ async function linkToPlan() {
             <span
               class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-sm font-medium"
             >
-              Item: {{ food?.food || food?.name || 'Unknown item' }}
+              Item: {{ item?.food || item?.name || item?.recipe_name || 'Unknown item' }}
             </span>
           </div>
 
