@@ -141,7 +141,6 @@ onBeforeUnmount(() => {
       <NutritionDistribution class="lg:col-span-1" :totals="dashboard.totalNutrition" />
       <FavoriteRecipesSection
         class="lg:col-span-1"
-        :pageSize="3"
         @add-to-plan="handleFavoriteRecipeAdd"
         @view-detail="(recipe) => router.push({ name: 'RecipeDetail', params: { id: recipe.id } })"
       />
