@@ -21,6 +21,11 @@ const EMPTY_TOTALS = Object.freeze({
   sodium: 0,
 })
 
+function toFiniteNumber(value) {
+  const numeric = Number(value)
+  return Number.isFinite(numeric) ? numeric : 0
+}
+
 function round(value) {
   const number = Number(value) || 0
   return Math.round(number * 10) / 10
@@ -85,6 +90,56 @@ function normalizeNutritionData(raw, query) {
   }
 }
 
+function aggregateTotals(foods = []) {
+  return foods.reduce(
+    (acc, food) => {
+      acc.calories += toFiniteNumber(food.calories)
+      acc.protein += toFiniteNumber(food.protein)
+      acc.carbs += toFiniteNumber(food.carbs)
+      acc.fats += toFiniteNumber(food.fat ?? food.fats)
+      acc.fiber += toFiniteNumber(food.fiber)
+      acc.sugar += toFiniteNumber(food.sugar)
+      acc.sodium += toFiniteNumber(food.sodium)
+      return acc
+    },
+    {
+      calories: 0,
+      protein: 0,
+      carbs: 0,
+      fats: 0,
+      fiber: 0,
+      sugar: 0,
+      sodium: 0,
+    },
+  )
+}
+
+function buildHistoryEntry(result, query) {
+  const macros = result.nutrients || {}
+  const calories = round(macros.ENERC_KCAL?.quantity ?? result.calories)
+  const protein = round(macros.PROCNT?.quantity)
+  const carbs = round(macros.CHOCDF?.quantity)
+  const fat = round(macros.FAT?.quantity)
+  const fiber = round(macros.FIBTG?.quantity)
+  const sugar = round(macros.SUGAR?.quantity)
+  const sodium = round(macros.NA?.quantity)
+
+  return {
+    id: result.id,
+    name: result.food || query,
+    quantity: result.quantity ?? '—',
+    measure: result.measure ?? '—',
+    weight: result.weight ?? 0,
+    calories,
+    protein,
+    carbs,
+    fat,
+    fiber,
+    sugar,
+    sodium,
+    cautions: result.cautions && result.cautions.length ? result.cautions : [],
+  }
+}
 
 export const useDashboardStore = defineStore('dashboard', {
   state: () => ({
@@ -93,6 +148,8 @@ export const useDashboardStore = defineStore('dashboard', {
     loading: false,
     error: null,
     totalNutrition: { ...EMPTY_TOTALS },
+    latestTotals: { ...EMPTY_TOTALS },
+    sessionCache: {},
   }),
 
   actions: {
@@ -105,6 +162,8 @@ export const useDashboardStore = defineStore('dashboard', {
       if (DEBUG_SEARCH) {
         console.info('[DashboardStore] Searching for:', query)
       }
+
+      const cacheKey = query.toLowerCase()
 
       try {
         const rawResult = await getNutritionData(query)
@@ -125,43 +184,36 @@ export const useDashboardStore = defineStore('dashboard', {
 
         // Save the latest normalized response
         this.latestResult = result
-
-        // Extract macro info safely
-        const macros = result.nutrients || {}
-        const calories = round(macros.ENERC_KCAL?.quantity ?? result.calories)
-        const protein = round(macros.PROCNT?.quantity)
-        const carbs = round(macros.CHOCDF?.quantity)
-        const fat = round(macros.FAT?.quantity)
-        const fiber = round(macros.FIBTG?.quantity)
-        const sugar = round(macros.SUGAR?.quantity)
-        const sodium = round(macros.NA?.quantity)
+        this.latestTotals = extractTotalsFromResult(result)
+        this.sessionCache = {
+          ...this.sessionCache,
+          [result.id]: result,
+          [cacheKey]: result,
+        }
 
         // Build entry for history table (with safe defaults)
-        const entry = {
-          id: result.id,
-          name: result.food || query,
-          quantity: result.quantity ?? '—',
-          measure: result.measure ?? '—',
-          weight: result.weight ?? 0,
-          calories,
-          protein,
-          carbs,
-          fat,
-          fiber,
-          sugar,
-          sodium,
-          cautions: result.cautions && result.cautions.length ? result.cautions : ['None'],
-        }
+        const entry = buildHistoryEntry(result, query)
 
         const existingIndex = this.foods.findIndex((f) => f.name === entry.name)
         if (existingIndex >= 0) {
-          this.foods[existingIndex] = entry
+          this.foods.splice(existingIndex, 1)
         } else {
-          this.foods.unshift(entry)
+          if (this.foods.length >= 25) {
+            this.foods.pop()
+          }
         }
+        this.foods.unshift(entry)
 
-        const latestTotals = extractTotalsFromResult(result)
-        this.totalNutrition = { ...latestTotals }
+        const totals = aggregateTotals(this.foods)
+        this.totalNutrition = {
+          calories: round(totals.calories),
+          protein: round(totals.protein),
+          carbs: round(totals.carbs),
+          fats: round(totals.fats),
+          fiber: round(totals.fiber),
+          sugar: round(totals.sugar),
+          sodium: round(totals.sodium),
+        }
       } catch (err) {
         console.error('[DashboardStore] Search failed:', err)
         if (DEBUG_SEARCH) {
@@ -171,9 +223,36 @@ export const useDashboardStore = defineStore('dashboard', {
             data: err?.response?.data,
           })
         }
-        this.error = err?.message || 'Search failed'
-        this.latestResult = null
-        this.totalNutrition = { ...EMPTY_TOTALS }
+        const cached = this.sessionCache[cacheKey]
+        if (cached) {
+          this.error = err?.message
+            ? `${err.message}. Showing cached data.`
+            : 'Showing cached data.'
+          this.latestResult = cached
+          this.latestTotals = extractTotalsFromResult(cached)
+          const entry = buildHistoryEntry(cached, query)
+          const existingIndex = this.foods.findIndex((f) => f.name === entry.name)
+          if (existingIndex >= 0) {
+            this.foods.splice(existingIndex, 1)
+          } else if (this.foods.length >= 25) {
+            this.foods.pop()
+          }
+          this.foods.unshift(entry)
+          const totals = aggregateTotals(this.foods)
+          this.totalNutrition = {
+            calories: round(totals.calories),
+            protein: round(totals.protein),
+            carbs: round(totals.carbs),
+            fats: round(totals.fats),
+            fiber: round(totals.fiber),
+            sugar: round(totals.sugar),
+            sodium: round(totals.sodium),
+          }
+        } else {
+          this.error = err?.message || 'Search failed'
+          this.latestResult = null
+          this.latestTotals = { ...EMPTY_TOTALS }
+        }
       } finally {
         this.loading = false
       }

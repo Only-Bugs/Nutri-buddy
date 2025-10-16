@@ -5,15 +5,13 @@ pages/DashboardPage * */
 <script setup>
 import { useAuthStore } from '@/store/auth'
 import DashboardHeader from '@/components/dashboard/DashboardHeader.vue'
-import QuickStats from '@/components/dashboard/QuickStats.vue'
-import TopRatedChart from '@/components/dashboard/TopRatedChart.vue'
 import NutritionHistoryTable from '@/components/dashboard/NutritionHistoryTable.vue'
 import CaloriesDistribution from '@/components/dashboard/CaloriesDistribution.vue'
 import NutritionDistribution from '@/components/dashboard/NutritionDistribution.vue'
 import SearchOverlay from '@/components/dashboard/SearchOverlay.vue'
 import FavoriteRecipesSection from '@/components/dashboard/FavoriteRecipesSection.vue'
 import AddToMealPlanModal from '@/components/mealPlans/AddToMealPlanModal.vue'
-import { computed, ref, watch, onBeforeUnmount } from 'vue'
+import { ref, watch, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { useDashboardStore } from '@/store/dashboard'
 import { useMealPlanStore } from '@/store/mealplan/mealPlanStore'
@@ -31,14 +29,6 @@ const searchOverlayOpen = ref(false)
 const addModalOpen = ref(false)
 const selectedItem = ref(null)
 const selectedTotals = ref(null)
-
-const totalSearches = computed(() => dashboard.foods.length)
-const averageCalories = computed(() => {
-  if (!dashboard.foods.length) return 0
-  const total = dashboard.foods.reduce((sum, food) => sum + Number(food.calories || 0), 0)
-  return total / dashboard.foods.length
-})
-const recentFood = computed(() => dashboard.foods[0]?.name || '—')
 
 function handleSearch() {
   dashboard.searchFood(query.value)
@@ -74,7 +64,7 @@ function handleOverlayAddToPlan() {
   if (!dashboard.latestResult) return
   openAddModal({
     item: { ...dashboard.latestResult, type: 'food' },
-    totals: dashboard.totalNutrition,
+    totals: dashboard.latestTotals,
   })
   closeSearchOverlay()
 }
@@ -149,23 +139,16 @@ onBeforeUnmount(() => {
     >
       <CaloriesDistribution class="lg:col-span-1" :totals="dashboard.totalNutrition" />
       <NutritionDistribution class="lg:col-span-1" :totals="dashboard.totalNutrition" />
-      <QuickStats
-        :totalSearches="totalSearches"
-        :averageCalories="averageCalories"
-        :recentFood="recentFood"
+      <FavoriteRecipesSection
+        class="lg:col-span-1"
+        :pageSize="3"
+        @add-to-plan="handleFavoriteRecipeAdd"
+        @view-detail="(recipe) => router.push({ name: 'RecipeDetail', params: { id: recipe.id } })"
       />
 
       <div class="lg:col-span-2">
         <NutritionHistoryTable :foods="dashboard.foods" @add-to-plan="handleHistoryAddToPlan" />
       </div>
-
-      <FavoriteRecipesSection
-        class="lg:col-span-3"
-        @add-to-plan="handleFavoriteRecipeAdd"
-        @view-detail="(recipe) => router.push({ name: 'RecipeDetail', params: { id: recipe.id } })"
-      />
-
-      <TopRatedChart />
     </div>
 
     <SearchOverlay
@@ -183,7 +166,7 @@ onBeforeUnmount(() => {
     <AddToMealPlanModal
       :show="addModalOpen"
       :item="selectedItem"
-      :totals="selectedTotals || dashboard.totalNutrition"
+      :totals="selectedTotals || dashboard.latestTotals"
       @close="closeAddModal"
       @added="handleItemLinked"
     />

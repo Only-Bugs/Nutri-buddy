@@ -179,10 +179,13 @@ watch(totalPages, (value) => {
               </td>
               <td class="px-3 py-2 text-center">
                 <button
-                  class="inline-flex items-center justify-center rounded-lg border border-green-600 px-3 py-1 text-sm font-semibold text-green-600 hover:bg-green-600 hover:text-white transition"
+                  class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-green-600 text-green-600 transition hover:bg-green-600 hover:text-white"
+                  type="button"
+                  aria-label="Add to meal plan"
                   @click="emit('add-to-plan', food)"
                 >
-                  Add to Meal Plan
+                  <FontAwesomeIcon icon="plus" />
+                  <span class="sr-only">Add to meal plan</span>
                 </button>
               </td>
             </tr>

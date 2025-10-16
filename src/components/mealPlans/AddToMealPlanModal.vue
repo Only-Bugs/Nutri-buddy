@@ -156,6 +156,28 @@ function buildMealPayload() {
     sodium: Number(totals.sodium ?? item.sodium ?? item.nutrition?.sodium ?? 0) || 0,
   }
 
+  const instructions =
+    type === 'recipe'
+      ? Array.isArray(item.instructions)
+        ? item.instructions
+        : item.instructions
+        ? String(item.instructions)
+            .split(/\r?\n+/)
+            .map((step) => step.trim())
+            .filter(Boolean)
+        : []
+      : []
+
+  const ingredients =
+    type === 'recipe' && Array.isArray(item.ingredients)
+      ? item.ingredients.map((ingredient) => ({
+          name: ingredient.name || ingredient.ingredient_name || '',
+          quantity: ingredient.quantity ?? ingredient.amount ?? '',
+          unit: ingredient.unit ?? ingredient.measure ?? '',
+          misc: ingredient.misc ?? '',
+        }))
+      : []
+
   return {
     name,
     type,
@@ -171,6 +193,11 @@ function buildMealPayload() {
     quantity: quantity ? `${quantity} ${measure}`.trim() : 'Serving',
     measure: measure || 'serving',
     weight: Number(item.weight ?? 0),
+    servings: item.servings ?? item.nutrition?.servings ?? '',
+    description: item.description || '',
+    image: item.image || '',
+    instructions,
+    ingredients,
   }
 }
 

@@ -20,6 +20,7 @@ export function createMealPlanDraft(overrides = {}) {
     updatedAt: overrides.updatedAt ?? null,
     notes: overrides.notes ?? '',
     meals: overrides.meals ?? [],
+    recipes: overrides.recipes ?? [],
     nutritionTotals: overrides.nutritionTotals ?? {
       calories: 0,
       protein: 0,

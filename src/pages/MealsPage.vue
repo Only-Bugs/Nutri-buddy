@@ -4,6 +4,7 @@ import { useAuthStore } from '@/store/auth'
 import { useMealPlanStore } from '@/store/mealplan/mealPlanStore'
 import CaloriesDistribution from '@/components/dashboard/CaloriesDistribution.vue'
 import NutritionDistribution from '@/components/dashboard/NutritionDistribution.vue'
+import RecipesAccordion from '@/components/mealPlans/RecipesAccordion.vue'
 
 const auth = useAuthStore()
 const mealPlans = useMealPlanStore()
@@ -40,37 +41,7 @@ const activePlans = computed(() => mealPlans.plans.filter((plan) => plan.status 
 const draftPlans = computed(() => mealPlans.plans.filter((plan) => plan.status === 'draft'))
 const archivedPlans = computed(() => mealPlans.plans.filter((plan) => plan.status === 'archived'))
 
-const recipesInPlan = computed(() => {
-  if (!activePlan.value) return []
-  const entries = []
-  ;(activePlan.value.meals || []).forEach((meal) => {
-    ;(meal.items || []).forEach((item) => {
-      const type = (item.type || '').toLowerCase()
-      if (type === 'recipe') {
-        const nutrition = item.nutrition || {}
-        entries.push({
-          id: item.recipeId || item.id,
-          planItemId: item.id,
-          mealLabel: meal.label,
-          name: item.name,
-          servings: item.quantity,
-          nutrition: {
-            calories: Number(item.calories ?? nutrition.calories ?? 0),
-            protein: Number(item.protein ?? nutrition.protein ?? 0),
-            carbs: Number(item.carbs ?? nutrition.carbs ?? 0),
-            fat: Number(item.fat ?? nutrition.fat ?? 0),
-            fiber: Number(item.fiber ?? nutrition.fiber ?? 0),
-            sugar: Number(item.sugar ?? nutrition.sugar ?? 0),
-            sodium: Number(item.sodium ?? nutrition.sodium ?? 0),
-          },
-        })
-      }
-    })
-  })
-  return entries
-})
-
-const hasRecipesInPlan = computed(() => recipesInPlan.value.length > 0)
+const activePlanRecipes = computed(() => activePlan.value?.recipes || [])
 
 function formatMacro(value, unit = 'g') {
   const number = Number(value ?? 0)
@@ -315,67 +286,7 @@ function getVisibleMealItems(meal) {
               </p>
             </div>
 
-            <details
-              v-if="hasRecipesInPlan"
-              class="rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-sm"
-              open
-            >
-              <summary class="flex cursor-pointer items-center justify-between gap-3 text-base font-semibold text-gray-800">
-                <span>Recipes in this plan</span>
-                <span class="text-sm text-gray-500">{{ recipesInPlan.length }} saved</span>
-              </summary>
-
-              <div class="mt-4 space-y-3">
-                <article
-                  v-for="entry in recipesInPlan"
-                  :key="entry.planItemId"
-                  class="rounded-lg border border-gray-200 bg-gray-50 px-4 py-3"
-                >
-                  <header class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-                    <div>
-                      <p class="text-sm font-semibold text-gray-900">{{ entry.name }}</p>
-                      <p class="text-xs text-gray-500">
-                        <FontAwesomeIcon icon="utensils" class="mr-1 text-green-600" /> Meal: {{ entry.mealLabel }}
-                        <span v-if="entry.servings" class="ml-2">• {{ entry.servings }}</span>
-                      </p>
-                    </div>
-                    <RouterLink
-                      class="inline-flex items-center gap-2 text-xs font-semibold text-green-700 hover:underline"
-                      :to="{ name: 'RecipeDetail', params: { id: entry.id } }"
-                    >
-                      View recipe <FontAwesomeIcon icon="arrow-right" />
-                    </RouterLink>
-                  </header>
-
-                  <div class="mt-3 grid grid-cols-2 gap-2 text-xs text-gray-700 sm:grid-cols-3">
-                    <div class="rounded-lg bg-white px-3 py-2">
-                      <p class="text-[0.65rem] uppercase tracking-wide text-gray-500">Calories</p>
-                      <p class="font-semibold">{{ formatMacro(entry.nutrition.calories, 'kcal') }}</p>
-                    </div>
-                    <div class="rounded-lg bg-white px-3 py-2">
-                      <p class="text-[0.65rem] uppercase tracking-wide text-gray-500">Protein</p>
-                      <p class="font-semibold">{{ formatMacro(entry.nutrition.protein) }}</p>
-                    </div>
-                    <div class="rounded-lg bg-white px-3 py-2">
-                      <p class="text-[0.65rem] uppercase tracking-wide text-gray-500">Carbs</p>
-                      <p class="font-semibold">{{ formatMacro(entry.nutrition.carbs) }}</p>
-                    </div>
-                    <div class="rounded-lg bg-white px-3 py-2">
-                      <p class="text-[0.65rem] uppercase tracking-wide text-gray-500">Fat</p>
-                      <p class="font-semibold">{{ formatMacro(entry.nutrition.fat) }}</p>
-                    </div>
-                    <div class="rounded-lg bg-white px-3 py-2">
-                      <p class="text-[0.65rem] uppercase tracking-wide text-gray-500">Sugar</p>
-                      <p class="font-semibold">{{ formatMacro(entry.nutrition.sugar) }}</p>
-                    </div>
-                    <div class="rounded-lg bg-white px-3 py-2">
-                      <p class="text-[0.65rem] uppercase tracking-wide text-gray-500">Sodium</p>
-                      <p class="font-semibold">{{ formatMacro(entry.nutrition.sodium, 'mg') }}</p>
-                    </div>
-                  </div>
-                </article>
-              </div>
-            </details>
+            <RecipesAccordion :recipes="activePlanRecipes" />
           </div>
 
           <p v-else class="text-base text-gray-500">

@@ -11,7 +11,19 @@ import { createMealPlanDraft } from '@/types/mealplan/mealPlanTypes.js'
 function cloneMeals(meals = []) {
   return meals.map((meal) => ({
     ...meal,
-    items: Array.isArray(meal.items) ? meal.items.map((item) => ({ ...item })) : [],
+    items: Array.isArray(meal.items)
+      ? meal.items.map((item) => ({
+          ...item,
+          instructions: Array.isArray(item.instructions)
+            ? [...item.instructions]
+            : item.instructions
+            ? [item.instructions].flat().map((step) => String(step || '').trim()).filter(Boolean)
+            : [],
+          ingredients: Array.isArray(item.ingredients)
+            ? item.ingredients.map((ingredient) => ({ ...ingredient }))
+            : [],
+        }))
+      : [],
   }))
 }
 
@@ -56,6 +68,61 @@ function aggregateNutritionTotals(meals = []) {
     sodium: Math.round(totals.sodium),
     fiber: Math.round(totals.fiber),
   }
+}
+
+function normalizeInstructions(rawInstructions) {
+  if (!rawInstructions) return []
+  if (Array.isArray(rawInstructions)) {
+    return rawInstructions.map((step) => String(step || '').trim()).filter(Boolean)
+  }
+  return String(rawInstructions)
+    .split(/\r?\n+/)
+    .map((step) => step.trim())
+    .filter(Boolean)
+}
+
+function normalizeIngredients(rawIngredients) {
+  if (!rawIngredients) return []
+  if (!Array.isArray(rawIngredients)) return []
+  return rawIngredients.map((ingredient) => ({
+    name: ingredient.name || ingredient.ingredient_name || '',
+    quantity: ingredient.quantity ?? ingredient.amount ?? '',
+    unit: ingredient.unit ?? ingredient.measure ?? '',
+    misc: ingredient.misc ?? '',
+  }))
+}
+
+function derivePlanRecipes(meals = []) {
+  const recipes = []
+  meals.forEach((meal) => {
+    const items = Array.isArray(meal.items) ? meal.items : []
+    items.forEach((item) => {
+      if ((item.type || '').toLowerCase() !== 'recipe') return
+      const nutrition = item.nutrition || {}
+      recipes.push({
+        id: item.recipeId || item.id,
+        planItemId: item.id,
+        mealId: meal.id,
+        mealLabel: meal.label,
+        name: item.name || 'Recipe',
+        servings: item.servings || item.quantity || '',
+        description: item.description || '',
+        image: item.image || '',
+        instructions: normalizeInstructions(item.instructions),
+        ingredients: normalizeIngredients(item.ingredients),
+        nutrition: {
+          calories: Number(item.calories ?? nutrition.calories ?? 0) || 0,
+          protein: Number(item.protein ?? nutrition.protein ?? 0) || 0,
+          carbs: Number(item.carbs ?? nutrition.carbs ?? 0) || 0,
+          fat: Number(item.fat ?? nutrition.fat ?? 0) || 0,
+          fiber: Number(item.fiber ?? nutrition.fiber ?? 0) || 0,
+          sugar: Number(item.sugar ?? nutrition.sugar ?? 0) || 0,
+          sodium: Number(item.sodium ?? nutrition.sodium ?? 0) || 0,
+        },
+      })
+    })
+  })
+  return recipes
 }
 
 function persistPlans(userId, plans) {
@@ -105,11 +172,17 @@ export const useMealPlanStore = defineStore('mealPlan', {
         return
       }
       const persisted = loadPersistedPlans(this.userId)
-      this.plans = persisted.map((plan) => ({
-        ...plan,
-        meals: cloneMeals(plan.meals),
-        nutritionTotals: aggregateNutritionTotals(plan.meals),
-      }))
+      this.plans = persisted.map((plan) => {
+        const meals = cloneMeals(plan.meals)
+        return {
+          ...plan,
+          meals,
+          nutritionTotals: aggregateNutritionTotals(meals),
+          recipes: Array.isArray(plan.recipes) && plan.recipes.length
+            ? plan.recipes
+            : derivePlanRecipes(meals),
+        }
+      })
       if (this.plans.length) {
         this.activePlanId = this.plans[0].id
       }
@@ -140,6 +213,7 @@ export const useMealPlanStore = defineStore('mealPlan', {
         updatedAt: new Date().toISOString(),
       }
       plan.nutritionTotals = aggregateNutritionTotals(plan.meals)
+      plan.recipes = derivePlanRecipes(plan.meals)
 
       const index = this.plans.findIndex((existing) => existing.id === plan.id)
       if (index >= 0) {
@@ -212,6 +286,7 @@ export const useMealPlanStore = defineStore('mealPlan', {
       plan.meals.splice(mealIndex, 1, meal)
 
       plan.nutritionTotals = aggregateNutritionTotals(plan.meals)
+      plan.recipes = derivePlanRecipes(plan.meals)
       this.plans.splice(planIndex, 1, plan)
       persistPlans(this.userId, this.plans)
     },
@@ -234,6 +309,7 @@ export const useMealPlanStore = defineStore('mealPlan', {
       }
 
       plan.nutritionTotals = aggregateNutritionTotals(plan.meals)
+      plan.recipes = derivePlanRecipes(plan.meals)
       this.plans.splice(planIndex, 1, plan)
       persistPlans(this.userId, this.plans)
     },
