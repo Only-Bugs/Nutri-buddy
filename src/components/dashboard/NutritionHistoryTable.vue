@@ -10,6 +10,7 @@ const emit = defineEmits(['add-to-plan'])
 
 const headers = [
   { key: 'name', label: 'Name', sortable: true, align: 'left' },
+  { key: 'timestamp', label: 'Recorded', sortable: true, align: 'left' },
   { key: 'quantity', label: 'Qty', sortable: false, align: 'left' },
   { key: 'measure', label: 'Measure', sortable: false, align: 'left' },
   { key: 'weight', label: 'Weight (g)', sortable: true, align: 'right' },
@@ -37,6 +38,8 @@ function getValue(food, key) {
   switch (key) {
     case 'name':
       return food.name || ''
+    case 'timestamp':
+      return food.createdAt || ''
     case 'weight':
       return toNumber(food.weight)
     case 'calories':
@@ -50,6 +53,17 @@ function getValue(food, key) {
     default:
       return food[key] ?? ''
   }
+}
+
+function formatTimestamp(value) {
+  if (!value) return '—'
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return '—'
+  const day = String(date.getDate()).padStart(2, '0')
+  const month = date.toLocaleString('en-GB', { month: 'short' })
+  const hours = String(date.getHours()).padStart(2, '0')
+  const minutes = String(date.getMinutes()).padStart(2, '0')
+  return `${day} ${month}, ${hours}:${minutes}`
 }
 
 const sortedFoods = computed(() => {
@@ -127,7 +141,7 @@ watch(totalPages, (value) => {
 <template>
   <DashboardCard title="Recent Nutrition Searches">
     <template v-if="foods.length">
-      <div class="overflow-x-auto">
+      <div class="overflow-x-auto overflow-y-auto max-h-[28rem]">
         <table class="w-full border-collapse text-base text-gray-700">
           <thead>
             <tr class="bg-gray-100 text-gray-700">
@@ -161,6 +175,7 @@ watch(totalPages, (value) => {
               class="odd:bg-white even:bg-gray-50 hover:bg-green-50 transition-colors"
             >
               <td class="px-3 py-2 font-medium">{{ food.name }}</td>
+              <td class="px-3 py-2 text-gray-500">{{ formatTimestamp(food.createdAt) }}</td>
               <td class="px-3 py-2">{{ food.quantity }}</td>
               <td class="px-3 py-2">{{ food.measure }}</td>
               <td class="px-3 py-2 text-right">{{ food.weight }}</td>

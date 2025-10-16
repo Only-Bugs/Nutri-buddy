@@ -10,6 +10,7 @@ const recipeStore = useRecipeStore()
 
 const addModalOpen = ref(false)
 const selectedRecipe = ref(null)
+const checkedIngredients = ref([])
 
 const recipeId = computed(() => route.params.id?.toString() || '')
 const recipe = computed(() => recipeStore.recipeMap[recipeId.value])
@@ -76,14 +77,79 @@ async function ensureRecipeLoaded() {
   await recipeStore.initialize()
 }
 
+const checklistStorageKey = computed(() =>
+  recipeId.value ? `recipeChecklist:${recipeId.value}` : '',
+)
+
+function loadChecklist() {
+  if (!checklistStorageKey.value) return
+  if (typeof localStorage === 'undefined') return
+  try {
+    const stored = localStorage.getItem(checklistStorageKey.value)
+    if (!stored) {
+      checkedIngredients.value = []
+      return
+    }
+    const parsed = JSON.parse(stored)
+    checkedIngredients.value = Array.isArray(parsed) ? parsed : []
+  } catch (error) {
+    console.warn('[RecipeDetail] Failed to load ingredient checklist', error)
+    checkedIngredients.value = []
+  }
+}
+
+function persistChecklist() {
+  if (!checklistStorageKey.value) return
+  if (typeof localStorage === 'undefined') return
+  try {
+    localStorage.setItem(checklistStorageKey.value, JSON.stringify(checkedIngredients.value))
+  } catch (error) {
+    console.warn('[RecipeDetail] Failed to persist ingredient checklist', error)
+  }
+}
+
+function ingredientKey(ingredient, index) {
+  return `${ingredient.name || 'ingredient'}::${index}`
+}
+
+const checkedSet = computed(() => new Set(checkedIngredients.value))
+
+function toggleIngredient(key) {
+  const set = new Set(checkedIngredients.value)
+  if (set.has(key)) {
+    set.delete(key)
+  } else {
+    set.add(key)
+  }
+  checkedIngredients.value = Array.from(set)
+  persistChecklist()
+}
+
+function isIngredientChecked(key) {
+  return checkedSet.value.has(key)
+}
+
 onMounted(async () => {
   await ensureRecipeLoaded()
+  loadChecklist()
 })
 
 watch(
   () => route.params.id,
   async () => {
     await ensureRecipeLoaded()
+    loadChecklist()
+  },
+)
+
+watch(
+  recipe,
+  (value) => {
+    if (value) {
+      loadChecklist()
+    } else {
+      checkedIngredients.value = []
+    }
   },
 )
 </script>
@@ -165,29 +231,45 @@ watch(
       <div class="grid gap-6 lg:grid-cols-[minmax(0,22rem)_1fr]">
         <section class="space-y-4 rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
           <h2 class="text-lg font-semibold text-gray-900">Ingredients</h2>
-          <p class="text-sm text-gray-500">Open an ingredient to view additional notes.</p>
+          <p class="text-sm text-gray-500">
+            Tap the circles to check off ingredients you already have.
+          </p>
 
-          <div class="space-y-3">
-            <details
-              v-for="ingredient in recipe.ingredients"
-              :key="ingredient.name + ingredient.quantity + ingredient.misc"
-              class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3"
-              open
+          <ul class="space-y-2">
+            <li
+              v-for="(ingredient, index) in recipe.ingredients"
+              :key="ingredientKey(ingredient, index)"
+              class="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2"
             >
-              <summary class="flex items-center justify-between gap-4 text-sm font-semibold text-gray-800">
-                <span>{{ ingredient.name }}</span>
-                <span class="text-xs text-gray-500"
-                  >{{ ingredient.quantity || '—' }} {{ ingredient.unit || '' }}</span
-                >
-              </summary>
-              <p
-                v-if="ingredient.misc"
-                class="mt-2 text-xs text-gray-500"
+              <button
+                type="button"
+                class="flex w-full items-center justify-between gap-3 text-left"
+                @click="toggleIngredient(ingredientKey(ingredient, index))"
               >
+                <div class="flex items-center gap-3">
+                  <span
+                    class="flex h-6 w-6 items-center justify-center rounded-full border text-xs transition"
+                    :class="
+                      isIngredientChecked(ingredientKey(ingredient, index))
+                        ? 'border-green-500 bg-green-500 text-white'
+                        : 'border-gray-300 bg-white text-transparent'
+                    "
+                  >
+                    <FontAwesomeIcon icon="check" />
+                  </span>
+                  <div>
+                    <p class="text-sm font-semibold text-gray-800">{{ ingredient.name }}</p>
+                    <p class="text-xs text-gray-500">
+                      {{ ingredient.quantity || '—' }} {{ ingredient.unit || '' }}
+                    </p>
+                  </div>
+                </div>
+              </button>
+              <p v-if="ingredient.misc" class="mt-2 text-xs text-gray-500">
                 {{ ingredient.misc }}
               </p>
-            </details>
-          </div>
+            </li>
+          </ul>
 
           <div v-if="macros" class="grid gap-2 text-sm text-gray-700">
             <h3 class="text-sm font-semibold text-gray-800">Nutrition (per recipe)</h3>

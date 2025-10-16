@@ -8,6 +8,7 @@
 
 import { defineStore } from 'pinia'
 import { getNutritionData } from '@/services/nutritionService'
+import { useUserProfileStore } from '@/store/userProfile'
 
 const DEBUG_SEARCH = import.meta.env?.VITE_DEBUG_SEARCH === 'true'
 
@@ -114,7 +115,7 @@ function aggregateTotals(foods = []) {
   )
 }
 
-function buildHistoryEntry(result, query) {
+function buildHistoryEntry(result, query, previous = null) {
   const macros = result.nutrients || {}
   const calories = round(macros.ENERC_KCAL?.quantity ?? result.calories)
   const protein = round(macros.PROCNT?.quantity)
@@ -137,6 +138,7 @@ function buildHistoryEntry(result, query) {
     fiber,
     sugar,
     sodium,
+    createdAt: previous?.createdAt || new Date().toISOString(),
     cautions: result.cautions && result.cautions.length ? result.cautions : [],
   }
 }
@@ -192,7 +194,8 @@ export const useDashboardStore = defineStore('dashboard', {
         }
 
         // Build entry for history table (with safe defaults)
-        const entry = buildHistoryEntry(result, query)
+        const existing = this.foods.find((f) => f.id === result.id || f.name === result.food)
+        const entry = buildHistoryEntry(result, query, existing || null)
 
         const existingIndex = this.foods.findIndex((f) => f.name === entry.name)
         if (existingIndex >= 0) {
@@ -214,6 +217,7 @@ export const useDashboardStore = defineStore('dashboard', {
           sugar: round(totals.sugar),
           sodium: round(totals.sodium),
         }
+        useUserProfileStore().syncFromIntake(this.totalNutrition.calories)
       } catch (err) {
         console.error('[DashboardStore] Search failed:', err)
         if (DEBUG_SEARCH) {
@@ -230,7 +234,8 @@ export const useDashboardStore = defineStore('dashboard', {
             : 'Showing cached data.'
           this.latestResult = cached
           this.latestTotals = extractTotalsFromResult(cached)
-          const entry = buildHistoryEntry(cached, query)
+          const existing = this.foods.find((f) => f.id === cached.id || f.name === cached.food)
+          const entry = buildHistoryEntry(cached, query, existing || null)
           const existingIndex = this.foods.findIndex((f) => f.name === entry.name)
           if (existingIndex >= 0) {
             this.foods.splice(existingIndex, 1)
@@ -248,6 +253,7 @@ export const useDashboardStore = defineStore('dashboard', {
             sugar: round(totals.sugar),
             sodium: round(totals.sodium),
           }
+          useUserProfileStore().syncFromIntake(this.totalNutrition.calories)
         } else {
           this.error = err?.message || 'Search failed'
           this.latestResult = null

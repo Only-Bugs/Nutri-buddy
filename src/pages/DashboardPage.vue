@@ -1,26 +1,29 @@
 /** * @file DashboardPage.vue * @description Focused dashboard overview — shows user stats, charts,
-and recent activity. * Removes API search workflow (moved to MealsPage). * @module
-pages/DashboardPage * */
+and recent activity. * @module pages/DashboardPage * */
 
 <script setup>
-import { useAuthStore } from '@/store/auth'
+import { ref, watch, onBeforeUnmount, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import DashboardHeader from '@/components/dashboard/DashboardHeader.vue'
-import NutritionHistoryTable from '@/components/dashboard/NutritionHistoryTable.vue'
+import DailyCalorieSummary from '@/components/dashboard/DailyCalorieSummary.vue'
 import CaloriesDistribution from '@/components/dashboard/CaloriesDistribution.vue'
 import NutritionDistribution from '@/components/dashboard/NutritionDistribution.vue'
-import SearchOverlay from '@/components/dashboard/SearchOverlay.vue'
+import ActiveMealPlansSummary from '@/components/dashboard/ActiveMealPlansSummary.vue'
 import FavoriteRecipesSection from '@/components/dashboard/FavoriteRecipesSection.vue'
+import NutritionHistoryTable from '@/components/dashboard/NutritionHistoryTable.vue'
+import SearchOverlay from '@/components/dashboard/SearchOverlay.vue'
 import AddToMealPlanModal from '@/components/mealPlans/AddToMealPlanModal.vue'
-import { ref, watch, onBeforeUnmount } from 'vue'
-import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/store/auth'
 import { useDashboardStore } from '@/store/dashboard'
 import { useMealPlanStore } from '@/store/mealplan/mealPlanStore'
 import { useRecipeStore } from '@/store/recipes'
+import { useUserProfileStore } from '@/store/userProfile'
 
 const auth = useAuthStore()
 const dashboard = useDashboardStore()
 const mealPlans = useMealPlanStore()
 const recipeStore = useRecipeStore()
+const userProfile = useUserProfileStore()
 const router = useRouter()
 recipeStore.initialize()
 
@@ -29,6 +32,45 @@ const searchOverlayOpen = ref(false)
 const addModalOpen = ref(false)
 const selectedItem = ref(null)
 const selectedTotals = ref(null)
+
+const activePlans = computed(() =>
+  mealPlans.plans.filter((plan) => plan.status === 'active'),
+)
+
+function normaliseNumber(value) {
+  const numeric = Number(value)
+  return Number.isFinite(numeric) ? numeric : 0
+}
+
+function computeMealTotals(meal) {
+  const totals = { calories: 0, protein: 0, carbs: 0, fats: 0 }
+  ;(meal.items || []).forEach((item) => {
+    totals.calories += normaliseNumber(item.calories ?? item.nutrition?.calories)
+    totals.protein += normaliseNumber(item.protein ?? item.nutrition?.protein)
+    totals.carbs += normaliseNumber(item.carbs ?? item.nutrition?.carbs)
+    totals.fats += normaliseNumber(item.fat ?? item.fats ?? item.nutrition?.fat)
+  })
+  return totals
+}
+
+const activeMealBreakdown = computed(() => {
+  const plan = mealPlans.activePlan
+  if (!plan || !plan.meals?.length) return []
+  return plan.meals.map((meal) => ({
+    label: meal.label || 'Meal',
+    ...computeMealTotals(meal),
+  }))
+})
+
+const consumedCalories = computed(() => {
+  const planCalories = mealPlans.activePlan?.nutritionTotals?.calories
+  if (planCalories) return normaliseNumber(planCalories)
+  return normaliseNumber(dashboard.totalNutrition.calories)
+})
+
+const calorieLastUpdated = computed(() => dashboard.foods[0]?.createdAt || '')
+
+const latestNutrients = computed(() => dashboard.latestResult?.nutrients || {})
 
 function handleSearch() {
   dashboard.searchFood(query.value)
@@ -74,13 +116,13 @@ function handleHistoryAddToPlan(food) {
   openAddModal({
     item: { ...food, type: 'food' },
     totals: {
-      calories: Number(food.calories || 0),
-      protein: Number(food.protein || 0),
-      carbs: Number(food.carbs || 0),
-      fats: Number(food.fat || 0),
-      fiber: Number(food.fiber || 0),
-      sugar: Number(food.sugar || 0),
-      sodium: Number(food.sodium || 0),
+      calories: normaliseNumber(food.calories),
+      protein: normaliseNumber(food.protein),
+      carbs: normaliseNumber(food.carbs),
+      fats: normaliseNumber(food.fat),
+      fiber: normaliseNumber(food.fiber),
+      sugar: normaliseNumber(food.sugar),
+      sodium: normaliseNumber(food.sodium),
     },
   })
 }
@@ -90,15 +132,20 @@ function handleFavoriteRecipeAdd(recipe) {
   openAddModal({
     item: { ...recipe, type: 'recipe', recipeId: recipe.id },
     totals: {
-      calories: Number(recipe.nutrition?.calories || 0),
-      protein: Number(recipe.nutrition?.protein || 0),
-      carbs: Number(recipe.nutrition?.carbs || 0),
-      fats: Number(recipe.nutrition?.fat || 0),
-      fiber: 0,
-      sugar: Number(recipe.nutrition?.sugar || 0),
-      sodium: Number(recipe.nutrition?.sodium || 0),
+      calories: normaliseNumber(recipe.nutrition?.calories),
+      protein: normaliseNumber(recipe.nutrition?.protein),
+      carbs: normaliseNumber(recipe.nutrition?.carbs),
+      fats: normaliseNumber(recipe.nutrition?.fat),
+      fiber: normaliseNumber(recipe.nutrition?.fiber),
+      sugar: normaliseNumber(recipe.nutrition?.sugar),
+      sodium: normaliseNumber(recipe.nutrition?.sodium),
     },
   })
+}
+
+function handleFavoriteRecipeView(recipe) {
+  if (!recipe) return
+  router.push({ name: 'RecipeDetail', params: { id: recipe.id } })
 }
 
 watch(
@@ -128,27 +175,61 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <section class="dash-section w-full space-y-[var(--dash-gap)]">
-    <DashboardHeader :userEmail="auth.user?.email" @open-search="openSearchOverlay" />
-
+  <section class="relative space-y-0">
     <div
       :class="[
-        'grid gap-[var(--dash-gap)] lg:grid-cols-3 transition duration-200',
+        'grid gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]',
         searchOverlayOpen ? 'pointer-events-none blur-sm' : '',
       ]"
     >
-      <CaloriesDistribution class="lg:col-span-1" :totals="dashboard.totalNutrition" />
-      <NutritionDistribution class="lg:col-span-1" :totals="dashboard.totalNutrition" />
-      <FavoriteRecipesSection
-        class="lg:col-span-1"
-        @add-to-plan="handleFavoriteRecipeAdd"
-        @view-detail="(recipe) => router.push({ name: 'RecipeDetail', params: { id: recipe.id } })"
-      />
+      <div class="space-y-6">
+        <DashboardHeader />
 
-      <div class="lg:col-span-2">
-        <NutritionHistoryTable :foods="dashboard.foods" @add-to-plan="handleHistoryAddToPlan" />
+        <div class="grid gap-6 lg:grid-cols-3">
+          <DailyCalorieSummary
+            :limit="userProfile.dailyCalorieLimit"
+            :consumed="consumedCalories"
+            :lastUpdated="calorieLastUpdated"
+          />
+          <CaloriesDistribution
+            :totals="dashboard.totalNutrition"
+            :mealBreakdown="activeMealBreakdown"
+          />
+          <NutritionDistribution
+            :totals="dashboard.totalNutrition"
+            :nutrients="latestNutrients"
+          />
+        </div>
+
+        <div class="grid gap-6 lg:grid-cols-2">
+          <ActiveMealPlansSummary :plans="activePlans" />
+          <FavoriteRecipesSection
+            @add-to-plan="handleFavoriteRecipeAdd"
+            @view-detail="handleFavoriteRecipeView"
+          />
+        </div>
       </div>
+
+      <aside class="space-y-4">
+        <div class="sticky top-24">
+          <NutritionHistoryTable
+            class="max-h-[70vh] overflow-hidden"
+            :foods="dashboard.foods"
+            @add-to-plan="handleHistoryAddToPlan"
+          />
+        </div>
+      </aside>
     </div>
+
+    <button
+      class="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-green-600 text-white shadow-xl transition hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300"
+      :class="searchOverlayOpen ? 'pointer-events-none opacity-0 scale-95' : 'opacity-100 scale-100'"
+      type="button"
+      aria-label="Open nutrition search"
+      @click="openSearchOverlay"
+    >
+      <FontAwesomeIcon icon="magnifying-glass" class="text-xl" />
+    </button>
 
     <SearchOverlay
       :show="searchOverlayOpen"

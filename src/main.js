@@ -14,6 +14,7 @@ import Icons from '@/plugins/icons'
 import { firebaseAuth } from '@/config/firebase'
 import { onAuthStateChanged } from 'firebase/auth'
 import { useAuthStore } from '@/store/auth'
+import { useUserProfileStore } from '@/store/userProfile'
 
 /**
  * Creates and configures Vue application instance.
@@ -39,6 +40,7 @@ if (import.meta.env?.VITE_DEBUG_SEARCH === 'true') {
  */
 onAuthStateChanged(firebaseAuth, (user) => {
   const authStore = useAuthStore()
+  const userProfileStore = useUserProfileStore()
 
   if (user) {
     authStore.user = {
@@ -46,8 +48,10 @@ onAuthStateChanged(firebaseAuth, (user) => {
       uid: user.uid,
       provider: user.providerData?.[0]?.providerId || 'password',
     }
+    userProfileStore.initializeFromAuth(user)
   } else {
     authStore.user = null
+    userProfileStore.initializeFromAuth(null)
   }
 
   app.use(router)

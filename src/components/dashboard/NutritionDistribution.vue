@@ -4,7 +4,19 @@
  * Includes quick labels to guide users toward the Save-to-Meal flow.
  */
 import { computed } from 'vue'
+import { Bar } from 'vue-chartjs'
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+} from 'chart.js'
 import DashboardCard from '@/components/dashboard/DashboardCard.vue'
+
+ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
 const props = defineProps({
   totals: {
@@ -19,89 +31,122 @@ const props = defineProps({
       sodium: 0,
     }),
   },
+  nutrients: {
+    type: Object,
+    default: () => ({}),
+  },
 })
 
-const macroMetrics = computed(() => {
-  const protein = Number(props.totals?.protein) || 0
-  const carbs = Number(props.totals?.carbs) || 0
-  const fats = Number(props.totals?.fats ?? props.totals?.fat) || 0
-  const fiber = Number(props.totals?.fiber) || 0
+function readNutrient(nutrients, key) {
+  const entry = nutrients?.[key]
+  const numeric = Number(entry?.quantity)
+  return Number.isFinite(numeric) ? numeric : 0
+}
 
-  const magnitude = protein + carbs + fats + fiber || 1
+const nutrientPalette = [
+  '#16a34a',
+  '#3b82f6',
+  '#f59e0b',
+  '#9333ea',
+  '#ec4899',
+  '#0ea5e9',
+  '#6366f1',
+]
 
-  return [
-    { key: 'protein', label: 'Protein', grams: protein, color: 'text-emerald-600' },
-    { key: 'carbs', label: 'Carbs', grams: carbs, color: 'text-blue-600' },
-    { key: 'fats', label: 'Fats', grams: fats, color: 'text-amber-600' },
-    { key: 'fiber', label: 'Fiber', grams: fiber, color: 'text-teal-600' },
-  ].map((metric) => ({
-    ...metric,
-    percent: Math.round((metric.grams / magnitude) * 100),
-  }))
+const dataPoints = computed(() => {
+  const items = [
+    { key: 'fiber', label: 'Fiber', value: Number(props.totals?.fiber || 0), unit: 'g' },
+    { key: 'sugar', label: 'Sugar', value: Number(props.totals?.sugar || 0), unit: 'g' },
+    { key: 'sodium', label: 'Sodium', value: Number(props.totals?.sodium || 0), unit: 'mg' },
+    { key: 'vitaminC', label: 'Vitamin C', value: readNutrient(props.nutrients, 'VITC'), unit: 'mg' },
+    { key: 'calcium', label: 'Calcium', value: readNutrient(props.nutrients, 'CA'), unit: 'mg' },
+    { key: 'iron', label: 'Iron', value: readNutrient(props.nutrients, 'FE'), unit: 'mg' },
+    { key: 'potassium', label: 'Potassium', value: readNutrient(props.nutrients, 'K'), unit: 'mg' },
+  ]
+  return items
 })
 
-const microMetrics = computed(() => [
-  {
-    key: 'sugar',
-    label: 'Sugar',
-    value: Number(props.totals?.sugar || 0),
-    suffix: 'g',
-    tone: 'text-rose-600',
-  },
-  {
-    key: 'sodium',
-    label: 'Sodium',
-    value: Number(props.totals?.sodium || 0),
-    suffix: 'mg',
-    tone: 'text-sky-600',
-  },
-])
+const hasData = computed(() => dataPoints.value.some((item) => item.value > 0))
 
-const hasAnyTotals = computed(() =>
-  [...macroMetrics.value, ...microMetrics.value].some((metric) => metric.value || metric.grams),
+const chartData = computed(() => ({
+  labels: dataPoints.value.map((item) => item.label),
+  datasets: [
+    {
+      label: 'Quantity',
+      data: dataPoints.value.map((item) => Number(item.value.toFixed(2))),
+      backgroundColor: dataPoints.value.map(
+        (_, index) => nutrientPalette[index % nutrientPalette.length],
+      ),
+      borderRadius: 6,
+    },
+  ],
+}))
+
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: { display: false },
+    tooltip: {
+      callbacks: {
+        label(context) {
+          const index = context.dataIndex
+          const point = dataPoints.value[index]
+          if (!point) return `${context.parsed.y}`
+          return `${point.label}: ${point.value.toFixed(1)} ${point.unit}`
+        },
+      },
+    },
+  },
+  scales: {
+    x: {
+      ticks: {
+        color: '#6b7280',
+        font: { size: 10 },
+      },
+      grid: { display: false },
+    },
+    y: {
+      ticks: {
+        color: '#9ca3af',
+        font: { size: 10 },
+      },
+      grid: {
+        color: '#e5e7eb',
+        drawBorder: false,
+      },
+      beginAtZero: true,
+    },
+  },
+}
+
+const legend = computed(() =>
+  dataPoints.value.map((item, index) => ({
+    ...item,
+    color: nutrientPalette[index % nutrientPalette.length],
+  })),
 )
 </script>
 
 <template>
   <DashboardCard title="Nutrition Distribution">
-    <div v-if="hasAnyTotals" class="space-y-6">
-      <div>
-        <p class="text-lg font-semibold text-gray-800 mb-2">Macros</p>
-        <ul class="space-y-3">
-          <li
-            v-for="metric in macroMetrics"
-            :key="metric.key"
-            class="flex items-center justify-between"
-          >
-            <div class="flex items-center gap-3">
-              <span class="w-2.5 h-2.5 rounded-full bg-gray-300" />
-              <span class="text-base font-medium text-gray-700">{{ metric.label }}</span>
-            </div>
-            <div class="text-right">
-              <p class="text-lg font-semibold" :class="metric.color">
-                {{ metric.grams.toFixed(1) }} g
-              </p>
-              <p class="text-sm text-gray-500">{{ metric.percent }}% of macros</p>
-            </div>
-          </li>
-        </ul>
+    <div v-if="hasData" class="space-y-4">
+      <div class="h-60">
+        <Bar :data="chartData" :options="chartOptions" />
       </div>
-
-      <div>
-        <p class="text-lg font-semibold text-gray-800 mb-2">Highlights</p>
-        <div class="grid grid-cols-2 gap-3">
-          <div
-            v-for="metric in microMetrics"
-            :key="metric.key"
-            class="bg-gray-50 rounded-lg px-3 py-4 text-center"
-          >
-            <p class="text-base text-gray-500">{{ metric.label }}</p>
-            <p class="text-xl font-semibold" :class="metric.tone">
-              {{ metric.value.toFixed(1) }} {{ metric.suffix }}
-            </p>
+      <ul class="grid grid-cols-2 gap-3 text-xs text-gray-500">
+        <li
+          v-for="item in legend"
+          :key="item.key"
+          class="flex items-center justify-between gap-3 rounded-lg bg-gray-50 px-3 py-2"
+        >
+          <div class="flex items-center gap-2">
+            <span class="h-2.5 w-2.5 rounded-full" :style="{ backgroundColor: item.color }" />
+            <span class="font-medium text-gray-700">{{ item.label }}</span>
           </div>
-        </div>
-      </div>
+          <span class="font-semibold text-gray-800">{{ item.value.toFixed(1) }} {{ item.unit }}</span>
+        </li>
+      </ul>
     </div>
     <p v-else class="text-base text-gray-500">Run a nutrition search to view the nutrient split.</p>
   </DashboardCard>
