@@ -15,12 +15,12 @@ const props = defineProps({
         <span
           v-for="item in props.items"
           :key="item"
-          class="rounded-full border border-gray-700 px-4 py-2 text-sm font-semibold uppercase tracking-wide text-gray-200"
+          class="rounded-full border border-gray-700 px-4 py-2 text-lg font-semibold uppercase tracking-wide text-gray-200"
         >
           {{ item }}
         </span>
       </div>
-      <p class="text-sm text-gray-400">
+      <p class="text-lg text-gray-400">
         {{ props.caption }}
       </p>
     </div>

@@ -39,7 +39,7 @@ const {
 
 const isReady = ref(false)
 const inputClasses =
-  'w-full rounded-xl border border-gray-200 bg-white/80 px-4 py-3 text-sm text-gray-900 shadow-sm transition focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus-visible:ring-2 focus-visible:ring-green-500/50 dark:border-gray-700 dark:bg-gray-800/80 dark:text-gray-100'
+  'w-full rounded-xl border border-gray-200 bg-white/80 px-4 py-3 text-lg text-gray-900 shadow-sm transition focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus-visible:ring-2 focus-visible:ring-green-500/50 dark:border-gray-700 dark:bg-gray-800/80 dark:text-gray-100'
 
 onMounted(() => {
   requestAnimationFrame(() => {
@@ -78,11 +78,11 @@ const onSubmit = handleSubmit(async (formValues) => {
       :class="isReady ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'"
       style="transition-delay: 40ms"
     >
-      <label class="text-sm font-semibold text-gray-700 dark:text-gray-200">
+      <label class="text-lg font-semibold text-gray-700 dark:text-gray-200">
         Email
         <input v-model="email" type="email" placeholder="you@example.com" :class="inputClasses" />
       </label>
-      <p v-if="emailMeta.touched" class="text-sm text-red-500">{{ emailError }}</p>
+      <p v-if="emailMeta.touched" class="text-lg text-red-500">{{ emailError }}</p>
     </div>
 
     <div
@@ -90,7 +90,7 @@ const onSubmit = handleSubmit(async (formValues) => {
       :class="isReady ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'"
       style="transition-delay: 120ms"
     >
-      <label class="text-sm font-semibold text-gray-700 dark:text-gray-200">
+      <label class="text-lg font-semibold text-gray-700 dark:text-gray-200">
         Password
         <input
           v-model="password"
@@ -99,7 +99,7 @@ const onSubmit = handleSubmit(async (formValues) => {
           :class="inputClasses"
         />
       </label>
-      <p v-if="passwordMeta.touched" class="text-sm text-red-500">{{ passwordError }}</p>
+      <p v-if="passwordMeta.touched" class="text-lg text-red-500">{{ passwordError }}</p>
     </div>
 
     <div
@@ -107,7 +107,7 @@ const onSubmit = handleSubmit(async (formValues) => {
       :class="isReady ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'"
       style="transition-delay: 200ms"
     >
-      <label class="text-sm font-semibold text-gray-700 dark:text-gray-200">
+      <label class="text-lg font-semibold text-gray-700 dark:text-gray-200">
         Confirm Password
         <input
           v-model="confirmPassword"
@@ -116,7 +116,7 @@ const onSubmit = handleSubmit(async (formValues) => {
           :class="inputClasses"
         />
       </label>
-      <p v-if="confirmMeta.touched" class="text-sm text-red-500">{{ confirmError }}</p>
+      <p v-if="confirmMeta.touched" class="text-lg text-red-500">{{ confirmError }}</p>
     </div>
 
     <div
@@ -126,7 +126,7 @@ const onSubmit = handleSubmit(async (formValues) => {
     >
       <button
         type="submit"
-        class="w-full rounded-xl bg-green-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-green-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500/50"
+        class="w-full rounded-xl bg-green-600 px-4 py-3 text-lg font-semibold text-white transition hover:bg-green-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500/50"
       >
         Create account
       </button>
@@ -140,6 +140,8 @@ const onSubmit = handleSubmit(async (formValues) => {
   flex-direction: column;
   gap: 0.5rem;
   transform: translateY(0);
-  transition: opacity 0.35s ease, transform 0.35s ease;
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
 }
 </style>

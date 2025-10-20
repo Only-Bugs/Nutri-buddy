@@ -1,7 +1,5 @@
-/**
- * @file AuthPage.vue
- * @description Warm, tactile authentication experience with animated tabbed forms.
- */
+/** * @file AuthPage.vue * @description Warm, tactile authentication experience with animated tabbed
+forms. */
 
 <script setup>
 import { onMounted, ref, computed } from 'vue'
@@ -73,16 +71,20 @@ async function handleGoogleLogin() {
                 >
                   <AppIcon name="meal" class="text-lg" />
                 </div>
-                <h1 class="mt-6 text-center text-2xl font-semibold text-gray-900 md:text-left dark:text-gray-100">
+                <h1
+                  class="mt-6 text-center text-2xl font-semibold text-gray-900 md:text-left dark:text-gray-100"
+                >
                   Welcome to NutriBuddy
                 </h1>
-                <p class="mt-2 text-center text-sm text-gray-600 md:text-left dark:text-gray-300">
+                <p class="mt-2 text-center text-lg text-gray-600 md:text-left dark:text-gray-300">
                   {{ tabSubcopy }}
                 </p>
               </header>
 
-              <section class="hidden text-sm text-gray-600 md:block dark:text-gray-300">
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Why people stay</h2>
+              <section class="hidden text-lg text-gray-600 md:block dark:text-gray-300">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  You are signing up for
+                </h2>
                 <ul class="mt-4 space-y-2">
                   <li class="flex items-start gap-2">
                     <AppIcon name="check" class="mt-1 text-green-600" />
@@ -166,7 +168,9 @@ async function handleGoogleLogin() {
 
 <style scoped>
 .fade-card-enter-active {
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
 }
 .fade-card-enter-from {
   opacity: 0;
@@ -182,7 +186,10 @@ async function handleGoogleLogin() {
   padding: 0.65rem 1rem;
   font-size: 0.95rem;
   font-weight: 600;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
 }
 .oauth-button:focus-visible {
   outline: 2px solid rgba(34, 197, 94, 0.4);

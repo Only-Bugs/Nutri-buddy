@@ -181,7 +181,7 @@ function handleSubmit() {
               {{ mode === 'create' ? 'New meal plan' : 'Edit meal plan' }}
             </p>
             <h2 class="text-xl font-semibold text-gray-900">Set up your meal plan</h2>
-            <p class="mt-1 text-sm text-gray-600">
+            <p class="mt-1 text-lg text-gray-600">
               Group essentials, choose key dates, then save. You can adjust everything later.
             </p>
           </div>
@@ -199,38 +199,36 @@ function handleSubmit() {
         <div class="max-h-[70vh] space-y-6 overflow-y-auto bg-gray-50 px-6 py-6">
           <section class="space-y-4 rounded-xl border border-gray-100 bg-white px-4 py-5 shadow-sm">
             <header>
-              <p class="text-xs font-semibold uppercase tracking-widest text-green-600">
-                Details
-              </p>
+              <p class="text-xs font-semibold uppercase tracking-widest text-green-600">Details</p>
               <h3 class="text-base font-semibold text-gray-900">Name and notes</h3>
-              <p class="text-sm text-gray-600">
+              <p class="text-lg text-gray-600">
                 Give this plan a clear title and optional notes to stay focused.
               </p>
             </header>
 
             <div class="space-y-4">
-              <label class="block text-sm font-medium text-gray-700">
+              <label class="block text-lg font-medium text-gray-700">
                 Plan name *
                 <input
                   v-model="form.name"
                   type="text"
                   placeholder="e.g., Weekly Reset Plan"
-                  class="mt-2 w-full rounded-lg border bg-gray-50 px-4 py-3 text-sm text-gray-900 transition focus:outline-none"
+                  class="mt-2 w-full rounded-lg border bg-gray-50 px-4 py-3 text-lg text-gray-900 transition focus:outline-none"
                   :class="fieldStatus('name')"
                   @blur="markTouched('name')"
                 />
-                <span v-if="touched.name && errors.name" class="mt-2 block text-sm text-red-500">
+                <span v-if="touched.name && errors.name" class="mt-2 block text-lg text-red-500">
                   {{ errors.name }}
                 </span>
               </label>
 
-              <label class="block text-sm font-medium text-gray-700">
+              <label class="block text-lg font-medium text-gray-700">
                 Notes
                 <textarea
                   v-model="form.notes"
                   rows="3"
                   placeholder="What is this plan helping you accomplish?"
-                  class="mt-2 w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 shadow-sm transition focus:border-green-500 focus:ring-green-500/40 focus:outline-none"
+                  class="mt-2 w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-lg text-gray-900 shadow-sm transition focus:border-green-500 focus:ring-green-500/40 focus:outline-none"
                 />
               </label>
             </div>
@@ -238,37 +236,38 @@ function handleSubmit() {
 
           <section class="space-y-4 rounded-xl border border-gray-100 bg-white px-4 py-5 shadow-sm">
             <header>
-              <p class="text-xs font-semibold uppercase tracking-widest text-green-600">
-                Dates
-              </p>
+              <p class="text-xs font-semibold uppercase tracking-widest text-green-600">Dates</p>
               <h3 class="text-base font-semibold text-gray-900">Plan window</h3>
-              <p class="text-sm text-gray-600">
+              <p class="text-lg text-gray-600">
                 Add dates if you want reminders. Leave blank for an ongoing plan.
               </p>
             </header>
 
             <div class="grid gap-4 md:grid-cols-2">
-              <label class="block text-sm font-medium text-gray-700">
+              <label class="block text-lg font-medium text-gray-700">
                 Start date
                 <input
                   v-model="form.startDate"
                   type="date"
-                  class="mt-2 w-full rounded-lg border bg-gray-50 px-4 py-3 text-sm text-gray-900 transition focus:outline-none"
+                  class="mt-2 w-full rounded-lg border bg-gray-50 px-4 py-3 text-lg text-gray-900 transition focus:outline-none"
                   :class="fieldStatus('startDate')"
                   @blur="markTouched('startDate')"
                 />
               </label>
 
-              <label class="block text-sm font-medium text-gray-700">
+              <label class="block text-lg font-medium text-gray-700">
                 End date
                 <input
                   v-model="form.endDate"
                   type="date"
-                  class="mt-2 w-full rounded-lg border bg-gray-50 px-4 py-3 text-sm text-gray-900 transition focus:outline-none"
+                  class="mt-2 w-full rounded-lg border bg-gray-50 px-4 py-3 text-lg text-gray-900 transition focus:outline-none"
                   :class="fieldStatus('endDate')"
                   @blur="markTouched('endDate')"
                 />
-                <span v-if="touched.endDate && errors.endDate" class="mt-2 block text-sm text-red-500">
+                <span
+                  v-if="touched.endDate && errors.endDate"
+                  class="mt-2 block text-lg text-red-500"
+                >
                   {{ errors.endDate }}
                 </span>
               </label>
@@ -281,12 +280,12 @@ function handleSubmit() {
                 Confirm &amp; Save
               </p>
               <h3 class="text-base font-semibold text-gray-900">Double-check the essentials</h3>
-              <p class="text-sm text-gray-600">
+              <p class="text-lg text-gray-600">
                 Make sure your dates and name look right. You can update everything later.
               </p>
             </header>
 
-            <dl class="grid gap-3 text-sm text-gray-600 md:grid-cols-2">
+            <dl class="grid gap-3 text-lg text-gray-600 md:grid-cols-2">
               <div>
                 <dt class="font-semibold text-gray-900">Plan name</dt>
                 <dd>{{ form.name || 'Not set' }}</dd>
@@ -314,14 +313,14 @@ function handleSubmit() {
         >
           <button
             type="button"
-            class="text-sm font-semibold text-gray-500 hover:text-gray-700"
+            class="text-lg font-semibold text-gray-500 hover:text-gray-700"
             @click="onClose"
           >
             Cancel
           </button>
           <button
             type="button"
-            class="inline-flex items-center justify-center rounded-lg bg-green-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-green-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-500 disabled:cursor-not-allowed disabled:opacity-60"
+            class="inline-flex items-center justify-center rounded-lg bg-green-600 px-5 py-3 text-lg font-semibold text-white shadow-sm transition hover:bg-green-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-500 disabled:cursor-not-allowed disabled:opacity-60"
             :class="{ 'animate-success': showSuccessPulse }"
             :disabled="loading"
             @click="handleSubmit"
@@ -333,7 +332,14 @@ function handleSubmit() {
               fill="none"
               viewBox="0 0 24 24"
             >
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              />
               <path
                 class="opacity-75"
                 fill="currentColor"

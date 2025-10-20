@@ -13,11 +13,9 @@ const props = defineProps({
       <span class="text-green-500">
         <AppIcon name="quote" />
       </span>
-      <blockquote class="text-base font-medium text-gray-800">
-        “{{ props.quote }}”
-      </blockquote>
+      <blockquote class="text-base font-medium text-gray-800">“{{ props.quote }}”</blockquote>
     </div>
-    <figcaption v-if="props.author" class="mt-4 text-sm text-gray-600">
+    <figcaption v-if="props.author" class="mt-4 text-lg text-gray-600">
       {{ props.author }}
     </figcaption>
   </figure>

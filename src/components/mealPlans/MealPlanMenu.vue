@@ -12,7 +12,15 @@ const props = defineProps({
   exporting: { type: Boolean, default: false },
 })
 
-const emit = defineEmits(['close', 'edit', 'search', 'export', 'status', 'archive'])
+const emit = defineEmits([
+  'close',
+  'edit',
+  'search',
+  'export',
+  'download-csv',
+  'status',
+  'archive',
+])
 
 const confirmingArchive = ref(false)
 
@@ -74,10 +82,10 @@ function handleClose() {
         class="menu-item"
         :class="disableExport || exporting ? 'cursor-not-allowed text-gray-300' : ''"
         :disabled="disableExport || exporting"
-        @click="emit('export')"
+        @click="emit('export', 'pdf')"
       >
         <FontAwesomeIcon icon="file-arrow-down" class="text-gray-400" />
-        <span v-if="!exporting">Export plan</span>
+        <span v-if="!exporting">Export as PDF</span>
         <span v-else class="flex items-center gap-2">
           <svg
             class="h-4 w-4 animate-spin text-gray-400"
@@ -94,6 +102,16 @@ function handleClose() {
           </svg>
           Sending…
         </span>
+      </button>
+      <button
+        type="button"
+        class="menu-item"
+        :class="disableExport ? 'cursor-not-allowed text-gray-300' : ''"
+        :disabled="disableExport"
+        @click="emit('download-csv')"
+      >
+        <FontAwesomeIcon icon="file-csv" class="text-gray-400" />
+        <span>Download CSV</span>
       </button>
 
       <div class="mt-2 px-2 pb-1 text-xs font-semibold uppercase tracking-widest text-gray-400">

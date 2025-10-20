@@ -21,17 +21,17 @@ const commitments = [
 
     <section class="mx-auto max-w-4xl px-6 py-12">
       <h2 class="text-xl font-semibold text-gray-900">Using NutriBuddy</h2>
-      <p class="mt-4 text-sm text-gray-600">
+      <p class="mt-4 text-lg text-gray-600">
         NutriBuddy helps you track meals and insights. It is not medical advice. Always consult
         qualified professionals for personalised guidance.
       </p>
 
       <h2 class="mt-8 text-xl font-semibold text-gray-900">Your commitments</h2>
-      <ul class="mt-4 list-disc space-y-2 pl-6 text-sm text-gray-600">
+      <ul class="mt-4 list-disc space-y-2 pl-6 text-lg text-gray-600">
         <li v-for="item in commitments" :key="item">{{ item }}</li>
       </ul>
 
-      <p class="mt-8 text-sm text-gray-600">
+      <p class="mt-8 text-lg text-gray-600">
         Contact us at
         <a href="mailto:hello@nutribuddy.app" class="text-green-700 hover:underline"
           >hello@nutribuddy.app</a

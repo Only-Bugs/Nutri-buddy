@@ -10,6 +10,7 @@ import MealPlanMenu from '@/components/mealPlans/MealPlanMenu.vue'
 import AddToMealPlanModal from '@/components/mealPlans/AddToMealPlanModal.vue'
 import RecipesAccordion from '@/components/mealPlans/RecipesAccordion.vue'
 import { sendPlanExport } from '@/services/exportPlanService.js'
+import { downloadPlanCsv } from '@/utils/planCsvExporter.js'
 
 const auth = useAuthStore()
 const mealPlans = useMealPlanStore()
@@ -66,19 +67,13 @@ const activePlan = computed(() => mealPlans.activePlan)
 const activeMeals = computed(() => activePlan.value?.meals || [])
 const activePlanTotals = computed(() => activePlan.value?.nutritionTotals || null)
 const activePlanRecipes = computed(() => activePlan.value?.recipes || [])
-const planHasItems = computed(() =>
-  !!activePlan.value && activePlan.value.meals?.some((meal) => (meal.items || []).length > 0),
+const planHasItems = computed(
+  () => !!activePlan.value && activePlan.value.meals?.some((meal) => (meal.items || []).length > 0),
 )
 
-const activePlans = computed(() =>
-  mealPlans.plans.filter((plan) => plan.status === 'active'),
-)
-const draftPlans = computed(() =>
-  mealPlans.plans.filter((plan) => plan.status === 'draft'),
-)
-const archivedPlans = computed(() =>
-  mealPlans.plans.filter((plan) => plan.status === 'archived'),
-)
+const activePlans = computed(() => mealPlans.plans.filter((plan) => plan.status === 'active'))
+const draftPlans = computed(() => mealPlans.plans.filter((plan) => plan.status === 'draft'))
+const archivedPlans = computed(() => mealPlans.plans.filter((plan) => plan.status === 'archived'))
 
 const otherActivePlans = computed(() =>
   activePlans.value.filter((plan) => !activePlan.value || plan.id !== activePlan.value.id),
@@ -203,7 +198,7 @@ function handleMenuSearch() {
   openDashboardSearch()
 }
 
-async function triggerPlanExport(plan) {
+async function triggerPlanExport(plan, format = 'pdf') {
   if (!plan) return
   if (!auth.user?.email) {
     showToast('Add an email to your profile before exporting.', 'warning')
@@ -211,8 +206,8 @@ async function triggerPlanExport(plan) {
   }
   try {
     isExporting.value = true
-    await sendPlanExport(plan, auth.user.email)
-    showToast(`Meal plan "${plan.name}" sent to your inbox.`, 'success')
+    await sendPlanExport(plan, auth.user.email, format)
+    showToast(`Meal plan "${plan.name}" sent to your inbox as ${format.toUpperCase()}.`, 'success')
   } catch (error) {
     console.error('[MealsPage] export failed', error)
     showToast('Unable to export this plan right now.', 'error')
@@ -221,10 +216,23 @@ async function triggerPlanExport(plan) {
   }
 }
 
-async function handleMenuExport() {
+async function handleMenuExport(format) {
   if (!activePlan.value) return
-  await triggerPlanExport(activePlan.value)
+  await triggerPlanExport(activePlan.value, format)
   isMenuOpen.value = false
+}
+
+function handleCsvDownload() {
+  if (!activePlan.value) return
+  try {
+    downloadPlanCsv(activePlan.value)
+    showToast('Meal plan CSV downloaded.', 'success')
+  } catch (error) {
+    console.error('[MealsPage] CSV download failed', error)
+    showToast('Unable to download CSV right now.', 'error')
+  } finally {
+    isMenuOpen.value = false
+  }
 }
 
 function openAddModal() {
@@ -262,13 +270,11 @@ const hasPlans = computed(() => mealPlans.plans.length > 0)
     <header class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
         <h1 class="text-2xl font-semibold text-gray-900">Meal Plans</h1>
-        <p class="text-sm text-gray-500">
-          Create, track, and adjust plans without losing clarity.
-        </p>
+        <p class="text-lg text-gray-500">Create, track, and adjust plans without losing clarity.</p>
       </div>
       <button
         type="button"
-        class="inline-flex items-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-green-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-500"
+        class="inline-flex items-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-lg font-semibold text-white shadow-sm transition hover:bg-green-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-500"
         @click="openCreateEditor"
       >
         <FontAwesomeIcon icon="plus" />
@@ -299,13 +305,16 @@ const hasPlans = computed(() => mealPlans.plans.length > 0)
       class="flex flex-col items-center gap-4 rounded-3xl border border-dashed border-gray-200 bg-white/80 px-6 py-16 text-center shadow-sm"
     >
       <FontAwesomeIcon icon="utensils" class="text-4xl text-gray-200" />
-      <h2 class="text-xl font-semibold text-gray-800">No plans yet — create your first one to get started.</h2>
-      <p class="max-w-md text-sm text-gray-500">
-        Meal plans keep your nutrition visible and organised. Start with a simple weekly focus and iterate.
+      <h2 class="text-xl font-semibold text-gray-800">
+        No plans yet — create your first one to get started.
+      </h2>
+      <p class="max-w-md text-lg text-gray-500">
+        Meal plans keep your nutrition visible and organised. Start with a simple weekly focus and
+        iterate.
       </p>
       <button
         type="button"
-        class="inline-flex items-center gap-2 rounded-lg border border-green-500 px-5 py-2 text-sm font-semibold text-green-700 transition hover:bg-green-50"
+        class="inline-flex items-center gap-2 rounded-lg border border-green-500 px-5 py-2 text-lg font-semibold text-green-700 transition hover:bg-green-50"
         @click="openCreateEditor"
       >
         <FontAwesomeIcon icon="plus" />
@@ -341,17 +350,14 @@ const hasPlans = computed(() => mealPlans.plans.length > 0)
               {{ plan.name }}
             </button>
           </div>
-          <div
-            v-if="otherActivePlans.length"
-            class="mt-4 grid gap-3 sm:grid-cols-2"
-          >
+          <div v-if="otherActivePlans.length" class="mt-4 grid gap-3 sm:grid-cols-2">
             <article
               v-for="plan in otherActivePlans"
               :key="plan.id"
-              class="cursor-pointer rounded-2xl border border-gray-100 bg-gray-50 p-4 text-xs text-gray-600 shadow-sm transition hover:border-green-500 hover:bg-green-50 hover:text-green-700"
+              class="cursor-pointer rounded-2xl border border-gray-100 bg-gray-50 p-4 text-lg text-gray-600 shadow-sm transition hover:border-green-500 hover:bg-green-50 hover:text-green-700"
               @click="selectActivePlan(plan.id)"
             >
-              <h3 class="text-sm font-semibold text-gray-900">{{ plan.name }}</h3>
+              <h3 class="text-lg font-semibold text-gray-900">{{ plan.name }}</h3>
               <p class="mt-1 text-xs text-gray-500">{{ describePlanRange(plan) }}</p>
             </article>
           </div>
@@ -366,6 +372,7 @@ const hasPlans = computed(() => mealPlans.plans.length > 0)
           @open-menu="toggleMenu"
           @remove-item="removeMealItem"
           @edit-plan="openEditEditor"
+          @open-search="openDashboardSearch"
         >
           <template v-if="activePlan" #menu>
             <MealPlanMenu
@@ -376,6 +383,7 @@ const hasPlans = computed(() => mealPlans.plans.length > 0)
               @edit="handleMenuEdit"
               @search="handleMenuSearch"
               @export="handleMenuExport"
+              @download-csv="handleCsvDownload"
               @status="changeStatusFromMenu"
               @archive="archivePlan"
             />
@@ -385,13 +393,13 @@ const hasPlans = computed(() => mealPlans.plans.length > 0)
         <transition name="fade">
           <div
             v-if="mealPlans.error"
-            class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 shadow-sm"
+            class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-lg text-red-600 shadow-sm"
           >
             Something went wrong. Please retry.
           </div>
         </transition>
 
-        <RecipesAccordion :recipes="activePlanRecipes" />
+        <RecipesAccordion :recipes="activePlanRecipes" @open-search="openDashboardSearch" />
       </div>
 
       <aside class="space-y-6">
@@ -412,14 +420,18 @@ const hasPlans = computed(() => mealPlans.plans.length > 0)
               :key="plan.id"
               class="group overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition hover:shadow-md"
             >
-              <summary class="flex cursor-pointer items-center justify-between gap-3 px-4 py-3 text-sm font-semibold text-gray-700">
+              <summary
+                class="flex cursor-pointer items-center justify-between gap-3 px-4 py-3 text-lg font-semibold text-gray-700"
+              >
                 <span>{{ plan.name }}</span>
                 <FontAwesomeIcon
                   icon="chevron-down"
                   class="text-xs text-gray-400 transition duration-200 group-open:rotate-180"
                 />
               </summary>
-              <div class="border-t border-gray-100 bg-gray-50 px-4 py-3 text-sm text-gray-600 space-y-3">
+              <div
+                class="border-t border-gray-100 bg-gray-50 px-4 py-3 text-lg text-gray-600 space-y-3"
+              >
                 <p>{{ plan.startDate || 'No start date' }} → {{ plan.endDate || 'Open-ended' }}</p>
                 <p v-if="plan.notes" class="whitespace-pre-line">{{ plan.notes }}</p>
                 <div class="flex flex-wrap gap-3 text-xs font-semibold">
@@ -449,7 +461,10 @@ const hasPlans = computed(() => mealPlans.plans.length > 0)
               </div>
             </details>
           </div>
-          <p v-else class="rounded-xl border border-dashed border-gray-200 bg-gray-50 px-4 py-6 text-center text-sm text-gray-500">
+          <p
+            v-else
+            class="rounded-xl border border-dashed border-gray-200 bg-gray-50 px-4 py-6 text-center text-lg text-gray-500"
+          >
             Draft plans will appear here.
           </p>
         </section>
@@ -471,14 +486,18 @@ const hasPlans = computed(() => mealPlans.plans.length > 0)
               :key="plan.id"
               class="group overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition hover:shadow-md"
             >
-              <summary class="flex cursor-pointer items-center justify-between gap-3 px-4 py-3 text-sm font-semibold text-gray-700">
+              <summary
+                class="flex cursor-pointer items-center justify-between gap-3 px-4 py-3 text-lg font-semibold text-gray-700"
+              >
                 <span>{{ plan.name }}</span>
                 <FontAwesomeIcon
                   icon="chevron-down"
                   class="text-xs text-gray-400 transition duration-200 group-open:rotate-180"
                 />
               </summary>
-              <div class="border-t border-gray-100 bg-gray-50 px-4 py-3 text-sm text-gray-600 space-y-3">
+              <div
+                class="border-t border-gray-100 bg-gray-50 px-4 py-3 text-lg text-gray-600 space-y-3"
+              >
                 <p>{{ plan.startDate || 'No start date' }} → {{ plan.endDate || 'Open-ended' }}</p>
                 <p v-if="plan.notes" class="whitespace-pre-line">{{ plan.notes }}</p>
                 <div class="flex flex-wrap gap-3 text-xs font-semibold">
@@ -508,7 +527,10 @@ const hasPlans = computed(() => mealPlans.plans.length > 0)
               </div>
             </details>
           </div>
-          <p v-else class="rounded-xl border border-dashed border-gray-200 bg-gray-50 px-4 py-6 text-center text-sm text-gray-500">
+          <p
+            v-else
+            class="rounded-xl border border-dashed border-gray-200 bg-gray-50 px-4 py-6 text-center text-lg text-gray-500"
+          >
             Archived plans will appear here.
           </p>
         </section>

@@ -21,17 +21,17 @@ const principles = [
 
     <section class="mx-auto max-w-4xl px-6 py-12">
       <h2 class="text-xl font-semibold text-gray-900">What we collect</h2>
-      <p class="mt-4 text-sm text-gray-600">
+      <p class="mt-4 text-lg text-gray-600">
         NutriBuddy stores account details, saved foods, and meal plans. We track usage analytics to
         keep core experiences sharp. We do not collect unnecessary personal identifiers.
       </p>
 
       <h2 class="mt-8 text-xl font-semibold text-gray-900">How we protect it</h2>
-      <ul class="mt-4 list-disc space-y-2 pl-6 text-sm text-gray-600">
+      <ul class="mt-4 list-disc space-y-2 pl-6 text-lg text-gray-600">
         <li v-for="item in principles" :key="item">{{ item }}</li>
       </ul>
 
-      <p class="mt-8 text-sm text-gray-600">
+      <p class="mt-8 text-lg text-gray-600">
         Questions? Reach us at
         <a href="mailto:hello@nutribuddy.app" class="text-green-700 hover:underline"
           >hello@nutribuddy.app</a

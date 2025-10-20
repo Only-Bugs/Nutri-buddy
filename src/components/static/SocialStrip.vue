@@ -16,7 +16,7 @@ const props = defineProps({
         v-for="link in props.links"
         :key="link.label"
         :href="link.href"
-        class="flex items-center gap-3 rounded-full border border-gray-200 bg-white px-5 py-2 text-sm font-semibold text-gray-700 transition hover:border-green-200 hover:text-green-600"
+        class="flex items-center gap-3 rounded-full border border-gray-200 bg-white px-5 py-2 text-lg font-semibold text-gray-700 transition hover:border-green-200 hover:text-green-600"
         :target="link.external ? '_blank' : undefined"
         :rel="link.external ? 'noopener' : undefined"
       >

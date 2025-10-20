@@ -59,7 +59,7 @@ function statusTone(status) {
     <header class="flex items-center justify-between gap-3">
       <div>
         <h2 class="text-xl font-semibold text-gray-900">Active Meal Plans</h2>
-        <p class="text-sm text-gray-500">
+        <p class="text-lg text-gray-500">
           Your current plans and where calories are trending today.
         </p>
       </div>
@@ -70,7 +70,7 @@ function statusTone(status) {
 
     <div
       v-if="!normalizedPlans.length"
-      class="rounded-2xl border border-dashed border-gray-200 bg-white/80 p-6 text-center text-sm text-gray-500"
+      class="rounded-2xl border border-dashed border-gray-200 bg-white/80 p-6 text-center text-lg text-gray-500"
     >
       No meal plans to show yet — create or activate one to see it here.
     </div>
@@ -88,14 +88,19 @@ function statusTone(status) {
               <p class="text-2xl font-semibold text-gray-900 group-hover:text-green-600">
                 {{ plan.name }}
               </p>
-              <span :class="['rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-widest', statusTone(plan.status)]">
+              <span
+                :class="[
+                  'rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-widest',
+                  statusTone(plan.status),
+                ]"
+              >
                 {{ plan.status }}
               </span>
             </div>
-            <p class="text-sm text-gray-500">
+            <p class="text-lg text-gray-500">
               {{ plan.meals.length }} meals · Ends {{ formatDate(plan.expires) }}
             </p>
-            <p v-if="plan.notes" class="text-sm text-gray-600 line-clamp-2">
+            <p v-if="plan.notes" class="text-lg text-gray-600 line-clamp-2">
               {{ plan.notes }}
             </p>
           </div>
@@ -128,9 +133,7 @@ function statusTone(status) {
                 <span>{{ item.name }}</span>
                 <span class="text-lg text-gray-500">{{ item.calories }} kcal</span>
               </li>
-              <li v-if="!meal.items.length" class="text-lg text-gray-400 italic">
-                No items yet.
-              </li>
+              <li v-if="!meal.items.length" class="text-lg text-gray-400 italic">No items yet.</li>
             </ul>
           </div>
         </div>

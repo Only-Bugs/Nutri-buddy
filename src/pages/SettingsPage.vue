@@ -61,7 +61,7 @@ function formatTimestamp(value) {
         <section class="dash-card space-y-6">
           <header>
             <h2 class="text-xl font-semibold text-gray-900">Profile</h2>
-            <p class="text-sm text-gray-500">
+            <p class="text-lg text-gray-500">
               These details personalise your experience and are stored securely on this device.
             </p>
           </header>
@@ -81,14 +81,14 @@ function formatTimestamp(value) {
               </span>
             </div>
             <div>
-              <p class="text-sm text-gray-500">Signed in as</p>
+              <p class="text-lg text-gray-500">Signed in as</p>
               <p class="text-base font-medium text-gray-900">{{ userProfile.email || '—' }}</p>
             </div>
           </div>
 
           <div class="grid gap-4 md:grid-cols-2">
             <label class="space-y-1 md:col-span-2">
-              <span class="text-sm font-medium text-gray-700">Email</span>
+              <span class="text-lg font-medium text-gray-700">Email</span>
               <input
                 :value="userProfile.email"
                 type="email"
@@ -98,7 +98,7 @@ function formatTimestamp(value) {
             </label>
 
             <label class="space-y-1 md:col-span-2">
-              <span class="text-sm font-medium text-gray-700">Custom Username</span>
+              <span class="text-lg font-medium text-gray-700">Custom Username</span>
               <input
                 v-model="form.customUsername"
                 type="text"
@@ -112,7 +112,7 @@ function formatTimestamp(value) {
             </label>
 
             <label class="space-y-1 md:col-span-1">
-              <span class="text-sm font-medium text-gray-700">Daily Calorie Limit (kcal)</span>
+              <span class="text-lg font-medium text-gray-700">Daily Calorie Limit (kcal)</span>
               <input
                 v-model.number="form.dailyCalorieLimit"
                 type="number"
@@ -126,7 +126,7 @@ function formatTimestamp(value) {
           </div>
 
           <div class="flex items-center justify-between">
-            <p v-if="savedAt" class="text-sm text-gray-500">
+            <p v-if="savedAt" class="text-lg text-gray-500">
               Saved at {{ formatTimestamp(savedAt) }}
             </p>
             <div class="flex-1" />
@@ -145,7 +145,7 @@ function formatTimestamp(value) {
       <aside class="space-y-4">
         <section class="dash-card space-y-3">
           <h3 class="text-lg font-semibold text-gray-900">Quick reference</h3>
-          <ul class="space-y-2 text-sm text-gray-600">
+          <ul class="space-y-2 text-lg text-gray-600">
             <li><strong>Email:</strong> {{ userProfile.email || '—' }}</li>
             <li><strong>Display name:</strong> {{ userProfile.resolvedDisplayName }}</li>
             <li><strong>Daily limit:</strong> {{ userProfile.dailyCalorieLimit }} kcal</li>

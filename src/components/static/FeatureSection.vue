@@ -14,7 +14,7 @@ const props = defineProps({
 <template>
   <section class="mx-auto flex max-w-6xl flex-col gap-8 px-6 py-12">
     <div class="flex flex-col gap-2 text-left">
-      <p class="text-sm font-semibold uppercase tracking-wide text-green-600">
+      <p class="text-lg font-semibold uppercase tracking-wide text-green-600">
         {{ props.theme }}
       </p>
       <p class="text-lg text-gray-700">

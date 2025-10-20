@@ -8,7 +8,7 @@
       </p>
       <router-link
         to="/contact"
-        class="mt-6 inline-flex items-center justify-center rounded-lg border border-green-600 px-5 py-3 text-sm font-semibold text-green-700 transition hover:bg-green-100"
+        class="mt-6 inline-flex items-center justify-center rounded-lg border border-green-600 px-5 py-3 text-lg font-semibold text-green-700 transition hover:bg-green-100"
       >
         Share feedback
       </router-link>

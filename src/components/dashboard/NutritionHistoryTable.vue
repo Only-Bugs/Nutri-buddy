@@ -153,8 +153,8 @@ watch(totalPages, (value) => {
                   header.align === 'right'
                     ? 'text-right'
                     : header.align === 'center'
-                    ? 'text-center'
-                    : 'text-left',
+                      ? 'text-center'
+                      : 'text-left',
                   header.sortable ? 'cursor-pointer select-none' : '',
                 ]"
                 :aria-sort="header.sortable ? headerSortState(header.key) : undefined"
@@ -162,7 +162,9 @@ watch(totalPages, (value) => {
               >
                 <span class="inline-flex items-center gap-1">
                   {{ header.label }}
-                  <span v-if="header.sortable" class="text-xs text-gray-500">{{ indicator(header.key) }}</span>
+                  <span v-if="header.sortable" class="text-xs text-gray-500">{{
+                    indicator(header.key)
+                  }}</span>
                 </span>
               </th>
             </tr>
@@ -186,11 +188,11 @@ watch(totalPages, (value) => {
               <td class="px-3 py-2">
                 <span
                   v-if="food.cautions && food.cautions.length"
-                  class="text-sm bg-red-100 text-red-700 px-2 py-1 rounded"
+                  class="text-lg bg-red-100 text-red-700 px-2 py-1 rounded"
                 >
                   {{ food.cautions.join(', ') }}
                 </span>
-                <span v-else class="text-sm text-gray-400">None</span>
+                <span v-else class="text-lg text-gray-400">None</span>
               </td>
               <td class="px-3 py-2 text-center">
                 <button
@@ -209,7 +211,7 @@ watch(totalPages, (value) => {
       </div>
 
       <div
-        class="mt-4 flex flex-col gap-3 text-sm text-gray-600 sm:flex-row sm:items-center sm:justify-between"
+        class="mt-4 flex flex-col gap-3 text-lg text-gray-600 sm:flex-row sm:items-center sm:justify-between"
       >
         <p>
           Showing

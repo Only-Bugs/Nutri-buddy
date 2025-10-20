@@ -27,7 +27,9 @@ const activeMealType = ref('All')
 
 const recipesForActiveMealType = computed(() => {
   ensurePagination(activeMealType.value)
-  return recipeStore.getRecipesByMealType(activeMealType.value === 'All' ? null : activeMealType.value)
+  return recipeStore.getRecipesByMealType(
+    activeMealType.value === 'All' ? null : activeMealType.value,
+  )
 })
 
 const totalPages = computed(() => {
@@ -112,14 +114,16 @@ onMounted(async () => {
     <header class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
       <div>
         <h1 class="text-3xl font-semibold text-gray-900">Recipes</h1>
-        <p class="text-base text-gray-500">Bookmark favourite dishes and link them to any meal plan.</p>
+        <p class="text-base text-gray-500">
+          Bookmark favourite dishes and link them to any meal plan.
+        </p>
       </div>
       <nav class="flex flex-wrap gap-2">
         <button
           v-for="type in MEAL_TYPES"
           :key="type"
           @click="setMealType(type)"
-          class="rounded-full border px-4 py-2 text-sm font-medium transition"
+          class="rounded-full border px-4 py-2 text-lg font-medium transition"
           :class="
             activeMealType === type
               ? 'border-green-600 bg-green-600 text-white'
@@ -131,9 +135,14 @@ onMounted(async () => {
       </nav>
     </header>
 
-    <div v-if="!paginatedRecipes.length" class="rounded-2xl border border-dashed border-gray-300 bg-white p-10 text-center">
+    <div
+      v-if="!paginatedRecipes.length"
+      class="rounded-2xl border border-dashed border-gray-300 bg-white p-10 text-center"
+    >
       <p class="text-lg font-medium text-gray-700">No recipes found for this filter.</p>
-      <p class="text-sm text-gray-500">Try another meal type or favourite some recipes to view them here.</p>
+      <p class="text-lg text-gray-500">
+        Try another meal type or favourite some recipes to view them here.
+      </p>
     </div>
 
     <div v-else class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
@@ -150,11 +159,9 @@ onMounted(async () => {
 
     <div
       v-if="paginatedRecipes.length"
-      class="flex items-center justify-between rounded-2xl border border-gray-200 bg-white px-5 py-3 text-sm text-gray-600"
+      class="flex items-center justify-between rounded-2xl border border-gray-200 bg-white px-5 py-3 text-lg text-gray-600"
     >
-      <span>
-        Page {{ paginationState[activeMealType] || 1 }} of {{ totalPages }}
-      </span>
+      <span> Page {{ paginationState[activeMealType] || 1 }} of {{ totalPages }} </span>
       <div class="flex items-center gap-2">
         <button
           class="rounded-full border border-gray-300 px-3 py-1 hover:bg-gray-100 disabled:opacity-60 disabled:cursor-not-allowed"

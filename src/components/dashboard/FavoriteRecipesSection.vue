@@ -82,7 +82,7 @@ watch(
           v-for="type in mealTypes"
           :key="type"
           @click="setMealType(type)"
-          class="rounded-full border px-3 py-1 text-sm font-medium transition"
+          class="rounded-full border px-3 py-1 text-lg font-medium transition"
           :class="
             activeMealType === type
               ? 'border-green-600 bg-green-600 text-white'
@@ -94,9 +94,14 @@ watch(
       </nav>
     </header>
 
-    <div v-if="!mealTypes.length" class="rounded-xl border border-dashed border-gray-300 bg-white/60 p-6 text-center">
+    <div
+      v-if="!mealTypes.length"
+      class="rounded-xl border border-dashed border-gray-300 bg-white/60 p-6 text-center"
+    >
       <p class="text-base font-medium text-gray-700">No favourite recipes yet.</p>
-      <p class="text-sm text-gray-500">Add recipes to your favourites and they will appear here automatically.</p>
+      <p class="text-lg text-gray-500">
+        Add recipes to your favourites and they will appear here automatically.
+      </p>
     </div>
 
     <div v-else>
@@ -114,11 +119,16 @@ watch(
               class="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br shadow-sm"
               :class="mealVisual(recipe).gradient"
             >
-              <FontAwesomeIcon :icon="mealVisual(recipe).icon" :class="['text-xl', mealVisual(recipe).accent]" />
+              <FontAwesomeIcon
+                :icon="mealVisual(recipe).icon"
+                :class="['text-xl', mealVisual(recipe).accent]"
+              />
             </div>
             <div class="min-w-0 space-y-2">
               <div>
-                <p class="text-sm font-semibold text-gray-900 leading-tight group-hover:text-green-600">
+                <p
+                  class="text-lg font-semibold text-gray-900 leading-tight group-hover:text-green-600"
+                >
                   {{ recipe.name }}
                 </p>
                 <p class="text-xs text-gray-500">
@@ -130,7 +140,10 @@ watch(
                 <span
                   v-for="type in recipe.mealTypes"
                   :key="type"
-                  :class="['rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest shadow-sm', mealVisual(recipe).badge]"
+                  :class="[
+                    'rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest shadow-sm',
+                    mealVisual(recipe).badge,
+                  ]"
                 >
                   {{ type }}
                 </span>

@@ -68,7 +68,7 @@ onBeforeUnmount(() => {
       >
         <div class="flex items-start justify-between gap-4">
           <div class="flex-1 space-y-2">
-            <p class="text-sm uppercase font-semibold text-green-600">Search nutrition</p>
+            <p class="text-lg uppercase font-semibold text-green-600">Search nutrition</p>
             <h2 class="text-3xl font-semibold text-gray-900">Find food insights</h2>
           </div>
           <button
@@ -81,7 +81,9 @@ onBeforeUnmount(() => {
         </div>
 
         <div class="space-y-3">
-          <div class="flex items-center gap-3 rounded-full border-2 border-green-500 px-4 py-2 bg-white">
+          <div
+            class="flex items-center gap-3 rounded-full border-2 border-green-500 px-4 py-2 bg-white"
+          >
             <FontAwesomeIcon icon="magnifying-glass" class="text-green-600 text-lg" />
             <input
               ref="inputRef"

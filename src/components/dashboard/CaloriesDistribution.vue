@@ -42,14 +42,14 @@ const macroBreakdown = computed(() => {
 const hasData = computed(() => macroBreakdown.value.some((item) => item.grams > 0))
 
 const chartData = computed(() => ({
-    labels: macroBreakdown.value.map((item) => item.label),
-    datasets: [
-      {
-        data: macroBreakdown.value.map((item) => item.grams),
-        backgroundColor: macroBreakdown.value.map((item) => item.color),
-        borderWidth: 0,
-      },
-    ],
+  labels: macroBreakdown.value.map((item) => item.label),
+  datasets: [
+    {
+      data: macroBreakdown.value.map((item) => item.grams),
+      backgroundColor: macroBreakdown.value.map((item) => item.color),
+      borderWidth: 0,
+    },
+  ],
 }))
 
 const chartOptions = {
@@ -88,7 +88,7 @@ const chartOptions = {
         </div>
       </div>
 
-      <ul class="space-y-2 text-sm">
+      <ul class="space-y-2 text-lg">
         <li
           v-for="metric in macroBreakdown"
           :key="metric.label"
@@ -98,7 +98,7 @@ const chartOptions = {
             <span class="h-2.5 w-2.5 rounded-full" :style="{ backgroundColor: metric.color }" />
             <span class="font-medium text-gray-700">{{ metric.label }}</span>
           </div>
-          <span class="text-sm font-semibold text-gray-800">{{ metric.grams.toFixed(1) }} g</span>
+          <span class="text-lg font-semibold text-gray-800">{{ metric.grams.toFixed(1) }} g</span>
         </li>
       </ul>
     </div>

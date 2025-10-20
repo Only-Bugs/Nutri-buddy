@@ -53,8 +53,8 @@ const sortedPlans = computed(() => {
   })
 })
 
-const selectedPlan = computed(() =>
-  plans.value.find((plan) => plan.id === selectedPlanId.value) || null,
+const selectedPlan = computed(
+  () => plans.value.find((plan) => plan.id === selectedPlanId.value) || null,
 )
 
 function resetState() {
@@ -83,8 +83,7 @@ watch(
         prefillCreateDates()
         focusPlanName()
       } else {
-        selectedPlanId.value =
-          mealPlanStore.activePlanId || sortedPlans.value[0]?.id || ''
+        selectedPlanId.value = mealPlanStore.activePlanId || sortedPlans.value[0]?.id || ''
         if (selectedPlanId.value) {
           mealPlanStore.selectPlan(selectedPlanId.value)
         }
@@ -178,10 +177,8 @@ function buildMealPayload() {
   const measure = item.measure ?? item.servingUnit ?? (type === 'recipe' ? '' : '')
 
   const macros = {
-    calories:
-      Number(totals.calories ?? item.calories ?? item.nutrition?.calories ?? 0) || 0,
-    protein:
-      Number(totals.protein ?? item.protein ?? item.nutrition?.protein ?? 0) || 0,
+    calories: Number(totals.calories ?? item.calories ?? item.nutrition?.calories ?? 0) || 0,
+    protein: Number(totals.protein ?? item.protein ?? item.nutrition?.protein ?? 0) || 0,
     carbs: Number(totals.carbs ?? item.carbs ?? item.nutrition?.carbs ?? 0) || 0,
     fat: Number(totals.fats ?? totals.fat ?? item.fat ?? item.nutrition?.fat ?? 0) || 0,
     fiber: Number(totals.fiber ?? item.fiber ?? item.nutrition?.fiber ?? 0) || 0,
@@ -194,11 +191,11 @@ function buildMealPayload() {
       ? Array.isArray(item.instructions)
         ? item.instructions
         : item.instructions
-        ? String(item.instructions)
-            .split(/\r?\n+/)
-            .map((step) => step.trim())
-            .filter(Boolean)
-        : []
+          ? String(item.instructions)
+              .split(/\r?\n+/)
+              .map((step) => step.trim())
+              .filter(Boolean)
+          : []
       : []
 
   const ingredients =
@@ -300,8 +297,9 @@ function handleMissingSelection() {
         <div class="flex items-start justify-between">
           <div>
             <h2 class="text-2xl font-semibold text-gray-900">Add to Meal Plan</h2>
-            <p class="text-sm text-gray-600">
-              Link <span class="font-medium text-gray-700">{{ itemName }}</span> to your meal planning workspace.
+            <p class="text-lg text-gray-600">
+              Link <span class="font-medium text-gray-700">{{ itemName }}</span> to your meal
+              planning workspace.
             </p>
           </div>
           <button
@@ -317,13 +315,11 @@ function handleMissingSelection() {
         <section class="space-y-4 rounded-2xl border border-gray-100 bg-gray-50/80 p-5">
           <header class="flex items-center justify-between">
             <div>
-              <p class="text-xs font-semibold uppercase tracking-widest text-green-600">
-                Step 1
-              </p>
+              <p class="text-xs font-semibold uppercase tracking-widest text-green-600">Step 1</p>
               <h3 class="text-base font-semibold text-gray-900">Choose where this meal belongs</h3>
             </div>
             <button
-              class="text-sm font-semibold text-green-600 hover:underline"
+              class="text-lg font-semibold text-green-600 hover:underline"
               @click="showCreateForm = !showCreateForm"
             >
               {{ showCreateForm ? 'Back to plans' : '+ Create new plan' }}
@@ -336,51 +332,51 @@ function handleMissingSelection() {
           >
             <div class="grid gap-3 md:grid-cols-2">
               <label class="space-y-1">
-                <span class="text-sm font-medium text-gray-700">Plan name *</span>
+                <span class="text-lg font-medium text-gray-700">Plan name *</span>
                 <input
                   v-model="createDraft.name"
                   type="text"
                   ref="planNameInput"
-                  class="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm text-gray-900 shadow-sm transition focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/40"
+                  class="w-full rounded-lg border border-gray-200 px-4 py-3 text-lg text-gray-900 shadow-sm transition focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/40"
                   placeholder="e.g., Spring Wellness Reset"
                 />
               </label>
 
               <label class="space-y-1">
-                <span class="text-sm font-medium text-gray-700">Start date</span>
+                <span class="text-lg font-medium text-gray-700">Start date</span>
                 <input
                   v-model="createDraft.startDate"
                   type="date"
-                  class="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm text-gray-900 transition focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/40"
+                  class="w-full rounded-lg border border-gray-200 px-4 py-3 text-lg text-gray-900 transition focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/40"
                 />
               </label>
 
               <label class="space-y-1">
-                <span class="text-sm font-medium text-gray-700">End date</span>
+                <span class="text-lg font-medium text-gray-700">End date</span>
                 <input
                   v-model="createDraft.endDate"
                   type="date"
-                  class="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm text-gray-900 transition focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/40"
+                  class="w-full rounded-lg border border-gray-200 px-4 py-3 text-lg text-gray-900 transition focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/40"
                 />
               </label>
 
               <label class="space-y-1 md:col-span-2">
-                <span class="text-sm font-medium text-gray-700">Notes</span>
+                <span class="text-lg font-medium text-gray-700">Notes</span>
                 <textarea
                   v-model="createDraft.notes"
                   rows="3"
-                  class="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm text-gray-900 transition focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/40"
+                  class="w-full rounded-lg border border-gray-200 px-4 py-3 text-lg text-gray-900 transition focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/40"
                   placeholder="Optional context for this plan"
                 />
               </label>
             </div>
 
             <div class="flex items-center justify-between">
-              <p v-if="creationError" class="text-sm text-red-600">{{ creationError }}</p>
+              <p v-if="creationError" class="text-lg text-red-600">{{ creationError }}</p>
               <div class="flex-1"></div>
               <button
                 @click="createPlan"
-                class="inline-flex items-center justify-center rounded-lg bg-green-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-green-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-500"
+                class="inline-flex items-center justify-center rounded-lg bg-green-600 px-5 py-2 text-lg font-semibold text-white transition hover:bg-green-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-500"
               >
                 Save plan
               </button>
@@ -398,8 +394,8 @@ function handleMissingSelection() {
                 plan.status === 'archived'
                   ? 'cursor-not-allowed border-gray-100 bg-gray-50 text-gray-400'
                   : selectedPlanId === plan.id
-                  ? 'border-green-500 bg-green-50'
-                  : 'border-gray-200 bg-white hover:border-green-500 hover:bg-green-50/60',
+                    ? 'border-green-500 bg-green-50'
+                    : 'border-gray-200 bg-white hover:border-green-500 hover:bg-green-50/60',
               ]"
             >
               <div class="flex items-start justify-between gap-3">
@@ -448,7 +444,7 @@ function handleMissingSelection() {
               </span>
             </button>
 
-            <p v-if="!plans.length" class="col-span-full text-sm text-gray-500">
+            <p v-if="!plans.length" class="col-span-full text-lg text-gray-500">
               No meal plans yet — create one to get started.
             </p>
           </div>
@@ -460,16 +456,14 @@ function handleMissingSelection() {
           :class="{ 'pointer-events-none opacity-40': !selectedPlanId }"
         >
           <header>
-            <p class="text-xs font-semibold uppercase tracking-widest text-green-600">
-              Step 2
-            </p>
+            <p class="text-xs font-semibold uppercase tracking-widest text-green-600">Step 2</p>
             <h3 class="text-base font-semibold text-gray-900">Pick a meal slot</h3>
           </header>
           <div class="flex flex-wrap gap-2">
             <button
               v-for="type in mealTypes"
               :key="type"
-              class="rounded-full border px-4 py-2 text-sm font-medium transition"
+              class="rounded-full border px-4 py-2 text-lg font-medium transition"
               :class="
                 selectedMealType === type
                   ? 'border-green-600 bg-green-600 text-white'
@@ -486,40 +480,41 @@ function handleMissingSelection() {
         <!-- Step 3 -->
         <section class="space-y-4 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
           <header>
-            <p class="text-xs font-semibold uppercase tracking-widest text-green-600">
-              Step 3
-            </p>
+            <p class="text-xs font-semibold uppercase tracking-widest text-green-600">Step 3</p>
             <h3 class="text-base font-semibold text-gray-900">Confirm and add</h3>
           </header>
 
           <div class="flex flex-wrap gap-3">
             <span
               v-if="selectedPlan"
-              class="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700"
+              class="rounded-full bg-green-100 px-3 py-1 text-lg font-medium text-green-700"
             >
               Plan: {{ selectedPlan.name }}
             </span>
             <span
               v-if="selectedMealType"
-              class="rounded-full bg-sky-100 px-3 py-1 text-sm font-medium text-sky-700"
+              class="rounded-full bg-sky-100 px-3 py-1 text-lg font-medium text-sky-700"
             >
               Meal: {{ selectedMealType }}
             </span>
-            <span class="rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700">
+            <span class="rounded-full bg-gray-100 px-3 py-1 text-lg font-medium text-gray-700">
               Item: {{ item?.food || item?.name || item?.recipe_name || 'Unknown item' }}
             </span>
           </div>
 
-          <p v-if="confirmationMessage" class="rounded-lg bg-green-50 px-4 py-2 text-sm text-green-700">
+          <p
+            v-if="confirmationMessage"
+            class="rounded-lg bg-green-50 px-4 py-2 text-lg text-green-700"
+          >
             {{ confirmationMessage }}
           </p>
-          <p v-else-if="linkError" class="text-sm text-red-600">{{ linkError }}</p>
+          <p v-else-if="linkError" class="text-lg text-red-600">{{ linkError }}</p>
 
           <div class="flex items-center justify-end">
             <button
               @click="linkToPlan"
               :disabled="isSubmitting"
-              class="inline-flex items-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-green-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-500 disabled:cursor-not-allowed disabled:opacity-60"
+              class="inline-flex items-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-lg font-semibold text-white shadow-sm transition hover:bg-green-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-500 disabled:cursor-not-allowed disabled:opacity-60"
               :class="{ 'animate-shake': isShaking }"
             >
               <span

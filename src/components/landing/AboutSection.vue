@@ -18,7 +18,7 @@ const highlights = [
 <template>
   <section id="about" class="bg-gray-50 px-6 py-16">
     <div class="max-w-3xl mx-auto text-center">
-      <p class="text-sm font-semibold uppercase tracking-wide text-green-600">About</p>
+      <p class="text-lg font-semibold uppercase tracking-wide text-green-600">About</p>
       <h2 class="mt-2 text-3xl md:text-4xl font-bold text-gray-900">Made by people who care</h2>
       <p class="mt-4 text-lg text-gray-700">
         We are a small team of students blending nutrition science and modern tech to make meal

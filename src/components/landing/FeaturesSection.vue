@@ -35,7 +35,11 @@ const features = [
     title: 'Platform Reliability',
     description:
       'Powered by Firebase authentication and AWS-backed data services for a stable, modular experience.',
-    points: ['Realtime sync across devices', 'Resilient cloud infrastructure', 'Modular, future-ready'],
+    points: [
+      'Realtime sync across devices',
+      'Resilient cloud infrastructure',
+      'Modular, future-ready',
+    ],
   },
 ]
 </script>
@@ -43,7 +47,7 @@ const features = [
 <template>
   <section id="features" class="px-6 py-16 bg-white">
     <div class="text-center max-w-3xl mx-auto mb-12">
-      <p class="text-sm font-semibold uppercase tracking-wide text-green-600">Features</p>
+      <p class="text-lg font-semibold uppercase tracking-wide text-green-600">Features</p>
       <h2 class="mt-2 text-3xl md:text-4xl font-bold text-gray-900">
         Everything you need to understand what NutriBuddy can do.
       </h2>

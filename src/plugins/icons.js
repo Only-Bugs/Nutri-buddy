@@ -55,6 +55,9 @@ import {
   faGlobe,
   faHourglassHalf,
   faStopwatch,
+  faCalendarDays,
+  faClipboardCheck,
+  faFileCsv,
 } from '@fortawesome/free-solid-svg-icons'
 import { faLinkedin, faGithub, faGoogle, faApple } from '@fortawesome/free-brands-svg-icons'
 
@@ -111,6 +114,9 @@ library.add(
   faGlobe,
   faHourglassHalf,
   faStopwatch,
+  faCalendarDays,
+  faClipboardCheck,
+  faFileCsv,
 )
 
 export default {

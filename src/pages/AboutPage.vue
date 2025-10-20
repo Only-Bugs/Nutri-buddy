@@ -9,11 +9,13 @@ import RoadmapCard from '@/components/static/RoadmapCard.vue'
 const teamQuotes = [
   {
     name: 'Maya · Product',
-    quote: 'We built NutriBuddy because logging food should feel like a friend cheering you on, not a chore.',
+    quote:
+      'We built NutriBuddy because logging food should feel like a friend cheering you on, not a chore.',
   },
   {
     name: 'Leo · Engineering',
-    quote: 'Reliable data unlocks confident choices. We obsess over the backend so you can stay focused on meals.',
+    quote:
+      'Reliable data unlocks confident choices. We obsess over the backend so you can stay focused on meals.',
   },
 ]
 
@@ -88,7 +90,7 @@ const values = [
           class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm"
         >
           <p class="text-base text-gray-700">“{{ voice.quote }}”</p>
-          <p class="mt-4 text-sm font-semibold text-green-600">{{ voice.name }}</p>
+          <p class="mt-4 text-lg font-semibold text-green-600">{{ voice.name }}</p>
         </article>
       </div>
     </section>

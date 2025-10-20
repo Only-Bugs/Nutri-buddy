@@ -31,9 +31,9 @@ function getInitials(name) {
         </span>
         <div>
           <p class="text-lg font-semibold text-gray-900">{{ member.name }}</p>
-          <p class="text-sm text-green-600">{{ member.role }}</p>
+          <p class="text-lg text-green-600">{{ member.role }}</p>
         </div>
-        <p class="text-sm text-gray-600">{{ member.story }}</p>
+        <p class="text-lg text-gray-600">{{ member.story }}</p>
       </article>
     </div>
   </section>

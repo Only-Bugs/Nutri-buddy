@@ -22,13 +22,13 @@ function toggle(index) {
       <li v-for="(item, index) in props.items" :key="item.question" class="py-3">
         <button
           type="button"
-          class="flex w-full items-center justify-between text-left text-sm font-semibold text-gray-800"
+          class="flex w-full items-center justify-between text-left text-lg font-semibold text-gray-800"
           @click="toggle(index)"
         >
           <span>{{ item.question }}</span>
           <span class="text-green-600">{{ openIndex === index ? '−' : '+' }}</span>
         </button>
-        <p v-if="openIndex === index" class="mt-2 text-sm text-gray-600">
+        <p v-if="openIndex === index" class="mt-2 text-lg text-gray-600">
           {{ item.answer }}
         </p>
       </li>

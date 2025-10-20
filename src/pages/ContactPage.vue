@@ -8,7 +8,8 @@ import SocialStrip from '@/components/static/SocialStrip.vue'
 const faqItems = [
   {
     question: 'Is NutriBuddy free?',
-    answer: 'Yes. The beta is free while we gather feedback. Paid plans will arrive later with notice.',
+    answer:
+      'Yes. The beta is free while we gather feedback. Paid plans will arrive later with notice.',
   },
   {
     question: 'Can I export my data?',
@@ -63,12 +64,10 @@ const socials = [
 
     <section class="bg-white">
       <div class="mx-auto flex max-w-4xl flex-col items-center gap-4 px-6 py-12 text-center">
-        <p class="text-lg font-semibold text-gray-900">
-          Prefer to explore first?
-        </p>
+        <p class="text-lg font-semibold text-gray-900">Prefer to explore first?</p>
         <router-link
           to="/"
-          class="rounded-lg border border-green-600 px-5 py-3 text-sm font-semibold text-green-700 transition hover:bg-green-50"
+          class="rounded-lg border border-green-600 px-5 py-3 text-lg font-semibold text-green-700 transition hover:bg-green-50"
         >
           Try the Dashboard →
         </router-link>

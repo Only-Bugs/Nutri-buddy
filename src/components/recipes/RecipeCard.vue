@@ -15,8 +15,8 @@ const props = defineProps({
 
 const emit = defineEmits(['toggle-favorite', 'add-to-plan', 'open-detail'])
 
-const primaryType = computed(() =>
-  props.recipe.primaryMealType || props.recipe.mealTypes?.[0] || 'Meal',
+const primaryType = computed(
+  () => props.recipe.primaryMealType || props.recipe.mealTypes?.[0] || 'Meal',
 )
 
 const heroMeta = computed(() => getMealTypeVisual(primaryType.value))
@@ -38,10 +38,7 @@ const infoItems = computed(() => {
     class="rounded-3xl border border-gray-200 bg-white shadow-sm overflow-hidden flex flex-col cursor-pointer transition hover:shadow-lg"
     @click="emit('open-detail', recipe)"
   >
-    <div
-      class="relative rounded-t-3xl bg-gradient-to-br p-6"
-      :class="heroMeta.gradient"
-    >
+    <div class="relative rounded-t-3xl bg-gradient-to-br p-6" :class="heroMeta.gradient">
       <div class="flex items-start justify-between gap-3">
         <div class="space-y-2">
           <p class="text-xs font-semibold uppercase tracking-widest" :class="heroMeta.accent">
@@ -62,7 +59,10 @@ const infoItems = computed(() => {
       </div>
 
       <div class="mt-6 flex items-end justify-between gap-4">
-        <FontAwesomeIcon :icon="heroMeta.icon" :class="['text-5xl drop-shadow-sm', heroMeta.accent]" />
+        <FontAwesomeIcon
+          :icon="heroMeta.icon"
+          :class="['text-5xl drop-shadow-sm', heroMeta.accent]"
+        />
         <div class="flex flex-wrap items-center gap-2">
           <span
             v-for="mealType in secondaryMealTypes"
@@ -76,11 +76,11 @@ const infoItems = computed(() => {
     </div>
 
     <div class="flex flex-1 flex-col gap-5 p-5">
-      <p v-if="recipe.description" class="text-sm text-gray-600 line-clamp-3">
+      <p v-if="recipe.description" class="text-lg text-gray-600 line-clamp-3">
         {{ recipe.description }}
       </p>
 
-      <dl class="grid grid-cols-2 gap-3 text-sm text-gray-700">
+      <dl class="grid grid-cols-2 gap-3 text-lg text-gray-700">
         <div
           v-for="info in infoItems"
           :key="info.label"
@@ -102,17 +102,19 @@ const infoItems = computed(() => {
           :key="macro.label"
           :class="['flex flex-col items-start gap-1 rounded-xl px-4 py-3 shadow-sm', macro.bg]"
         >
-          <span class="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-gray-500">
+          <span
+            class="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-gray-500"
+          >
             <FontAwesomeIcon :icon="macro.icon" :class="macro.accent" />
             {{ macro.label }}
           </span>
-          <span class="text-sm font-semibold text-gray-900">{{ macro.value }}</span>
+          <span class="text-lg font-semibold text-gray-900">{{ macro.value }}</span>
         </div>
       </div>
 
       <div class="mt-auto flex items-center justify-between gap-3">
         <button
-          class="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-green-600 px-4 py-2 text-sm font-semibold text-green-700 transition hover:bg-green-600 hover:text-white"
+          class="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-green-600 px-4 py-2 text-lg font-semibold text-green-700 transition hover:bg-green-600 hover:text-white"
           @click.stop="emit('add-to-plan', recipe)"
         >
           <FontAwesomeIcon icon="plus" />

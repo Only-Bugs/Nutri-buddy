@@ -82,10 +82,11 @@ function handleClick() {
             Daily calories
           </p>
           <p class="text-2xl font-semibold text-gray-900">
-            {{ safeConsumed }} <span class="text-base font-medium text-gray-500">of</span> {{ safeLimit }} kcal
+            {{ safeConsumed }} <span class="text-base font-medium text-gray-500">of</span>
+            {{ safeLimit }} kcal
           </p>
         </div>
-        <span :class="['rounded-full px-4 py-1 text-sm font-semibold', statusTone]">
+        <span :class="['rounded-full px-4 py-1 text-lg font-semibold', statusTone]">
           {{ remaining }} kcal left
         </span>
       </header>
@@ -97,10 +98,12 @@ function handleClick() {
             :style="{ width: `${Math.max(percent, 4)}%` }"
           ></div>
         </div>
-        <div class="flex flex-wrap items-center justify-between gap-3 text-sm text-gray-600">
+        <div class="flex flex-wrap items-center justify-between gap-3 text-lg text-gray-600">
           <div>Consumed today</div>
           <div class="flex items-center gap-2">
-            <span class="rounded bg-gray-100 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-gray-500">
+            <span
+              class="rounded bg-gray-100 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-gray-500"
+            >
               Target
             </span>
             <span class="font-semibold text-gray-900">{{ safeLimit }} kcal</span>
@@ -109,9 +112,7 @@ function handleClick() {
         <p v-if="formattedUpdated" class="text-xs text-gray-400">
           Last updated {{ formattedUpdated }}
         </p>
-        <p class="text-sm font-semibold text-green-600">
-          Open history →
-        </p>
+        <p class="text-lg font-semibold text-green-600">Open history →</p>
       </div>
     </div>
   </section>

@@ -40,7 +40,7 @@ function handleSubmit() {
   <section id="contact" class="px-6 py-16 bg-white">
     <div class="max-w-4xl mx-auto">
       <div class="text-center">
-        <p class="text-sm font-semibold uppercase tracking-wide text-green-600">Contact</p>
+        <p class="text-lg font-semibold uppercase tracking-wide text-green-600">Contact</p>
         <h2 class="mt-2 text-3xl md:text-4xl font-bold text-gray-900">We read every message</h2>
         <p class="mt-4 text-lg text-gray-600">
           Got questions, feedback, or a partnership idea? Reach out—NutriBuddy is built in the open,
@@ -55,7 +55,7 @@ function handleSubmit() {
             :key="detail.label"
             class="rounded-xl border border-green-100 bg-gray-50 p-6"
           >
-            <p class="text-sm font-semibold uppercase tracking-wide text-green-600">
+            <p class="text-lg font-semibold uppercase tracking-wide text-green-600">
               {{ detail.label }}
             </p>
             <p class="mt-2 text-lg text-gray-900 font-medium">
@@ -70,11 +70,11 @@ function handleSubmit() {
           @submit.prevent="handleSubmit"
         >
           <h3 class="text-xl font-semibold text-gray-900">Send us a note</h3>
-          <p class="mt-2 text-sm text-gray-600">
+          <p class="mt-2 text-lg text-gray-600">
             Tell us what you are working on or where we can help. We reply within a couple of days.
           </p>
 
-          <label class="mt-6 block text-sm font-medium text-gray-700">
+          <label class="mt-6 block text-lg font-medium text-gray-700">
             Name
             <input
               v-model="form.name"
@@ -85,7 +85,7 @@ function handleSubmit() {
             />
           </label>
 
-          <label class="mt-4 block text-sm font-medium text-gray-700">
+          <label class="mt-4 block text-lg font-medium text-gray-700">
             Email
             <input
               v-model="form.email"
@@ -96,7 +96,7 @@ function handleSubmit() {
             />
           </label>
 
-          <label class="mt-4 block text-sm font-medium text-gray-700">
+          <label class="mt-4 block text-lg font-medium text-gray-700">
             Message
             <textarea
               v-model="form.message"
@@ -114,7 +114,7 @@ function handleSubmit() {
             Send message
           </button>
 
-          <p v-if="submitted" class="mt-4 text-sm text-green-600">
+          <p v-if="submitted" class="mt-4 text-lg text-green-600">
             Thanks! We’ll be in touch soon.
           </p>
         </form>

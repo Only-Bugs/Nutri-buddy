@@ -21,7 +21,7 @@ const props = defineProps({
         <h3 class="text-lg font-semibold text-gray-900">
           {{ event.title }}
         </h3>
-        <p class="text-sm text-gray-600">
+        <p class="text-lg text-gray-600">
           {{ event.copy }}
         </p>
       </li>

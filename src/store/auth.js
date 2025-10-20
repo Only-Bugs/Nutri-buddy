@@ -14,6 +14,7 @@ import {
   loginWithGoogle,
   resolveGoogleRedirect,
 } from '../services/authService'
+import { sendWelcomeEmail } from '@/services/exportPlanService'
 
 /**
  * @typedef {Object} User
@@ -45,6 +46,9 @@ export const useAuthStore = defineStore('auth', {
       try {
         const created = await registerUser(newUser)
         this.user = created
+        sendWelcomeEmail(created.email).catch((error) =>
+          console.warn('[Auth] Welcome email failed', error?.message || error),
+        )
         return true
       } catch (error) {
         console.error('Registration failed:', error?.message || error)
@@ -63,6 +67,9 @@ export const useAuthStore = defineStore('auth', {
         const match = await loginUser(credentials)
         if (match) {
           this.user = match
+          sendWelcomeEmail(match.email).catch((error) =>
+            console.warn('[Auth] Welcome email failed', error?.message || error),
+          )
           return true
         }
         return false
@@ -82,6 +89,9 @@ export const useAuthStore = defineStore('auth', {
         const user = await loginWithGoogle()
         if (user) {
           this.user = user
+          sendWelcomeEmail(user.email).catch((error) =>
+            console.warn('[Auth] Welcome email failed', error?.message || error),
+          )
         }
         return true
       } catch (error) {
@@ -101,6 +111,9 @@ export const useAuthStore = defineStore('auth', {
         const user = await resolveGoogleRedirect()
         if (user) {
           this.user = user
+          sendWelcomeEmail(user.email).catch((error) =>
+            console.warn('[Auth] Welcome email failed', error?.message || error),
+          )
           return true
         }
         return false

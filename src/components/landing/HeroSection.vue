@@ -20,7 +20,7 @@ function scrollToFeatures() {
   <section class="bg-gray-50 px-6 py-12 md:py-20 grid md:grid-cols-2 gap-10 items-center">
     <!-- Text -->
     <div class="max-w-xl">
-      <p class="text-sm font-semibold tracking-wide text-green-600 uppercase">NutriBuddy</p>
+      <p class="text-lg font-semibold tracking-wide text-green-600 uppercase">NutriBuddy</p>
       <h2 class="mt-3 text-4xl md:text-5xl font-extrabold leading-tight text-gray-900">
         Smarter nutrition starts with one search.
       </h2>
@@ -74,7 +74,7 @@ function scrollToFeatures() {
         class="w-full rounded-2xl shadow-lg ring-1 ring-black/5"
       />
       <span
-        class="absolute top-4 right-4 bg-white text-green-600 px-3 py-1 text-sm font-semibold rounded-full shadow"
+        class="absolute top-4 right-4 bg-white text-green-600 px-3 py-1 text-lg font-semibold rounded-full shadow"
       >
         Live insights, zero clutter
       </span>

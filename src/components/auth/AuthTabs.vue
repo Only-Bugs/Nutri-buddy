@@ -28,7 +28,9 @@ function selectTab(id) {
 
 <template>
   <div class="flex flex-col gap-6">
-    <div class="flex rounded-full border border-gray-200 bg-gray-100/60 p-1 text-sm font-semibold text-gray-500">
+    <div
+      class="flex rounded-full border border-gray-200 bg-gray-100/60 p-1 text-lg font-semibold text-gray-500"
+    >
       <button
         v-for="tab in tabs"
         :key="tab.id"

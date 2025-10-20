@@ -60,13 +60,13 @@ const highlights = [
           <div class="mt-8 flex flex-wrap items-center gap-4">
             <router-link
               to="/auth"
-              class="rounded-lg bg-green-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-green-700"
+              class="rounded-lg bg-green-600 px-5 py-3 text-lg font-semibold text-white transition hover:bg-green-700"
             >
               Try the Dashboard
             </router-link>
             <router-link
               to="/features"
-              class="rounded-lg border border-green-600 px-5 py-3 text-sm font-semibold text-green-700 transition hover:bg-green-50"
+              class="rounded-lg border border-green-600 px-5 py-3 text-lg font-semibold text-green-700 transition hover:bg-green-50"
             >
               See how it works
             </router-link>
@@ -79,7 +79,7 @@ const highlights = [
               alt="NutriBuddy dashboard preview"
               class="w-full rounded-2xl"
             />
-            <p class="mt-4 text-sm text-gray-600">
+            <p class="mt-4 text-lg text-gray-600">
               Meal planning, macro tracking, and gentle nudges—all in one calm dashboard.
             </p>
           </div>
@@ -91,8 +91,8 @@ const highlights = [
       <div class="mx-auto max-w-5xl px-6 py-12">
         <div class="rounded-3xl border border-green-100 bg-green-50 p-8 shadow-sm">
           <p class="text-base font-semibold text-gray-800">
-            You search “100g chicken breast.” NutriBuddy shows calories, macros, and how it fits your
-            goal — instantly.
+            You search “100g chicken breast.” NutriBuddy shows calories, macros, and how it fits
+            your goal — instantly.
           </p>
           <TestimonialQuote
             class="mt-6"
@@ -140,14 +140,16 @@ const highlights = [
     </section>
 
     <section class="bg-green-600">
-      <div class="mx-auto flex max-w-4xl flex-col items-center gap-4 px-6 py-14 text-center text-white">
+      <div
+        class="mx-auto flex max-w-4xl flex-col items-center gap-4 px-6 py-14 text-center text-white"
+      >
         <h2 class="text-3xl font-semibold md:text-4xl">Join 500+ beta users</h2>
         <p class="text-base text-green-50">
           Create a free account and see your own data come to life in minutes.
         </p>
         <router-link
           to="/auth"
-          class="rounded-lg bg-white px-5 py-3 text-sm font-semibold text-green-700 transition hover:bg-green-100"
+          class="rounded-lg bg-white px-5 py-3 text-lg font-semibold text-green-700 transition hover:bg-green-100"
         >
           Get started
         </router-link>
