@@ -1,12 +1,13 @@
 /**
  * @file mealPlanStore.js
- * @description Pinia store managing meal plans locally (front-end only for now).
+ * @description Pinia store managing meal plans with Firestore persistence and local cache fallback.
  * @module store/mealplan/mealPlanStore
  * # Generated under NutriBuddy SpecGuard v1.0.0
  */
 
 import { defineStore } from 'pinia'
 import { createMealPlanDraft } from '@/types/mealplan/mealPlanTypes.js'
+import { fetchMealPlans, saveMealPlan } from '@/services/firestoreService'
 
 function cloneMeals(meals = []) {
   return meals.map((meal) => ({
@@ -125,7 +126,7 @@ function derivePlanRecipes(meals = []) {
   return recipes
 }
 
-function persistPlans(userId, plans) {
+function persistPlansLocally(userId, plans) {
   if (!userId) return
   try {
     localStorage.setItem(`mealPlans:${userId}`, JSON.stringify(plans))
@@ -171,25 +172,49 @@ export const useMealPlanStore = defineStore('mealPlan', {
         this.activePlanId = null
         return
       }
-      const persisted = loadPersistedPlans(this.userId)
-      this.plans = persisted.map((plan) => {
-        const meals = cloneMeals(plan.meals)
-        return {
-          ...plan,
-          meals,
-          nutritionTotals: aggregateNutritionTotals(meals),
-          recipes: Array.isArray(plan.recipes) && plan.recipes.length
-            ? plan.recipes
-            : derivePlanRecipes(meals),
-        }
-      })
-      if (this.plans.length) {
-        this.activePlanId = this.plans[0].id
-      }
     },
 
     async loadPlans(userId) {
       this.setUser(userId)
+      if (!this.userId) return
+
+      this.loading = true
+      try {
+        const plans = await fetchMealPlans(this.userId)
+        this.plans = plans.map((plan) => {
+          const meals = cloneMeals(plan.meals || [])
+          return {
+            ...plan,
+            meals,
+            nutritionTotals: plan.nutritionTotals || aggregateNutritionTotals(meals),
+            recipes:
+              Array.isArray(plan.recipes) && plan.recipes.length
+                ? plan.recipes
+                : derivePlanRecipes(meals),
+          }
+        })
+        this.activePlanId = this.plans[0]?.id || null
+        persistPlansLocally(this.userId, this.plans)
+        this.error = null
+      } catch (error) {
+        console.warn('[MealPlanStore] Failed to fetch meal plans', error)
+        this.error = error?.message || 'Failed to load meal plans'
+        const persisted = loadPersistedPlans(this.userId)
+        this.plans = persisted.map((plan) => {
+          const meals = cloneMeals(plan.meals)
+          return {
+            ...plan,
+            meals,
+            nutritionTotals: aggregateNutritionTotals(meals),
+            recipes: Array.isArray(plan.recipes) && plan.recipes.length
+              ? plan.recipes
+              : derivePlanRecipes(meals),
+          }
+        })
+        this.activePlanId = this.plans[0]?.id || null
+      } finally {
+        this.loading = false
+      }
     },
 
     selectPlan(planId) {
@@ -225,7 +250,10 @@ export const useMealPlanStore = defineStore('mealPlan', {
       if (!this.activePlanId || plan.status === 'active') {
         this.activePlanId = plan.id
       }
-      persistPlans(this.userId, this.plans)
+      persistPlansLocally(this.userId, this.plans)
+      saveMealPlan(this.userId, plan).catch((error) => {
+        console.warn('[MealPlanStore] Failed to persist meal plan', error)
+      })
       return plan
     },
 
@@ -251,7 +279,10 @@ export const useMealPlanStore = defineStore('mealPlan', {
         this.activePlanId = null
       }
 
-      persistPlans(this.userId, this.plans)
+      persistPlansLocally(this.userId, this.plans)
+      saveMealPlan(this.userId, plan).catch((error) => {
+        console.warn('[MealPlanStore] Failed to update meal plan status', error)
+      })
     },
 
     async addItemToActivePlan(payload) {
@@ -288,7 +319,10 @@ export const useMealPlanStore = defineStore('mealPlan', {
       plan.nutritionTotals = aggregateNutritionTotals(plan.meals)
       plan.recipes = derivePlanRecipes(plan.meals)
       this.plans.splice(planIndex, 1, plan)
-      persistPlans(this.userId, this.plans)
+      persistPlansLocally(this.userId, this.plans)
+      saveMealPlan(this.userId, plan).catch((error) => {
+        console.warn('[MealPlanStore] Failed to add item to meal plan', error)
+      })
     },
 
     async removeItemFromActivePlan(payload) {
@@ -311,7 +345,10 @@ export const useMealPlanStore = defineStore('mealPlan', {
       plan.nutritionTotals = aggregateNutritionTotals(plan.meals)
       plan.recipes = derivePlanRecipes(plan.meals)
       this.plans.splice(planIndex, 1, plan)
-      persistPlans(this.userId, this.plans)
+      persistPlansLocally(this.userId, this.plans)
+      saveMealPlan(this.userId, plan).catch((error) => {
+        console.warn('[MealPlanStore] Failed to remove item from meal plan', error)
+      })
     },
 
     async archiveActivePlan() {

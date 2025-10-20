@@ -12,6 +12,7 @@ import RegisterForm from '@/components/auth/RegisterForm.vue'
 
 /** Reactive state for active tab: 'login' or 'register'. */
 const activeTab = ref('login')
+const isGoogleLoading = ref(false)
 
 /** Store, router, and toast initialization. */
 const auth = useAuthStore()
@@ -27,12 +28,18 @@ const { showToast } = useToast()
  * @returns {Promise<void>}
  */
 async function handleGoogleLogin() {
-  const ok = await auth.loginWithGoogle()
-  if (ok) {
-    showToast('Signed in with Google!', 'success')
-    router.push('/dashboard')
-  } else {
-    showToast('Google login failed. Please try again.', 'error')
+  if (isGoogleLoading.value) return
+  isGoogleLoading.value = true
+  try {
+    const ok = await auth.loginWithGoogle()
+    if (ok) {
+      showToast('Signed in with Google!', 'success')
+      router.push('/dashboard')
+    } else {
+      showToast('Google login failed. Please try again.', 'error')
+    }
+  } finally {
+    isGoogleLoading.value = false
   }
 }
 </script>
@@ -93,18 +100,50 @@ async function handleGoogleLogin() {
         <button
           type="button"
           @click="handleGoogleLogin"
-          class="w-full flex items-center justify-center gap-2 border rounded-lg py-2 hover:bg-gray-50 text-lg text-gray-700"
+          :disabled="isGoogleLoading"
+          :aria-busy="isGoogleLoading"
+          class="w-full flex items-center justify-center gap-3 border rounded-lg py-2 text-lg text-gray-700 transition"
+          :class="isGoogleLoading ? 'cursor-wait bg-gray-50 opacity-90' : 'hover:bg-gray-50'"
         >
-          <img src="" alt="Google" class="h-5 w-5" />
-          Google
+          <svg
+            v-if="!isGoogleLoading"
+            class="h-5 w-5 text-green-600"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              d="M12 3a9 9 0 100 18 8.9 8.9 0 005.93-2.2l-2.35-2a5.17 5.17 0 01-3.58 1.37 5.16 5.16 0 110-10.32 5 5 0 013.94 1.86l1.54-1.54A7.9 7.9 0 0012 3z"
+            />
+            <path d="M21 12.5h-7.5v-3h7.5v3z" />
+          </svg>
+          <svg
+            v-else
+            class="h-5 w-5 animate-spin text-green-600"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+            />
+          </svg>
+          <span class="font-medium">
+            {{ isGoogleLoading ? 'Connecting...' : 'Google' }}
+          </span>
         </button>
         <button
           type="button"
           disabled
-          class="w-full flex items-center justify-center gap-2 border rounded-lg py-2 bg-gray-100 text-gray-400 cursor-not-allowed text-lg"
+          class="w-full flex items-center justify-center gap-3 border rounded-lg py-2 bg-gray-100 text-gray-400 cursor-not-allowed text-lg"
         >
-          <img src="" alt="Apple" class="h-5 w-5" />
-          Apple
+          <FontAwesomeIcon :icon="['fas', 'apple-whole']" class="h-5 w-5 text-gray-400" />
+          <span class="font-medium">Apple</span>
         </button>
       </div>
     </div>

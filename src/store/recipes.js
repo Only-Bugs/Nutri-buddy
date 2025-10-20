@@ -4,6 +4,7 @@
  */
 
 import { defineStore } from 'pinia'
+import { fetchRecipes } from '@/services/firestoreService'
 
 const FALLBACK_MEAL_TYPE = 'Dinner'
 const MEAL_TYPE_ORDER = ['Breakfast', 'Lunch', 'Dinner', 'Snack', 'Dessert', 'Beverage']
@@ -74,9 +75,9 @@ function placeholderImage(primaryMealType) {
 }
 
 function normalizeRecipe(raw) {
-  const mealTypes =
-    normalizeMealTypes(raw.meal_types || raw.mealTypes || raw.category || raw.meal_type) ||
-    [FALLBACK_MEAL_TYPE]
+  const mealTypes = normalizeMealTypes(
+    raw.meal_types || raw.mealTypes || raw.category || raw.meal_type,
+  ) || [FALLBACK_MEAL_TYPE]
   const instructionsArray = Array.isArray(raw.instructions)
     ? raw.instructions
     : toArray(raw.instructions)
@@ -148,18 +149,34 @@ export const useRecipeStore = defineStore('recipes', {
       if (this.loading) return
       this.loading = true
       try {
-        let payload
+        let recipesPayload = []
+
         try {
-          const response = await fetch(`${import.meta.env.BASE_URL || '/'}temp.json`)
-          if (!response.ok) throw new Error(`Failed to load temp.json (${response.status})`)
-          payload = await response.json()
-        } catch (fetchError) {
-          // Vite dev server fallback to bundler import if fetch not available (e.g., SSR)
-          const module = await import('../../temp.json', { assert: { type: 'json' } })
-          payload = module.default || module
+          const remoteRecipes = await fetchRecipes()
+          if (Array.isArray(remoteRecipes) && remoteRecipes.length) {
+            recipesPayload = remoteRecipes
+            if (import.meta.env.DEV) {
+              console.info('[RecipeStore] Loaded recipes from Firestore', remoteRecipes.length)
+            }
+          }
+        } catch (remoteError) {
+          console.warn('[RecipeStore] Failed to load recipes from Firestore', remoteError)
         }
-        const parsed = Array.isArray(payload.recipes) ? payload.recipes : []
-        this.recipes = parsed.map(normalizeRecipe)
+
+        if (!recipesPayload.length) {
+          let fallbackPayload
+          try {
+            const response = await fetch(`${import.meta.env.BASE_URL || '/'}recepies.json`)
+            if (!response.ok) throw new Error(`Failed to load recepies.json (${response.status})`)
+            fallbackPayload = await response.json()
+          } catch (fetchError) {
+            const module = await import('../../recepies.json', { assert: { type: 'json' } })
+            fallbackPayload = module.default || module
+          }
+          recipesPayload = Array.isArray(fallbackPayload.recipes) ? fallbackPayload.recipes : []
+        }
+
+        this.recipes = recipesPayload.map(normalizeRecipe)
         this.initialized = true
       } catch (error) {
         console.error('[RecipeStore] Failed to load recipes dataset', error)

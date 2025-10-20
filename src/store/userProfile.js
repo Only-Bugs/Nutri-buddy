@@ -1,11 +1,12 @@
 /**
  * @file userProfile.js
  * @description Centralised user profile store for avatar, username, and preferences.
- * Persists lightweight settings per user in localStorage to avoid backend writes.
+ * Persists settings to Firestore with a localStorage cache for fast reads.
  * @module store/userProfile
  */
 
 import { defineStore } from 'pinia'
+import { fetchUserProfile, saveUserProfile } from '@/services/firestoreService'
 
 const STORAGE_PREFIX = 'userProfile'
 const DEFAULT_CALORIE_LIMIT = 2000
@@ -27,12 +28,21 @@ function loadStoredProfile(userId) {
   }
 }
 
-function persistProfile(userId, payload) {
+function persistProfileLocally(userId, payload) {
   if (!userId) return
   try {
     localStorage.setItem(storageKey(userId), JSON.stringify(payload))
   } catch (error) {
     console.warn('[UserProfileStore] Failed to persist profile', error)
+  }
+}
+
+async function persistProfile(userId, payload) {
+  persistProfileLocally(userId, payload)
+  try {
+    await saveUserProfile(userId, payload)
+  } catch (error) {
+    console.warn('[UserProfileStore] Failed to persist profile remotely', error)
   }
 }
 
@@ -95,7 +105,7 @@ export const useUserProfileStore = defineStore('userProfile', {
      * Hydrates state from Firebase auth user and stored preferences.
      * @param {import('firebase/auth').User|null} authUser
      */
-    initializeFromAuth(authUser) {
+    async initializeFromAuth(authUser) {
       if (!authUser) {
         this.reset()
         return
@@ -117,6 +127,27 @@ export const useUserProfileStore = defineStore('userProfile', {
         this.customUsername = ''
         this.dailyCalorieLimit = DEFAULT_CALORIE_LIMIT
         this.isCalorieLimitCustom = false
+      }
+
+      try {
+        const remoteProfile = await fetchUserProfile(this.userId)
+        if (remoteProfile) {
+          this.customUsername = remoteProfile.customUsername || this.customUsername || ''
+          this.dailyCalorieLimit =
+            Number(remoteProfile.dailyCalorieLimit) > 0
+              ? Number(remoteProfile.dailyCalorieLimit)
+              : this.dailyCalorieLimit
+          this.isCalorieLimitCustom =
+            remoteProfile.isCalorieLimitCustom ?? this.isCalorieLimitCustom ?? false
+          this.lastSyncedAt = remoteProfile.updatedAt || new Date().toISOString()
+          persistProfileLocally(this.userId, {
+            customUsername: this.customUsername,
+            dailyCalorieLimit: this.dailyCalorieLimit,
+            isCalorieLimitCustom: this.isCalorieLimitCustom,
+          })
+        }
+      } catch (error) {
+        console.warn('[UserProfileStore] Failed to fetch remote profile', error)
       }
     },
 

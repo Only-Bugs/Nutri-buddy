@@ -6,6 +6,7 @@ components/dashboard/DashboardHeader */
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { useAuthStore } from '@/store/auth'
 import { useUserProfileStore } from '@/store/userProfile'
 import { useAuthActions } from '@/composables/useAuthActions'
 
@@ -15,7 +16,6 @@ const router = useRouter()
 const showMenu = ref(false)
 const { handleLogout } = useAuthActions()
 
-const calorieLimit = computed(() => userProfile.dailyCalorieLimit || 0)
 const firstName = computed(() => userProfile.resolvedFirstName)
 const profileEmail = computed(() => userProfile.email || auth.user?.email || 'unknown user')
 const avatarUrl = computed(() => userProfile.avatarUrl)
@@ -39,32 +39,25 @@ function goToSettings() {
     </div>
 
     <!-- Right: Profile cluster -->
-    <div class="flex items-center gap-5 relative">
-      <!-- Calorie limit -->
-      <div class="text-right">
-        <p class="text-base text-gray-500 leading-tight">Daily Limit</p>
-        <p class="text-lg font-bold text-green-600">{{ calorieLimit }} kcal</p>
-      </div>
-
-      <!-- Avatar / default icon -->
+    <div class="flex items-center gap-4 relative">
       <button
         @click="toggleMenu"
-        class="flex items-center gap-2 focus:outline-none"
+        class="flex items-center gap-3 rounded-full border border-gray-200 bg-white px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-400"
         aria-label="User menu"
       >
-        <div
-          class="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center bg-gray-100 overflow-hidden"
-        >
+        <div class="h-12 w-12 overflow-hidden rounded-full bg-gray-100">
           <template v-if="avatarUrl">
-            <img :src="avatarUrl" alt="User avatar" class="w-full h-full object-cover" />
+            <img :src="avatarUrl" alt="User avatar" class="h-full w-full object-cover" />
           </template>
           <template v-else>
-            <FontAwesomeIcon icon="user" class="text-gray-500 text-base" />
+            <div class="flex h-full w-full items-center justify-center">
+              <FontAwesomeIcon icon="user" class="text-gray-500 text-2xl" />
+            </div>
           </template>
         </div>
         <FontAwesomeIcon
           icon="chevron-down"
-          class="text-gray-600 text-base transition-transform"
+          class="text-gray-600 text-2xl transition-transform"
           :class="{ 'rotate-180': showMenu }"
         />
       </button>
@@ -75,11 +68,11 @@ function goToSettings() {
           v-if="showMenu"
           class="absolute right-0 top-12 w-56 bg-white border rounded-lg shadow-lg z-10 py-2"
         >
-          <p class="px-4 pb-2 text-base text-gray-400 border-b">
+          <p class="px-4 pb-3 text-lg text-gray-400 border-b">
             Logged in as {{ profileEmail }}
           </p>
           <button
-            class="flex items-center gap-2 w-full text-left px-4 py-2 text-base text-gray-700 hover:bg-gray-50"
+            class="flex items-center gap-3 w-full text-left px-4 py-3 text-lg text-gray-700 transition hover:bg-green-50"
             type="button"
             @click="goToSettings"
           >
@@ -87,10 +80,14 @@ function goToSettings() {
           </button>
           <button
             @click="handleLogout"
-            class="flex items-center gap-2 w-full text-left px-4 py-2 text-base text-red-600 hover:bg-red-50"
+            class="flex items-center gap-3 w-full text-left px-4 py-3 text-lg font-semibold text-white transition"
             type="button"
+            style="background-color: #dc2626;"
+            @mouseover="($event.target.style.backgroundColor = '#b91c1c')"
+            @mouseleave="($event.target.style.backgroundColor = '#dc2626')"
           >
-            <FontAwesomeIcon icon="arrow-right-from-bracket" /> Logout
+            <FontAwesomeIcon icon="arrow-right-from-bracket" />
+            Logout
           </button>
         </div>
       </transition>

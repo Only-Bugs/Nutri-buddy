@@ -9,6 +9,8 @@
 import { defineStore } from 'pinia'
 import { getNutritionData } from '@/services/nutritionService'
 import { useUserProfileStore } from '@/store/userProfile'
+import { fetchNutritionHistory, saveNutritionEntry } from '@/services/firestoreService'
+import { useAuthStore } from '@/store/auth'
 
 const DEBUG_SEARCH = import.meta.env?.VITE_DEBUG_SEARCH === 'true'
 
@@ -138,6 +140,7 @@ function buildHistoryEntry(result, query, previous = null) {
     fiber,
     sugar,
     sodium,
+    nutrients: result.nutrients || {},
     createdAt: previous?.createdAt || new Date().toISOString(),
     cautions: result.cautions && result.cautions.length ? result.cautions : [],
   }
@@ -155,6 +158,65 @@ export const useDashboardStore = defineStore('dashboard', {
   }),
 
   actions: {
+    reset() {
+      this.foods = []
+      this.latestResult = null
+      this.loading = false
+      this.error = null
+      this.totalNutrition = { ...EMPTY_TOTALS }
+      this.latestTotals = { ...EMPTY_TOTALS }
+      this.sessionCache = {}
+    },
+
+    async initializeForUser(userId) {
+      this.reset()
+      if (!userId) return
+      this.loading = true
+      try {
+        const records = await fetchNutritionHistory(userId, 25)
+        const parsed = records.map((record) => {
+          const entry = {
+            ...(record.entry || {}),
+            id: record.entry?.id || record.id,
+            createdAt: record.createdAt || record.entry?.createdAt || new Date().toISOString(),
+          }
+          const result = record.result
+            ? {
+                ...record.result,
+                id: record.result.id || entry.id,
+              }
+            : null
+          const query = record.query || entry.name || ''
+          return { entry, result, query }
+        })
+        this.foods = parsed.map((item) => item.entry)
+        this.latestResult = parsed[0]?.result || null
+        this.latestTotals = this.latestResult ? extractTotalsFromResult(this.latestResult) : { ...EMPTY_TOTALS }
+        const totals = aggregateTotals(this.foods)
+        this.totalNutrition = {
+          calories: round(totals.calories),
+          protein: round(totals.protein),
+          carbs: round(totals.carbs),
+          fats: round(totals.fats),
+          fiber: round(totals.fiber),
+          sugar: round(totals.sugar),
+          sodium: round(totals.sodium),
+        }
+        this.sessionCache = parsed.reduce((acc, item) => {
+          if (item.result) {
+            acc[item.result.id] = item.result
+            acc[(item.query || '').toLowerCase()] = item.result
+          }
+          return acc
+        }, {})
+      } catch (error) {
+        console.warn('[DashboardStore] Failed to load persisted nutrition history', error)
+        this.error = error?.message || 'Failed to load nutrition history'
+      } finally {
+        this.loading = false
+      }
+    },
+
     /** Performs live search against API */
     async searchFood(query) {
       if (!query?.trim()) return
@@ -218,6 +280,20 @@ export const useDashboardStore = defineStore('dashboard', {
           sodium: round(totals.sodium),
         }
         useUserProfileStore().syncFromIntake(this.totalNutrition.calories)
+
+        const authStore = useAuthStore()
+        const userId = authStore.user?.uid
+        if (userId) {
+          saveNutritionEntry(userId, {
+            id: entry.id,
+            entry,
+            result,
+            query,
+            createdAt: entry.createdAt,
+          }).catch((error) => {
+            console.warn('[DashboardStore] Failed to persist nutrition entry', error)
+          })
+        }
       } catch (err) {
         console.error('[DashboardStore] Search failed:', err)
         if (DEBUG_SEARCH) {

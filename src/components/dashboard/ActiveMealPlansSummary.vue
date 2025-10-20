@@ -8,10 +8,26 @@ const props = defineProps({
   },
 })
 
+const emit = defineEmits(['open-plan'])
+
+function toMeals(plan) {
+  if (!Array.isArray(plan.meals)) return []
+  return plan.meals.map((meal) => ({
+    id: meal.id,
+    label: meal.label || 'Meal',
+    scheduled: meal.scheduledAt || '',
+    items: (meal.items || []).map((item) => ({
+      id: item.id,
+      name: item.name || 'Item',
+      calories: Math.round(Number(item.calories ?? item.nutrition?.calories ?? 0)),
+    })),
+  }))
+}
+
 const normalizedPlans = computed(() =>
   props.plans.map((plan) => {
     const totals = plan.nutritionTotals || {}
-    const meals = Array.isArray(plan.meals) ? plan.meals.length : 0
+    const meals = toMeals(plan)
     return {
       id: plan.id,
       name: plan.name || 'Untitled plan',
@@ -49,19 +65,52 @@ function formatDate(value) {
       No active plans. Create or activate one to see it here.
     </div>
 
-    <ul v-else class="space-y-3">
+    <ul v-else class="space-y-4">
       <li
         v-for="plan in normalizedPlans"
         :key="plan.id"
-        class="flex items-center justify-between gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-sm"
+        class="group cursor-pointer rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition hover:border-green-500 hover:shadow-md"
+        @click="emit('open-plan', plan.id)"
       >
-        <div class="min-w-0">
-          <p class="text-sm font-semibold text-gray-900 leading-tight">{{ plan.name }}</p>
-          <p class="text-xs text-gray-500">
-            {{ plan.meals }} meals • Ends {{ formatDate(plan.expires) }}
-          </p>
+        <div class="flex items-center justify-between gap-4">
+          <div>
+            <p class="text-2xl font-semibold text-gray-900 group-hover:text-green-600">
+              {{ plan.name }}
+            </p>
+            <p class="text-lg text-gray-500">
+              {{ plan.meals.length }} meals · Ends {{ formatDate(plan.expires) }}
+            </p>
+          </div>
+          <span class="text-lg font-semibold text-green-600">{{ plan.calories }} kcal</span>
         </div>
-        <span class="text-sm font-semibold text-green-600">{{ plan.calories }} kcal</span>
+
+        <div class="mt-4 space-y-3">
+          <div
+            v-for="meal in plan.meals"
+            :key="meal.id"
+            class="rounded-xl border border-gray-100 bg-gray-50 px-4 py-3"
+          >
+            <div class="flex items-center justify-between">
+              <p class="text-lg font-semibold text-gray-900">{{ meal.label }}</p>
+              <span class="text-lg text-gray-500">
+                {{ meal.scheduled || 'Any time' }}
+              </span>
+            </div>
+            <ul class="mt-2 space-y-1 text-lg text-gray-600">
+              <li
+                v-for="item in meal.items"
+                :key="item.id"
+                class="flex items-center justify-between"
+              >
+                <span>{{ item.name }}</span>
+                <span class="text-lg text-gray-500">{{ item.calories }} kcal</span>
+              </li>
+              <li v-if="!meal.items.length" class="text-lg text-gray-400 italic">
+                No items yet.
+              </li>
+            </ul>
+          </div>
+        </div>
       </li>
     </ul>
   </section>

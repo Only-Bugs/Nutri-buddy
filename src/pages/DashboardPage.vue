@@ -3,14 +3,13 @@ and recent activity. * @module pages/DashboardPage * */
 
 <script setup>
 import { ref, watch, onBeforeUnmount, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import DashboardHeader from '@/components/dashboard/DashboardHeader.vue'
 import DailyCalorieSummary from '@/components/dashboard/DailyCalorieSummary.vue'
 import CaloriesDistribution from '@/components/dashboard/CaloriesDistribution.vue'
 import NutritionDistribution from '@/components/dashboard/NutritionDistribution.vue'
 import ActiveMealPlansSummary from '@/components/dashboard/ActiveMealPlansSummary.vue'
 import FavoriteRecipesSection from '@/components/dashboard/FavoriteRecipesSection.vue'
-import NutritionHistoryTable from '@/components/dashboard/NutritionHistoryTable.vue'
 import SearchOverlay from '@/components/dashboard/SearchOverlay.vue'
 import AddToMealPlanModal from '@/components/mealPlans/AddToMealPlanModal.vue'
 import { useAuthStore } from '@/store/auth'
@@ -25,6 +24,7 @@ const mealPlans = useMealPlanStore()
 const recipeStore = useRecipeStore()
 const userProfile = useUserProfileStore()
 const router = useRouter()
+const route = useRoute()
 recipeStore.initialize()
 
 const query = ref('')
@@ -42,31 +42,7 @@ function normaliseNumber(value) {
   return Number.isFinite(numeric) ? numeric : 0
 }
 
-function computeMealTotals(meal) {
-  const totals = { calories: 0, protein: 0, carbs: 0, fats: 0 }
-  ;(meal.items || []).forEach((item) => {
-    totals.calories += normaliseNumber(item.calories ?? item.nutrition?.calories)
-    totals.protein += normaliseNumber(item.protein ?? item.nutrition?.protein)
-    totals.carbs += normaliseNumber(item.carbs ?? item.nutrition?.carbs)
-    totals.fats += normaliseNumber(item.fat ?? item.fats ?? item.nutrition?.fat)
-  })
-  return totals
-}
-
-const activeMealBreakdown = computed(() => {
-  const plan = mealPlans.activePlan
-  if (!plan || !plan.meals?.length) return []
-  return plan.meals.map((meal) => ({
-    label: meal.label || 'Meal',
-    ...computeMealTotals(meal),
-  }))
-})
-
-const consumedCalories = computed(() => {
-  const planCalories = mealPlans.activePlan?.nutritionTotals?.calories
-  if (planCalories) return normaliseNumber(planCalories)
-  return normaliseNumber(dashboard.totalNutrition.calories)
-})
+const consumedCalories = computed(() => normaliseNumber(dashboard.totalNutrition.calories))
 
 const calorieLastUpdated = computed(() => dashboard.foods[0]?.createdAt || '')
 
@@ -111,22 +87,6 @@ function handleOverlayAddToPlan() {
   closeSearchOverlay()
 }
 
-function handleHistoryAddToPlan(food) {
-  if (!food) return
-  openAddModal({
-    item: { ...food, type: 'food' },
-    totals: {
-      calories: normaliseNumber(food.calories),
-      protein: normaliseNumber(food.protein),
-      carbs: normaliseNumber(food.carbs),
-      fats: normaliseNumber(food.fat),
-      fiber: normaliseNumber(food.fiber),
-      sugar: normaliseNumber(food.sugar),
-      sodium: normaliseNumber(food.sodium),
-    },
-  })
-}
-
 function handleFavoriteRecipeAdd(recipe) {
   if (!recipe) return
   openAddModal({
@@ -146,6 +106,16 @@ function handleFavoriteRecipeAdd(recipe) {
 function handleFavoriteRecipeView(recipe) {
   if (!recipe) return
   router.push({ name: 'RecipeDetail', params: { id: recipe.id } })
+}
+
+function handlePlanNavigate(planId) {
+  if (!planId) return
+  mealPlans.selectPlan(planId)
+  router.push({ name: 'MealPlans', query: { planId } })
+}
+
+function goToHistory() {
+  router.push({ name: 'History' })
 }
 
 watch(
@@ -168,6 +138,17 @@ watch(searchOverlayOpen, (isOpen) => {
   document.body.style.overflow = isOpen ? 'hidden' : ''
 })
 
+watch(
+  () => route.query.openSearch,
+  (value) => {
+    if (value === 'true') {
+      openSearchOverlay()
+      router.replace({ query: { ...route.query, openSearch: undefined } })
+    }
+  },
+  { immediate: true },
+)
+
 onBeforeUnmount(() => {
   if (typeof document === 'undefined') return
   document.body.style.overflow = ''
@@ -175,50 +156,31 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <section class="relative space-y-0">
-    <div
-      :class="[
-        'grid gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]',
-        searchOverlayOpen ? 'pointer-events-none blur-sm' : '',
-      ]"
-    >
-      <div class="space-y-6">
-        <DashboardHeader />
+  <section class="relative space-y-6">
+    <div :class="[searchOverlayOpen ? 'pointer-events-none blur-sm' : '']" class="space-y-6">
+      <DashboardHeader />
 
-        <div class="grid gap-6 lg:grid-cols-3">
-          <DailyCalorieSummary
-            :limit="userProfile.dailyCalorieLimit"
-            :consumed="consumedCalories"
-            :lastUpdated="calorieLastUpdated"
-          />
-          <CaloriesDistribution
-            :totals="dashboard.totalNutrition"
-            :mealBreakdown="activeMealBreakdown"
-          />
-          <NutritionDistribution
-            :totals="dashboard.totalNutrition"
-            :nutrients="latestNutrients"
-          />
-        </div>
-
-        <div class="grid gap-6 lg:grid-cols-2">
-          <ActiveMealPlansSummary :plans="activePlans" />
-          <FavoriteRecipesSection
-            @add-to-plan="handleFavoriteRecipeAdd"
-            @view-detail="handleFavoriteRecipeView"
-          />
-        </div>
+      <div class="grid gap-6 lg:grid-cols-3">
+        <DailyCalorieSummary
+          :limit="userProfile.dailyCalorieLimit"
+          :consumed="consumedCalories"
+          :lastUpdated="calorieLastUpdated"
+          @open-history="goToHistory"
+        />
+        <CaloriesDistribution :totals="dashboard.totalNutrition" />
+        <NutritionDistribution
+          :totals="dashboard.totalNutrition"
+          :nutrients="latestNutrients"
+        />
       </div>
 
-      <aside class="space-y-4">
-        <div class="sticky top-24">
-          <NutritionHistoryTable
-            class="max-h-[70vh] overflow-hidden"
-            :foods="dashboard.foods"
-            @add-to-plan="handleHistoryAddToPlan"
-          />
-        </div>
-      </aside>
+      <div class="grid gap-6 lg:grid-cols-2">
+        <ActiveMealPlansSummary :plans="activePlans" @open-plan="handlePlanNavigate" />
+        <FavoriteRecipesSection
+          @add-to-plan="handleFavoriteRecipeAdd"
+          @view-detail="handleFavoriteRecipeView"
+        />
+      </div>
     </div>
 
     <button

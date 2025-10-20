@@ -7,7 +7,13 @@
  */
 
 import { defineStore } from 'pinia'
-import { registerUser, loginUser, logoutUser, loginWithGoogle } from '../services/authService'
+import {
+  registerUser,
+  loginUser,
+  logoutUser,
+  loginWithGoogle,
+  resolveGoogleRedirect,
+} from '../services/authService'
 
 /**
  * @typedef {Object} User
@@ -74,10 +80,32 @@ export const useAuthStore = defineStore('auth', {
     async loginWithGoogle() {
       try {
         const user = await loginWithGoogle()
-        this.user = user
+        if (user) {
+          this.user = user
+        }
         return true
       } catch (error) {
         console.error('Google login failed:', error?.message || error)
+        return false
+      }
+    },
+
+    /**
+     * Resolves an outstanding Google redirect sign-in (if any).
+     * Updates the local user store when a redirect result exists.
+     * @async
+     * @returns {Promise<boolean>} True when a redirect result was applied, otherwise false.
+     */
+    async applyGoogleRedirectResult() {
+      try {
+        const user = await resolveGoogleRedirect()
+        if (user) {
+          this.user = user
+          return true
+        }
+        return false
+      } catch (error) {
+        console.error('Resolving Google redirect failed:', error?.message || error)
         return false
       }
     },

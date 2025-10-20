@@ -1,14 +1,20 @@
 <script setup>
 import { computed } from 'vue'
 
+const emit = defineEmits(['open-history'])
+
 const props = defineProps({
   limit: { type: Number, default: 2000 },
   consumed: { type: Number, default: 0 },
   lastUpdated: { type: String, default: '' },
 })
 
-const safeLimit = computed(() => (Number.isFinite(props.limit) && props.limit > 0 ? Math.round(props.limit) : 2000))
-const safeConsumed = computed(() => (Number.isFinite(props.consumed) && props.consumed > 0 ? Math.round(props.consumed) : 0))
+const safeLimit = computed(() =>
+  Number.isFinite(props.limit) && props.limit > 0 ? Math.round(props.limit) : 2000,
+)
+const safeConsumed = computed(() =>
+  Number.isFinite(props.consumed) && props.consumed > 0 ? Math.round(props.consumed) : 0,
+)
 
 const remaining = computed(() => Math.max(safeLimit.value - safeConsumed.value, 0))
 const percent = computed(() => {
@@ -28,38 +34,45 @@ const formattedUpdated = computed(() => {
   if (Number.isNaN(date.getTime())) return ''
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 })
+
+function handleClick() {
+  emit('open-history')
+}
 </script>
 
 <template>
-  <section class="dash-card space-y-4">
-    <header class="flex items-start justify-between gap-3">
+  <section
+    class="dash-card flex cursor-pointer flex-col gap-6 border-2 border-transparent transition hover:border-green-500 hover:shadow-lg lg:flex-row lg:items-center"
+    role="button"
+    tabindex="0"
+    @click="handleClick"
+    @keyup.enter.prevent="handleClick"
+  >
+    <div class="flex flex-1 items-center justify-between gap-6">
       <div>
-        <p class="text-sm font-medium text-gray-500 uppercase tracking-wide">Daily calorie summary</p>
-        <h3 class="text-2xl font-semibold text-gray-900">
-          {{ safeConsumed }} / {{ safeLimit }} kcal
-        </h3>
+        <p class="text-lg font-semibold uppercase tracking-wide text-gray-500">Daily calories</p>
+        <p class="text-3xl font-semibold text-gray-900">
+          {{ safeConsumed }} / {{ safeLimit }}
+        </p>
       </div>
-      <span class="rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-600">
+      <span class="rounded-full bg-green-50 px-4 py-2 text-lg font-semibold text-green-600">
         {{ percent }}% used
       </span>
-    </header>
+    </div>
 
-    <div class="space-y-2">
-      <div class="h-2 w-full rounded-full bg-gray-200">
+    <div class="flex flex-1 flex-col gap-3">
+      <div class="h-3 w-full rounded-full bg-gray-200">
         <div
           class="h-full rounded-full bg-green-500 transition-all duration-300"
           :style="{ width: `${percent}%` }"
         />
       </div>
-      <div class="flex justify-between text-sm text-gray-600">
+      <div class="flex items-center justify-between text-lg text-gray-600">
         <span>Remaining</span>
         <span :class="statusTone">{{ remaining }} kcal</span>
       </div>
+      <p v-if="formattedUpdated" class="text-lg text-gray-400">Updated {{ formattedUpdated }}</p>
+      <p class="text-lg font-medium text-green-600">Tap to review history</p>
     </div>
-
-    <footer class="flex items-center justify-between text-xs text-gray-500">
-      <span>Adjust in Settings</span>
-      <span v-if="formattedUpdated">Updated {{ formattedUpdated }}</span>
-    </footer>
   </section>
 </template>

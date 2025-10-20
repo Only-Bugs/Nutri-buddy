@@ -9,6 +9,8 @@ import {
   signInWithEmailAndPassword,
   signOut,
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   GoogleAuthProvider,
 } from 'firebase/auth'
 import { firebaseAuth } from '@/config/firebase'
@@ -51,7 +53,30 @@ export async function loginUser(credentials) {
  */
 export async function loginWithGoogle() {
   const provider = new GoogleAuthProvider()
-  const { user } = await signInWithPopup(firebaseAuth, provider)
+  provider.setCustomParameters({ prompt: 'select_account' })
+  try {
+    const { user } = await signInWithPopup(firebaseAuth, provider)
+    return { email: user.email, uid: user.uid, provider: 'google' }
+  } catch (error) {
+    if (
+      error?.code === 'auth/popup-blocked' ||
+      error?.code === 'auth/operation-not-supported-in-this-environment'
+    ) {
+      await signInWithRedirect(firebaseAuth, provider)
+      return null
+    }
+    throw error
+  }
+}
+
+/**
+ * Resolves a pending Google redirect authentication flow.
+ * @returns {Promise<{email:string, uid:string, provider:string}|null>}
+ */
+export async function resolveGoogleRedirect() {
+  const result = await getRedirectResult(firebaseAuth)
+  if (!result?.user) return null
+  const { user } = result
   return { email: user.email, uid: user.uid, provider: 'google' }
 }
 

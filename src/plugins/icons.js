@@ -28,6 +28,11 @@ import {
   faChevronDown,
   faGear,
   faArrowRightFromBracket,
+  faGauge,
+  faHouse,
+  faClipboardList,
+  faClockRotateLeft,
+  faBookOpen,
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(
@@ -52,6 +57,11 @@ library.add(
   faChevronDown,
   faGear,
   faArrowRightFromBracket,
+  faGauge,
+  faHouse,
+  faClipboardList,
+  faClockRotateLeft,
+  faBookOpen,
 )
 
 export default {

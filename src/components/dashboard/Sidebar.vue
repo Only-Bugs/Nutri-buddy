@@ -1,38 +1,56 @@
-<script setup>
-</script>
+<script setup></script>
 
 <template>
-  <aside class="w-64 bg-white border-r min-h-screen p-4 space-y-4">
+  <aside class="w-64 bg-white border-r min-h-screen p-6 space-y-6">
     <!-- Brand -->
-    <h1 class="text-xl font-bold text-green-600">NutriBuddy</h1>
+    <h1 class="text-2xl font-bold text-green-600 flex items-center gap-2">
+      <FontAwesomeIcon icon="house" class="text-green-500" />
+      NutriBuddy
+    </h1>
 
     <!-- Navigation Links -->
-    <nav class="space-y-1">
-      <p class="px-3 text-xs font-semibold uppercase tracking-wide text-gray-400">Overview</p>
-      <RouterLink
-        to="/app/dashboard"
-        class="block rounded px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100"
-        active-class="bg-green-50 text-green-600 font-semibold"
-      >
-        Dashboard
-      </RouterLink>
+    <nav class="space-y-5">
+      <div class="space-y-2">
+        <p class="px-3 text-lg font-semibold uppercase tracking-wide text-gray-400">Overview</p>
+        <RouterLink
+          to="/app/dashboard"
+          class="flex items-center gap-3 rounded-xl px-3 py-3 text-lg font-medium text-gray-600 transition hover:bg-green-50 hover:text-green-600"
+          active-class="bg-green-100 text-green-700 font-semibold"
+        >
+          <FontAwesomeIcon icon="gauge" class="text-green-500" />
+          Dashboard
+        </RouterLink>
 
-      <RouterLink
-        to="/app/meal-plans"
-        class="block rounded px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100"
-        active-class="bg-green-50 text-green-600 font-semibold"
-      >
-        Meal Plans
-      </RouterLink>
+        <RouterLink
+          to="/app/meal-plans"
+          class="flex items-center gap-3 rounded-xl px-3 py-3 text-lg font-medium text-gray-600 transition hover:bg-green-50 hover:text-green-600"
+          active-class="bg-green-100 text-green-700 font-semibold"
+        >
+          <FontAwesomeIcon icon="clipboard-list" class="text-green-500" />
+          Meal Plans
+        </RouterLink>
 
-      <p class="mt-4 px-3 text-xs font-semibold uppercase tracking-wide text-gray-400">Discover</p>
-      <RouterLink
-        to="/app/recipes"
-        class="block rounded px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100"
-        active-class="bg-green-50 text-green-600 font-semibold"
-      >
-        Recipes
-      </RouterLink>
+        <RouterLink
+          to="/app/history"
+          class="flex items-center gap-3 rounded-xl px-3 py-3 text-lg font-medium text-gray-600 transition hover:bg-green-50 hover:text-green-600"
+          active-class="bg-green-100 text-green-700 font-semibold"
+        >
+          <FontAwesomeIcon icon="clock-rotate-left" class="text-green-500" />
+          History
+        </RouterLink>
+      </div>
+
+      <div class="space-y-2">
+        <p class="px-3 text-lg font-semibold uppercase tracking-wide text-gray-400">Discover</p>
+        <RouterLink
+          to="/app/recipes"
+          class="flex items-center gap-3 rounded-xl px-3 py-3 text-lg font-medium text-gray-600 transition hover:bg-green-50 hover:text-green-600"
+          active-class="bg-green-100 text-green-700 font-semibold"
+        >
+          <FontAwesomeIcon icon="book-open" class="text-green-500" />
+          Recipes
+        </RouterLink>
+      </div>
     </nav>
   </aside>
 </template>

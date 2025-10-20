@@ -17,6 +17,7 @@ import MealsPage from '@/pages/MealsPage.vue'
 import RecipesPage from '@/pages/RecipesPage.vue'
 import RecipeDetailPage from '@/pages/RecipeDetailPage.vue'
 import SettingsPage from '@/pages/SettingsPage.vue'
+import HistoryPage from '@/pages/HistoryPage.vue'
 
 /**
  * @constant {import('vue-router').RouteRecordRaw[]} routes
@@ -41,6 +42,7 @@ const routes = [
     children: [
       { path: 'dashboard', name: 'Dashboard', component: DashboardPage },
       { path: 'meal-plans', name: 'MealPlans', component: MealsPage },
+      { path: 'history', name: 'History', component: HistoryPage },
       { path: 'recipes', name: 'Recipes', component: RecipesPage },
       { path: 'recipes/:id', name: 'RecipeDetail', component: RecipeDetailPage },
       { path: 'settings', name: 'Settings', component: SettingsPage },
