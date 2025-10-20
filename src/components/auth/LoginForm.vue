@@ -4,6 +4,7 @@ and yup. * Displays real-time feedback using the global toast system. * @module
 components/auth/LoginForm */
 
 <script setup>
+import { onMounted, ref } from 'vue'
 import { useForm, useField } from 'vee-validate'
 import * as yup from 'yup'
 import DOMPurify from 'dompurify'
@@ -26,6 +27,16 @@ const schema = yup.object({
 const { handleSubmit } = useForm({ validationSchema: schema })
 const { value: email, errorMessage: emailError, meta: emailMeta } = useField('email')
 const { value: password, errorMessage: passwordError, meta: passwordMeta } = useField('password')
+
+const isReady = ref(false)
+const inputClasses =
+  'w-full rounded-xl border border-gray-200 bg-white/80 px-4 py-3 text-sm text-gray-900 shadow-sm transition focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus-visible:ring-2 focus-visible:ring-green-500/50 dark:border-gray-700 dark:bg-gray-800/80 dark:text-gray-100'
+
+onMounted(() => {
+  requestAnimationFrame(() => {
+    isReady.value = true
+  })
+})
 
 /**
  * Handles form submission and triggers Firebase Authentication login.
@@ -51,40 +62,57 @@ const onSubmit = handleSubmit(async (formValues) => {
 </script>
 
 <template>
-  <form @submit.prevent="onSubmit" class="space-y-4">
-    <!-- Email Field -->
-    <div>
-      <input
-        v-model="email"
-        type="email"
-        placeholder="Email"
-        class="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-      <div class="min-h-[20px]">
-        <span v-if="emailMeta.touched" class="text-red-500 text-lg">
-          {{ emailError }}
-        </span>
-      </div>
+  <form @submit.prevent="onSubmit" class="space-y-5">
+    <div
+      class="form-block"
+      :class="isReady ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'"
+      style="transition-delay: 40ms"
+    >
+      <label class="text-sm font-semibold text-gray-700 dark:text-gray-200">
+        Email
+        <input v-model="email" type="email" placeholder="you@example.com" :class="inputClasses" />
+      </label>
+      <p v-if="emailMeta.touched" class="text-sm text-red-500">{{ emailError }}</p>
     </div>
 
-    <!-- Password Field -->
-    <div>
-      <input
-        v-model="password"
-        type="password"
-        placeholder="Password"
-        class="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-      <div class="min-h-[20px]">
-        <span v-if="passwordMeta.touched" class="text-red-500 text-lg">
-          {{ passwordError }}
-        </span>
-      </div>
+    <div
+      class="form-block"
+      :class="isReady ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'"
+      style="transition-delay: 120ms"
+    >
+      <label class="text-sm font-semibold text-gray-700 dark:text-gray-200">
+        Password
+        <input
+          v-model="password"
+          type="password"
+          placeholder="••••••••"
+          :class="inputClasses"
+        />
+      </label>
+      <p v-if="passwordMeta.touched" class="text-sm text-red-500">{{ passwordError }}</p>
     </div>
 
-    <!-- Submit Button -->
-    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded w-full">
-      Login
-    </button>
+    <div
+      class="form-block"
+      :class="isReady ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'"
+      style="transition-delay: 200ms"
+    >
+      <button
+        type="submit"
+        class="w-full rounded-xl bg-green-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-green-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500/50"
+      >
+        Login
+      </button>
+    </div>
   </form>
 </template>
+
+<style scoped>
+.form-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transform: translateY(0);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+</style>

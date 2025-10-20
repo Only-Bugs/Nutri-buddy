@@ -62,16 +62,53 @@ function buildIngredients(rawIngredients = []) {
   }))
 }
 
-function placeholderImage(primaryMealType) {
-  const map = {
-    Breakfast: 'https://images.unsplash.com/photo-1546069901-eacef0df6022',
-    Lunch: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836',
-    Dinner: 'https://images.unsplash.com/photo-1466978913421-dad2ebd01d17',
-    Snack: 'https://images.unsplash.com/photo-1528715471579-d1bcf0ba5e83',
-    Dessert: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587',
-    Beverage: 'https://images.unsplash.com/photo-1527169402691-feff5539e52c',
+function hashSeed(value) {
+  const text = String(value || '')
+  let hash = 0
+  for (let i = 0; i < text.length; i += 1) {
+    hash = (hash << 5) - hash + text.charCodeAt(i)
+    hash |= 0
   }
-  return map[primaryMealType] || map.Dinner
+  return Math.abs(hash)
+}
+
+function placeholderImage(primaryMealType, recipeId, recipeName) {
+  const catalog = {
+    Breakfast: [
+      'https://images.unsplash.com/photo-1546069901-eacef0df6022',
+      'https://images.unsplash.com/photo-1504674900247-0877df9cc836',
+      'https://images.unsplash.com/photo-1551218808-94e220e084d2',
+    ],
+    Lunch: [
+      'https://images.unsplash.com/photo-1504674900247-0877df9cc836',
+      'https://images.unsplash.com/photo-1458644267420-66bc8a5f21e4',
+      'https://images.unsplash.com/photo-1498837167922-ddd27525d352',
+    ],
+    Dinner: [
+      'https://images.unsplash.com/photo-1466978913421-dad2ebd01d17',
+      'https://images.unsplash.com/photo-1473093295043-cdd812d0e601',
+      'https://images.unsplash.com/photo-1504674900247-0877df9cc836',
+    ],
+    Snack: [
+      'https://images.unsplash.com/photo-1528715471579-d1bcf0ba5e83',
+      'https://images.unsplash.com/photo-1499636136210-6f4ee915583e',
+      'https://images.unsplash.com/photo-1504674900247-0877df9cc836',
+    ],
+    Dessert: [
+      'https://images.unsplash.com/photo-1578985545062-69928b1d9587',
+      'https://images.unsplash.com/photo-1504674900247-0877df9cc836',
+      'https://images.unsplash.com/photo-1514996937319-344454492b37',
+    ],
+    Beverage: [
+      'https://images.unsplash.com/photo-1527169402691-feff5539e52c',
+      'https://images.unsplash.com/photo-1524592094714-0f0654e20314',
+      'https://images.unsplash.com/photo-1511920170033-f8396924c348',
+    ],
+  }
+
+  const pool = catalog[primaryMealType] || catalog.Dinner
+  const seed = hashSeed(recipeId || recipeName || primaryMealType)
+  return pool[seed % pool.length]
 }
 
 function normalizeRecipe(raw) {
@@ -107,7 +144,7 @@ function normalizeRecipe(raw) {
       sugar: toNumber(raw.nutrition?.sugar ?? raw.sugar),
       sodium: toNumber(raw.nutrition?.sodium ?? raw.sodium),
     },
-    image: raw.image || placeholderImage(primaryMealType),
+    image: raw.image || placeholderImage(primaryMealType, raw.id ?? raw.recipe_id, raw.name ?? raw.recipe_name),
   }
 }
 

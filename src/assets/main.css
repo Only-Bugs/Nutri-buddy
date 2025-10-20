@@ -6,6 +6,8 @@ body {
   margin: 0;
   font-family: ui-sans-serif, system-ui, sans-serif;
   background-color: #f9fafb; /* Tailwind gray-50 */
+  font-size: 18px;
+  line-height: 1.7;
 }
 
 .text-sm {

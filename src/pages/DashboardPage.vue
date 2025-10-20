@@ -33,9 +33,18 @@ const addModalOpen = ref(false)
 const selectedItem = ref(null)
 const selectedTotals = ref(null)
 
-const activePlans = computed(() =>
-  mealPlans.plans.filter((plan) => plan.status === 'active'),
-)
+const activePlans = computed(() => {
+  const map = new Map()
+  mealPlans.plans.forEach((plan) => {
+    if (plan.status === 'active' || plan.id === mealPlans.activePlanId) {
+      map.set(plan.id, plan)
+    }
+  })
+  if (!map.size && mealPlans.plans.length) {
+    map.set(mealPlans.plans[0].id, mealPlans.plans[0])
+  }
+  return Array.from(map.values())
+})
 
 function normaliseNumber(value) {
   const numeric = Number(value)

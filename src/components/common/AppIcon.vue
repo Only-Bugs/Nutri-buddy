@@ -30,6 +30,8 @@ const props = defineProps({
         shield: 'shield-halved',
         sustain: 'leaf',
         email: 'envelope',
+        google: ['fab', 'google'],
+        apple: ['fab', 'apple'],
         linkedin: ['fab', 'linkedin'],
         github: ['fab', 'github'],
       }[name]

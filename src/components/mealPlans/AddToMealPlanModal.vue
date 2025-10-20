@@ -1,6 +1,7 @@
 <script setup>
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, nextTick, reactive, ref, watch } from 'vue'
 import { useMealPlanStore } from '@/store/mealplan/mealPlanStore'
+import { useToast } from '@/composables/useToast'
 
 const props = defineProps({
   show: { type: Boolean, default: false },
@@ -23,6 +24,7 @@ const emit = defineEmits(['close', 'added'])
 
 const mealPlanStore = useMealPlanStore()
 const mealTypes = ['Breakfast', 'Lunch', 'Dinner', 'Snack', 'Beverage']
+const { showToast } = useToast()
 
 const selectedPlanId = ref('')
 const selectedMealType = ref('')
@@ -30,6 +32,9 @@ const showCreateForm = ref(false)
 const linkError = ref('')
 const creationError = ref('')
 const isSubmitting = ref(false)
+const confirmationMessage = ref('')
+const isShaking = ref(false)
+const planNameInput = ref(null)
 
 const createDraft = reactive({
   name: '',
@@ -39,9 +44,14 @@ const createDraft = reactive({
 })
 
 const plans = computed(() => mealPlanStore.plans || [])
-const selectablePlans = computed(() =>
-  plans.value.filter((plan) => plan.status !== 'archived'),
-)
+const sortedPlans = computed(() => {
+  const list = [...plans.value]
+  return list.sort((a, b) => {
+    if (a.status === 'active' && b.status !== 'active') return -1
+    if (b.status === 'active' && a.status !== 'active') return 1
+    return new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
+  })
+})
 
 const selectedPlan = computed(() =>
   plans.value.find((plan) => plan.id === selectedPlanId.value) || null,
@@ -54,6 +64,7 @@ function resetState() {
   linkError.value = ''
   creationError.value = ''
   isSubmitting.value = false
+  confirmationMessage.value = ''
   createDraft.name = ''
   createDraft.startDate = ''
   createDraft.endDate = ''
@@ -66,10 +77,14 @@ watch(
     if (visible) {
       linkError.value = ''
       creationError.value = ''
+      confirmationMessage.value = ''
       if (!plans.value.length) {
         showCreateForm.value = true
+        prefillCreateDates()
+        focusPlanName()
       } else {
-        selectedPlanId.value = mealPlanStore.activePlanId || selectablePlans.value[0]?.id || ''
+        selectedPlanId.value =
+          mealPlanStore.activePlanId || sortedPlans.value[0]?.id || ''
         if (selectedPlanId.value) {
           mealPlanStore.selectPlan(selectedPlanId.value)
         }
@@ -90,6 +105,17 @@ function closeModal() {
   emit('close')
 }
 
+function prefillCreateDates() {
+  const today = new Date().toISOString().split('T')[0]
+  createDraft.startDate = today
+}
+
+function focusPlanName() {
+  nextTick(() => {
+    planNameInput.value?.focus()
+  })
+}
+
 function handlePlanSelect(plan) {
   if (!plan || plan.status === 'archived') return
   selectedPlanId.value = plan.id
@@ -99,13 +125,20 @@ function handlePlanSelect(plan) {
 
 async function createPlan() {
   creationError.value = ''
-  if (!createDraft.name.trim()) {
+  const trimmed = createDraft.name.trim()
+  if (!trimmed.length) {
     creationError.value = 'Plan name is required.'
+    focusPlanName()
+    return
+  }
+  if (trimmed.length < 3) {
+    creationError.value = 'Name must be at least 3 characters.'
+    focusPlanName()
     return
   }
   try {
     const plan = await mealPlanStore.savePlan({
-      name: createDraft.name.trim(),
+      name: trimmed,
       status: 'active',
       startDate: createDraft.startDate || '',
       endDate: createDraft.endDate || '',
@@ -203,16 +236,15 @@ function buildMealPayload() {
 
 async function linkToPlan() {
   linkError.value = ''
-  if (!selectedPlanId.value) {
-    linkError.value = 'Choose a meal plan first.'
-    return
-  }
-  if (!selectedMealType.value) {
-    linkError.value = 'Select a meal type before saving.'
+  confirmationMessage.value = ''
+  if (!selectedPlanId.value || !selectedMealType.value) {
+    handleMissingSelection()
     return
   }
   if (!props.item) {
     linkError.value = 'Select something to add.'
+    showToast('Please select an item to add.', 'warning')
+    triggerShake()
     return
   }
 
@@ -223,13 +255,32 @@ async function linkToPlan() {
       label: selectedMealType.value,
       item: buildMealPayload(),
     })
-    emit('added')
-    resetState()
+    confirmationMessage.value = `Added to ${selectedPlan.value?.name || 'meal plan'}.`
+    showToast('Item added to meal plan.', 'success')
+    setTimeout(() => {
+      emit('added')
+      resetState()
+    }, 900)
   } catch (error) {
-    linkError.value = error?.message || 'Unable to add to meal plan.'
+    const message = error?.message || 'Unable to add to meal plan.'
+    linkError.value = message
+    showToast(message, 'error')
+    triggerShake()
   } finally {
     isSubmitting.value = false
   }
+}
+
+function triggerShake() {
+  isShaking.value = true
+  window.setTimeout(() => {
+    isShaking.value = false
+  }, 400)
+}
+
+function handleMissingSelection() {
+  showToast('Please select or create a plan first.', 'warning')
+  triggerShake()
 }
 </script>
 
@@ -237,24 +288,25 @@ async function linkToPlan() {
   <transition name="fade">
     <div
       v-if="show"
-      class="fixed inset-0 z-40 flex items-center justify-center px-4 py-6"
+      class="fixed inset-0 z-40 flex items-center justify-center px-4 py-6 sm:px-8"
       role="dialog"
       aria-modal="true"
     >
       <div class="absolute inset-0 bg-black/50" @click.self="closeModal" />
 
-      <div class="relative w-full max-w-3xl bg-white rounded-2xl shadow-xl p-6 space-y-6 z-10">
+      <div
+        class="relative z-10 w-full max-w-3xl space-y-6 rounded-3xl bg-white/95 p-6 shadow-2xl backdrop-blur-md"
+      >
         <div class="flex items-start justify-between">
           <div>
             <h2 class="text-2xl font-semibold text-gray-900">Add to Meal Plan</h2>
-            <p class="text-base text-gray-500">
-              Link <span class="font-medium text-gray-700">{{ itemName }}</span> to
-              your meal planning workspace.
+            <p class="text-sm text-gray-600">
+              Link <span class="font-medium text-gray-700">{{ itemName }}</span> to your meal planning workspace.
             </p>
           </div>
           <button
             @click="closeModal"
-            class="text-gray-400 hover:text-gray-600 transition-colors"
+            class="rounded-full p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
             aria-label="Close"
           >
             ✕
@@ -262,40 +314,54 @@ async function linkToPlan() {
         </div>
 
         <!-- Step 1 -->
-        <section class="space-y-3">
+        <section class="space-y-4 rounded-2xl border border-gray-100 bg-gray-50/80 p-5">
           <header class="flex items-center justify-between">
             <div>
-              <p class="text-sm uppercase font-semibold text-green-600">Step 1</p>
-              <h3 class="text-lg font-semibold text-gray-900">Choose a meal plan</h3>
+              <p class="text-xs font-semibold uppercase tracking-widest text-green-600">
+                Step 1
+              </p>
+              <h3 class="text-base font-semibold text-gray-900">Choose where this meal belongs</h3>
             </div>
             <button
-              class="text-sm text-green-600 font-medium hover:underline"
+              class="text-sm font-semibold text-green-600 hover:underline"
               @click="showCreateForm = !showCreateForm"
             >
               {{ showCreateForm ? 'Back to plans' : '+ Create new plan' }}
             </button>
           </header>
 
-          <div v-if="showCreateForm" class="space-y-4">
+          <div
+            v-if="showCreateForm"
+            class="space-y-5 rounded-2xl border border-dashed border-green-200 bg-white p-5 shadow-sm"
+          >
             <div class="grid gap-3 md:grid-cols-2">
               <label class="space-y-1">
                 <span class="text-sm font-medium text-gray-700">Plan name *</span>
                 <input
                   v-model="createDraft.name"
                   type="text"
-                  class="w-full border rounded-lg px-3 py-2 text-base"
+                  ref="planNameInput"
+                  class="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm text-gray-900 shadow-sm transition focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/40"
                   placeholder="e.g., Spring Wellness Reset"
                 />
               </label>
 
               <label class="space-y-1">
                 <span class="text-sm font-medium text-gray-700">Start date</span>
-                <input v-model="createDraft.startDate" type="date" class="w-full border rounded-lg px-3 py-2 text-base" />
+                <input
+                  v-model="createDraft.startDate"
+                  type="date"
+                  class="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm text-gray-900 transition focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/40"
+                />
               </label>
 
               <label class="space-y-1">
                 <span class="text-sm font-medium text-gray-700">End date</span>
-                <input v-model="createDraft.endDate" type="date" class="w-full border rounded-lg px-3 py-2 text-base" />
+                <input
+                  v-model="createDraft.endDate"
+                  type="date"
+                  class="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm text-gray-900 transition focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/40"
+                />
               </label>
 
               <label class="space-y-1 md:col-span-2">
@@ -303,7 +369,7 @@ async function linkToPlan() {
                 <textarea
                   v-model="createDraft.notes"
                   rows="3"
-                  class="w-full border rounded-lg px-3 py-2 text-base"
+                  class="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm text-gray-900 transition focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/40"
                   placeholder="Optional context for this plan"
                 />
               </label>
@@ -311,10 +377,10 @@ async function linkToPlan() {
 
             <div class="flex items-center justify-between">
               <p v-if="creationError" class="text-sm text-red-600">{{ creationError }}</p>
-              <div class="flex-1" />
+              <div class="flex-1"></div>
               <button
                 @click="createPlan"
-                class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-green-700"
+                class="inline-flex items-center justify-center rounded-lg bg-green-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-green-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-500"
               >
                 Save plan
               </button>
@@ -323,24 +389,55 @@ async function linkToPlan() {
 
           <div v-else class="grid gap-3 sm:grid-cols-2">
             <button
-              v-for="plan in plans"
+              v-for="plan in sortedPlans"
               :key="plan.id"
               @click="handlePlanSelect(plan)"
-              class="border rounded-xl px-4 py-3 text-left transition"
+              class="text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-500"
               :class="[
+                'rounded-2xl border px-5 py-4 shadow-sm hover:shadow-md',
                 plan.status === 'archived'
-                  ? 'bg-gray-50 text-gray-400 cursor-not-allowed'
+                  ? 'cursor-not-allowed border-gray-100 bg-gray-50 text-gray-400'
                   : selectedPlanId === plan.id
-                  ? 'border-green-600 bg-green-50'
-                  : 'hover:border-green-500 hover:bg-green-50',
+                  ? 'border-green-500 bg-green-50'
+                  : 'border-gray-200 bg-white hover:border-green-500 hover:bg-green-50/60',
               ]"
             >
-              <p class="text-lg font-semibold text-gray-900">{{ plan.name }}</p>
-              <p class="text-sm text-gray-500">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <p class="text-base font-semibold text-gray-900">
+                    {{ plan.name }}
+                    <span
+                      v-if="plan.status === 'active'"
+                      class="ml-2 inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-green-700"
+                    >
+                      Active
+                    </span>
+                  </p>
+                  <p class="text-xs text-gray-500">
+                    Created
+                    {{
+                      plan.createdAt
+                        ? new Date(plan.createdAt).toLocaleDateString(undefined, {
+                            month: 'short',
+                            day: '2-digit',
+                            year: 'numeric',
+                          })
+                        : 'unknown'
+                    }}
+                  </p>
+                </div>
+                <span
+                  class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 text-xs font-semibold text-gray-600"
+                >
+                  {{ (plan.meals || []).length }}
+                </span>
+              </div>
+
+              <p class="mt-3 text-xs text-gray-500">
                 {{ plan.startDate || 'No start date' }} → {{ plan.endDate || 'Open-ended' }}
               </p>
               <span
-                class="inline-block mt-2 px-2 py-1 text-xs font-medium rounded-full"
+                class="mt-3 inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium uppercase tracking-wide"
                 :class="{
                   'bg-green-100 text-green-700': plan.status === 'active',
                   'bg-sky-100 text-sky-700': plan.status === 'draft',
@@ -351,26 +448,31 @@ async function linkToPlan() {
               </span>
             </button>
 
-            <p v-if="!plans.length" class="text-base text-gray-500 col-span-full">
+            <p v-if="!plans.length" class="col-span-full text-sm text-gray-500">
               No meal plans yet — create one to get started.
             </p>
           </div>
         </section>
 
         <!-- Step 2 -->
-        <section class="space-y-3" :class="{ 'opacity-40 pointer-events-none': !selectedPlanId }">
+        <section
+          class="space-y-3 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm"
+          :class="{ 'pointer-events-none opacity-40': !selectedPlanId }"
+        >
           <header>
-            <p class="text-sm uppercase font-semibold text-green-600">Step 2</p>
-            <h3 class="text-lg font-semibold text-gray-900">Select meal type</h3>
+            <p class="text-xs font-semibold uppercase tracking-widest text-green-600">
+              Step 2
+            </p>
+            <h3 class="text-base font-semibold text-gray-900">Pick a meal slot</h3>
           </header>
           <div class="flex flex-wrap gap-2">
             <button
               v-for="type in mealTypes"
               :key="type"
-              class="px-4 py-2 rounded-full border text-sm font-medium transition"
+              class="rounded-full border px-4 py-2 text-sm font-medium transition"
               :class="
                 selectedMealType === type
-                  ? 'bg-green-600 text-white border-green-600'
+                  ? 'border-green-600 bg-green-600 text-white'
                   : 'border-gray-300 text-gray-600 hover:border-green-500 hover:text-green-600'
               "
               :disabled="!selectedPlanId"
@@ -382,42 +484,49 @@ async function linkToPlan() {
         </section>
 
         <!-- Step 3 -->
-        <section class="space-y-3">
+        <section class="space-y-4 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
           <header>
-            <p class="text-sm uppercase font-semibold text-green-600">Step 3</p>
-            <h3 class="text-lg font-semibold text-gray-900">Confirm selection</h3>
+            <p class="text-xs font-semibold uppercase tracking-widest text-green-600">
+              Step 3
+            </p>
+            <h3 class="text-base font-semibold text-gray-900">Confirm and add</h3>
           </header>
 
           <div class="flex flex-wrap gap-3">
             <span
               v-if="selectedPlan"
-              class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-sm font-medium"
+              class="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700"
             >
               Plan: {{ selectedPlan.name }}
             </span>
             <span
               v-if="selectedMealType"
-              class="px-3 py-1 rounded-full bg-sky-100 text-sky-700 text-sm font-medium"
+              class="rounded-full bg-sky-100 px-3 py-1 text-sm font-medium text-sky-700"
             >
               Meal: {{ selectedMealType }}
             </span>
-            <span
-              class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-sm font-medium"
-            >
+            <span class="rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700">
               Item: {{ item?.food || item?.name || item?.recipe_name || 'Unknown item' }}
             </span>
           </div>
 
-          <div class="flex items-center justify-between">
-            <p v-if="linkError" class="text-sm text-red-600">{{ linkError }}</p>
-            <div class="flex-1" />
+          <p v-if="confirmationMessage" class="rounded-lg bg-green-50 px-4 py-2 text-sm text-green-700">
+            {{ confirmationMessage }}
+          </p>
+          <p v-else-if="linkError" class="text-sm text-red-600">{{ linkError }}</p>
+
+          <div class="flex items-center justify-end">
             <button
               @click="linkToPlan"
               :disabled="isSubmitting"
-              class="inline-flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-green-700 disabled:opacity-60 disabled:cursor-not-allowed"
+              class="inline-flex items-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-green-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-500 disabled:cursor-not-allowed disabled:opacity-60"
+              :class="{ 'animate-shake': isShaking }"
             >
-              <span v-if="isSubmitting" class="animate-spin">⏳</span>
-              <span>{{ isSubmitting ? 'Saving…' : 'Save to meal plan' }}</span>
+              <span
+                v-if="isSubmitting"
+                class="h-4 w-4 animate-spin rounded-full border-2 border-white/60 border-t-white"
+              ></span>
+              <span v-else>Save to meal plan</span>
             </button>
           </div>
         </section>
@@ -431,9 +540,30 @@ async function linkToPlan() {
 .fade-leave-active {
   transition: opacity 0.2s ease;
 }
-
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+.animate-shake {
+  animation: shake 0.4s ease;
+}
+@keyframes shake {
+  10%,
+  90% {
+    transform: translateX(-2px);
+  }
+  20%,
+  80% {
+    transform: translateX(4px);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translateX(-6px);
+  }
+  40%,
+  60% {
+    transform: translateX(6px);
+  }
 }
 </style>

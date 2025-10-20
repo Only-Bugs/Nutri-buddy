@@ -193,7 +193,13 @@ export const useMealPlanStore = defineStore('mealPlan', {
                 : derivePlanRecipes(meals),
           }
         })
-        this.activePlanId = this.plans[0]?.id || null
+        const existingSelection = this.activePlanId
+        if (existingSelection && this.plans.some((plan) => plan.id === existingSelection)) {
+          this.activePlanId = existingSelection
+        } else {
+          const firstActive = this.plans.find((plan) => plan.status === 'active')
+          this.activePlanId = firstActive?.id || this.plans[0]?.id || null
+        }
         persistPlansLocally(this.userId, this.plans)
         this.error = null
       } catch (error) {
@@ -211,7 +217,8 @@ export const useMealPlanStore = defineStore('mealPlan', {
               : derivePlanRecipes(meals),
           }
         })
-        this.activePlanId = this.plans[0]?.id || null
+        const firstActive = this.plans.find((plan) => plan.status === 'active')
+        this.activePlanId = firstActive?.id || this.plans[0]?.id || null
       } finally {
         this.loading = false
       }

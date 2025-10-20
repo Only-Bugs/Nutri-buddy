@@ -1,6 +1,7 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRecipeStore } from '@/store/recipes'
+import { getMealTypeVisual } from '@/utils/recipeVisuals'
 
 const props = defineProps({
   maxVisible: { type: Number, default: 0 },
@@ -43,6 +44,11 @@ async function toggleFavorite(recipe) {
 
 function handleCardClick(recipe) {
   emit('view-detail', recipe)
+}
+
+function mealVisual(recipe) {
+  const primary = recipe?.primaryMealType || recipe?.mealTypes?.[0] || 'Meal'
+  return getMealTypeVisual(primary)
 }
 
 onMounted(async () => {
@@ -104,13 +110,12 @@ watch(
           @keyup.enter="handleCardClick(recipe)"
         >
           <div class="flex items-start gap-3">
-            <img
-              v-if="recipe.image"
-              :src="recipe.image"
-              :alt="recipe.name"
-              class="h-16 w-16 flex-shrink-0 rounded-lg object-cover shadow-sm"
-              loading="lazy"
-            />
+            <div
+              class="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br shadow-sm"
+              :class="mealVisual(recipe).gradient"
+            >
+              <FontAwesomeIcon :icon="mealVisual(recipe).icon" :class="['text-xl', mealVisual(recipe).accent]" />
+            </div>
             <div class="min-w-0 space-y-2">
               <div>
                 <p class="text-sm font-semibold text-gray-900 leading-tight group-hover:text-green-600">
@@ -121,9 +126,15 @@ watch(
                   {{ recipe.cookTimeMinutes + recipe.prepTimeMinutes }} min total
                 </p>
               </div>
-              <p class="text-xs font-medium uppercase tracking-wide text-gray-400">
-                {{ recipe.mealTypes.join(', ') }}
-              </p>
+              <div class="flex flex-wrap gap-2">
+                <span
+                  v-for="type in recipe.mealTypes"
+                  :key="type"
+                  :class="['rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest shadow-sm', mealVisual(recipe).badge]"
+                >
+                  {{ type }}
+                </span>
+              </div>
             </div>
           </div>
 

@@ -38,8 +38,25 @@ import {
   faLeaf,
   faLock,
   faEnvelope,
+  faCircleCheck,
+  faCircle,
+  faFileArrowDown,
+  faPen,
+  faBoxArchive,
+  faEllipsisVertical,
+  faBowlFood,
+  faMugHot,
+  faIceCream,
+  faMartiniGlassCitrus,
+  faBreadSlice,
+  faDroplet,
+  faFire,
+  faClock,
+  faGlobe,
+  faHourglassHalf,
+  faStopwatch,
 } from '@fortawesome/free-solid-svg-icons'
-import { faLinkedin, faGithub } from '@fortawesome/free-brands-svg-icons'
+import { faLinkedin, faGithub, faGoogle, faApple } from '@fortawesome/free-brands-svg-icons'
 
 library.add(
   faUtensils,
@@ -75,6 +92,25 @@ library.add(
   faEnvelope,
   faLinkedin,
   faGithub,
+  faGoogle,
+  faApple,
+  faCircleCheck,
+  faCircle,
+  faFileArrowDown,
+  faPen,
+  faBoxArchive,
+  faEllipsisVertical,
+  faBowlFood,
+  faMugHot,
+  faIceCream,
+  faMartiniGlassCitrus,
+  faBreadSlice,
+  faDroplet,
+  faFire,
+  faClock,
+  faGlobe,
+  faHourglassHalf,
+  faStopwatch,
 )
 
 export default {
