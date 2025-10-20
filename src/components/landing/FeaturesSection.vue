@@ -3,47 +3,60 @@ import FeatureCard from './FeatureCard.vue'
 
 const features = [
   {
-    icon: 'meal',
-    title: 'Smart Meal Plans',
+    icon: 'access',
+    title: 'Authentication & Access',
     description:
-      'Get personalized meal plans tailored to your dietary preferences, health goals, and lifestyle. Our AI creates balanced nutrition plans just for you.',
-    points: ['Custom dietary restrictions', 'Weekly meal prep guides', 'Shopping list generation'],
+      'Smooth sign-up flows, Google OAuth, and secure storage ensure you can get in fast and stay protected.',
+    points: ['Google and email login', 'Session-aware navigation', 'Privacy by default'],
   },
   {
-    icon: 'star',
-    title: 'Food Ratings & Reviews',
+    icon: 'dashboard',
+    title: 'Dashboard & Tracking',
     description:
-      'Rate meals, discover new recipes, and get recommendations based on your taste preferences and nutritional needs.',
-    points: [
-      'Community recipe sharing',
-      'Nutritional scoring system',
-      'Personalized recommendations',
-    ],
+      'Live nutrition search, quick logging, and friendly charts make it easy to keep tabs on your day.',
+    points: ['Search thousands of foods', 'One-tap add to plans', 'Progress charts at a glance'],
   },
   {
-    icon: 'analytics',
-    title: 'Advanced Analytics',
+    icon: 'planning',
+    title: 'Meal Planning & Recipes',
     description:
-      'Track your progress with detailed analytics and insights. Monitor calories, macros, and achieve your health goals faster.',
-    points: ['Real-time nutrition tracking', 'Progress visualization', 'Health trend analysis'],
+      'Create, clone, and manage meal plans with smart recommendations and recipe inspiration.',
+    points: ['Drag-and-drop planning', 'Personalized recipe library', 'Instant grocery drafting'],
+  },
+  {
+    icon: 'history',
+    title: 'History & Settings',
+    description:
+      'Recall past meals, tune calorie goals, and keep favorites close without losing your rhythm.',
+    points: ['Meal history timeline', 'Flexible goal controls', 'Favorites one tap away'],
+  },
+  {
+    icon: 'reliability',
+    title: 'Platform Reliability',
+    description:
+      'Powered by Firebase authentication and AWS-backed data services for a stable, modular experience.',
+    points: ['Realtime sync across devices', 'Resilient cloud infrastructure', 'Modular, future-ready'],
   },
 ]
 </script>
 
 <template>
-  <section id="features" class="px-6 py-12 bg-gray-50">
-    <div class="text-center max-w-2xl mx-auto mb-12">
-      <h2 class="text-3xl font-bold">Everything You Need for Healthy Living</h2>
-      <p class="text-gray-600 mt-2">
-        Discover powerful features designed to make nutrition tracking simple, effective, and
-        enjoyable.
+  <section id="features" class="px-6 py-16 bg-white">
+    <div class="text-center max-w-3xl mx-auto mb-12">
+      <p class="text-sm font-semibold uppercase tracking-wide text-green-600">Features</p>
+      <h2 class="mt-2 text-3xl md:text-4xl font-bold text-gray-900">
+        Everything you need to understand what NutriBuddy can do.
+      </h2>
+      <p class="mt-4 text-lg text-gray-600">
+        Explore the core tools inside the dashboard and see how they connect to build confident,
+        sustainable habits.
       </p>
     </div>
 
-    <div class="grid md:grid-cols-3 gap-6">
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       <FeatureCard
         v-for="(feature, i) in features"
-        :key="i"
+        :key="feature.title"
         :icon="feature.icon"
         :title="feature.title"
         :description="feature.description"

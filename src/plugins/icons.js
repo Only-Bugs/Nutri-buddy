@@ -33,7 +33,13 @@ import {
   faClipboardList,
   faClockRotateLeft,
   faBookOpen,
+  faQuoteLeft,
+  faShieldHalved,
+  faLeaf,
+  faLock,
+  faEnvelope,
 } from '@fortawesome/free-solid-svg-icons'
+import { faLinkedin, faGithub } from '@fortawesome/free-brands-svg-icons'
 
 library.add(
   faUtensils,
@@ -62,6 +68,13 @@ library.add(
   faClipboardList,
   faClockRotateLeft,
   faBookOpen,
+  faQuoteLeft,
+  faShieldHalved,
+  faLeaf,
+  faLock,
+  faEnvelope,
+  faLinkedin,
+  faGithub,
 )
 
 export default {
