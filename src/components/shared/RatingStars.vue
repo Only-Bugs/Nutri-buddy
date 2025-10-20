@@ -46,6 +46,6 @@ function setRating(star) {
         ★
       </span>
     </div>
-    <span v-if="errorMessage" class="text-red-500 text-sm">{{ errorMessage }}</span>
+    <span v-if="errorMessage" class="text-red-500 text-lg">{{ errorMessage }}</span>
   </div>
 </template>

@@ -1,0 +1,1516 @@
+{
+"page": 1,
+"page_size": 21,
+"total": 50513,
+"recipes": [
+{
+"recipe_id": 1,
+"recipe_name": "Pineapple Glaze for Ham",
+"prep_time": "10",
+"cook_time": "5",
+"category": "['Dinner']",
+"cuisine": "['American']",
+"n_steps": 4,
+"servings_count": 14,
+"instructions": "['Gather the ingredients.', 'Before baking ham, place pineapple slices on ham with toothpicks and place cherries in center of pineapple.', 'Combine brown sugar and reserved pineapple juice in a medium microwave-safe bowl. Mix and microwave for about 5 minutes, until mixture is thick.', 'Pour some of this glaze over the ham about every 15 minutes in the last hour of baking, until all is used.']",
+"quiz_label": "fast_food",
+"calories": 93.0,
+"fat": 0.0,
+"sugar": 21.0,
+"sodium": 7.0,
+"protein": 0.0,
+"saturated_fat": 0.0,
+"fiber": 0.0,
+"ingredients": [
+{
+"ingredient_name": "pineapple",
+"quantity": "1",
+"unit": "",
+"misc": "drained with juice reserved 1525 ounce sliced"
+},
+{
+"ingredient_name": "maraschino cherrie",
+"quantity": "1",
+"unit": "jar",
+"misc": "drained 4 ounce"
+},
+{
+"ingredient_name": "brown sugar",
+"quantity": "1",
+"unit": "cup",
+"misc": ""
+}
+]
+},
+{
+"recipe_id": 2,
+"recipe_name": "Awesome Egg Rolls",
+"prep_time": "35",
+"cook_time": "15",
+"category": "['Dinner', 'Appetizer']",
+"cuisine": "['World', 'Asian']",
+"n_steps": 11,
+"servings_count": 10,
+"instructions": "['Gather all ingredients.', 'Mix cabbage, bean sprouts, carrot, celery, and onion together in a large bowl.', 'Stir in shrimp, soy sauce, garlic powder, and pepper.', 'Heat 1 teaspoon oil in a nonstick skillet over medium heat. Add egg and cook, without stirring, until the bottom has set. Flip and cook until set on the other side, 1 to 2 minutes.', 'Transfer to a cutting board and finely chop.', 'Stir in chopped egg, then sprinkle 1 tablespoon cornstarch over top. Mix to combine and let sit for 10 minutes.', 'Mix water and remaining 1 tablespoon cornstarch together in a small bowl.', 'Place an egg roll wrapper onto a work surface with one corner pointing away from you like a diamond. Spoon 2 to 3 tablespoons shrimp mixture into the center. Moisten the top and side corners with the wet cornstarch mixture.', 'Fold the dry bottom corner up and over the filling, making a tight tube.', 'Fold the side corners in, pressing to stick against the folded roll, then roll toward the top corner to complete. Repeat to make remaining egg rolls.', 'Heat 3 to 4 inches vegetable oil in a deep fryer to 350 degrees F (175 degrees C). Working in batches, carefully fry egg rolls in the preheated fryer until golden brown, 2 to 4 minutes. Drain on paper towels.']",
+"quiz_label": "fast_food",
+"calories": 1268.0,
+"fat": 110.0,
+"sugar": 3.0,
+"sodium": 1050.0,
+"protein": 17.0,
+"saturated_fat": 17.0,
+"fiber": 7.0,
+"ingredients": [
+{
+"ingredient_name": "vegetable oil",
+"quantity": "1",
+"unit": "tsp",
+"misc": ""
+},
+{
+"ingredient_name": "egg",
+"quantity": "1",
+"unit": "",
+"misc": "beaten"
+},
+{
+"ingredient_name": "cabbage",
+"quantity": "6",
+"unit": "cups",
+"misc": "shredded"
+},
+{
+"ingredient_name": "bean sprout",
+"quantity": "0.5",
+"unit": "cup",
+"misc": "fresh"
+},
+{
+"ingredient_name": "carrot",
+"quantity": "1",
+"unit": "",
+"misc": "shredded"
+},
+{
+"ingredient_name": "stalk",
+"quantity": "1",
+"unit": "celery",
+"misc": "diced"
+},
+{
+"ingredient_name": "onion",
+"quantity": "2",
+"unit": "tablespoons",
+"misc": "chopped"
+},
+{
+"ingredient_name": "shrimp",
+"quantity": "1",
+"unit": "",
+"misc": "drained 4 ounce"
+},
+{
+"ingredient_name": "soy sauce",
+"quantity": "2",
+"unit": "tablespoons",
+"misc": ""
+},
+{
+"ingredient_name": "garlic powder",
+"quantity": "0.125",
+"unit": "teaspoon",
+"misc": ""
+},
+{
+"ingredient_name": "pepper",
+"quantity": "",
+"unit": "black",
+"misc": ""
+},
+{
+"ingredient_name": "cornstarch",
+"quantity": "1",
+"unit": "t",
+"misc": ""
+},
+{
+"ingredient_name": "oil for frying",
+"quantity": "",
+"unit": "vegetable",
+"misc": ""
+},
+{
+"ingredient_name": "water",
+"quantity": "2",
+"unit": "t",
+"misc": "cold"
+},
+{
+"ingredient_name": "roll wrapper",
+"quantity": "20",
+"unit": "egg",
+"misc": ""
+}
+]
+},
+{
+"recipe_id": 3,
+"recipe_name": "Spanish Tortilla",
+"prep_time": "10",
+"cook_time": "10",
+"category": "['Breakfast']",
+"cuisine": "['Spanish']",
+"n_steps": 3,
+"servings_count": 4,
+"instructions": "['Slice edges off of potatoes so that potatoes are roughly square thinly slice. Heat olive oil in medium skillet over medium heat. Add potatoes and lightly fry. Remove potatoes with a slotted spoon and set aside.', 'Place bacon in a large, deep skillet. Cook over medium-high heat until evenly brown. Remove bacon, crumble and set aside. Reserve 1 tablespoon bacon grease and cook ham, onion and red pepper. Remove from heat.', 'Beat eggs and paprika together in a bowl pour into skillet with vegetables. Add bacon and potatoes. Cook over medium heat, without stirring until bottom begins to brown. Turn omelet over and allow both sides to brown. Serve warm.']",
+"quiz_label": "fast_food",
+"calories": 447.0,
+"fat": 34.0,
+"sugar": 3.0,
+"sodium": 558.0,
+"protein": 14.0,
+"saturated_fat": 9.0,
+"fiber": 2.0,
+"ingredients": [
+{
+"ingredient_name": "egg",
+"quantity": "4",
+"unit": "",
+"misc": ""
+},
+{
+"ingredient_name": "onion",
+"quantity": "0.5",
+"unit": "",
+"misc": "thinly sliced"
+},
+{
+"ingredient_name": "olive oil",
+"quantity": "0.25",
+"unit": "cup",
+"misc": ""
+},
+{
+"ingredient_name": "potatoe",
+"quantity": "2",
+"unit": "",
+"misc": "peeled"
+},
+{
+"ingredient_name": "bacon",
+"quantity": "4",
+"unit": "slices",
+"misc": ""
+},
+{
+"ingredient_name": "ham",
+"quantity": "2",
+"unit": "slices",
+"misc": "diced cooked"
+},
+{
+"ingredient_name": "bell pepper",
+"quantity": "0.5",
+"unit": "red",
+"misc": "sliced"
+},
+{
+"ingredient_name": "spanish seasoning",
+"quantity": "0.25",
+"unit": "teaspoon",
+"misc": ""
+}
+]
+},
+{
+"recipe_id": 4,
+"recipe_name": "Spicy Tarragon Yogurt Chicken",
+"prep_time": "10",
+"cook_time": "15",
+"category": "['Dinner']",
+"cuisine": "['American']",
+"n_steps": 5,
+"servings_count": 6,
+"instructions": "['Set 4 tarragon sprigs aside strip leaves from remaining sprigs. Combine tarragon leaves, Greek yogurt, harissa sauce, vinegar, garlic, cumin, and salt in a blender blend until smooth, scraping down sides as needed. Pour marinade over chicken breasts in a shallow dish, thoroughly coating both sides. Cover dish refrigerate for 2 to 3 hours.', 'Preheat an outdoor grill for medium-high heat and lightly oil the grate.', 'Remove chicken breasts from marinade, letting excess drip off discard remaining marinade.', 'Cook chicken on the preheated grill until dark grill marks appear, about 7 minutes per side. An instant-read thermometer inserted into centers of breasts should read at least 165 F (74 C).', 'Garnish chicken breasts with harissa sauce and reserved tarragon sprigs.']",
+"quiz_label": "high_protein",
+"calories": 316.0,
+"fat": 7.0,
+"sugar": 2.0,
+"sodium": 1281.0,
+"protein": 57.0,
+"saturated_fat": 2.0,
+"fiber": 0.0,
+"ingredients": [
+{
+"ingredient_name": "tarragon sprig",
+"quantity": "1",
+"unit": "bunch",
+"misc": "leaves only fresh"
+},
+{
+"ingredient_name": "greek-style yogurt",
+"quantity": "0.5",
+"unit": "cup",
+"misc": "plain"
+},
+{
+"ingredient_name": "harissa sauce",
+"quantity": "0.25",
+"unit": "cup",
+"misc": "see footnote for recipe link"
+},
+{
+"ingredient_name": "vinegar or citrus juice",
+"quantity": "2",
+"unit": "tablespoons",
+"misc": ""
+},
+{
+"ingredient_name": "clove",
+"quantity": "2",
+"unit": "garlic",
+"misc": "peeled"
+},
+{
+"ingredient_name": "cumin",
+"quantity": "1",
+"unit": "tablespoon",
+"misc": "ground"
+},
+{
+"ingredient_name": "kosher salt",
+"quantity": "2",
+"unit": "teaspoons",
+"misc": ""
+},
+{
+"ingredient_name": "chicken breast halve",
+"quantity": "4",
+"unit": "large",
+"misc": ""
+}
+]
+},
+{
+"recipe_id": 5,
+"recipe_name": "Apple Bread",
+"prep_time": "15",
+"cook_time": "45",
+"category": "['Brunch']",
+"cuisine": "['American']",
+"n_steps": 3,
+"servings_count": 16,
+"instructions": "['Preheat the oven to 300 degrees F (150 degrees C). Grease two 8x4-inch loaf pans or one 10-inch Bundt pan with cooking spray.', 'Mix flour, baking soda, salt, walnuts, and apples in a large bowl. Whisk oil, sugar, eggs, and cinnamon together in a small bowl add to flour mixture and mix until just moistened. Spoon batter into prepared pan(s).', 'Bake in preheated oven until a toothpick inserted into the center comes out clean, about 45 minutes to 1 hour. Cool in the pans briefly before removing to cool completely on a wire rack.']",
+"quiz_label": "fast_food",
+"calories": 377.0,
+"fat": 20.0,
+"sugar": 28.0,
+"sodium": 238.0,
+"protein": 5.0,
+"saturated_fat": 3.0,
+"fiber": 2.0,
+"ingredients": [
+{
+"ingredient_name": "vegetable oil",
+"quantity": "1",
+"unit": "cup",
+"misc": ""
+},
+{
+"ingredient_name": "egg",
+"quantity": "3",
+"unit": "",
+"misc": "beaten"
+},
+{
+"ingredient_name": "oil spray",
+"quantity": "",
+"unit": "cooking",
+"misc": ""
+},
+{
+"ingredient_name": "all-purpose flour",
+"quantity": "3",
+"unit": "cups",
+"misc": ""
+},
+{
+"ingredient_name": "baking soda",
+"quantity": "1",
+"unit": "teaspoon",
+"misc": ""
+},
+{
+"ingredient_name": "salt",
+"quantity": "1",
+"unit": "teaspoon",
+"misc": ""
+},
+{
+"ingredient_name": "walnut",
+"quantity": "1",
+"unit": "cup",
+"misc": "chopped"
+},
+{
+"ingredient_name": "apple",
+"quantity": "3",
+"unit": "cups",
+"misc": "cored and chopped peeled"
+},
+{
+"ingredient_name": "white sugar",
+"quantity": "2",
+"unit": "cups",
+"misc": ""
+},
+{
+"ingredient_name": "cinnamon",
+"quantity": "2",
+"unit": "teaspoons",
+"misc": "ground"
+}
+]
+},
+{
+"recipe_id": 6,
+"recipe_name": "Grandma's Lemon Meringue Pie",
+"prep_time": "30",
+"cook_time": "10",
+"category": "['Dessert']",
+"cuisine": "['American']",
+"n_steps": 8,
+"servings_count": 8,
+"instructions": "['Gather all ingredients and preheat the oven to 325 degrees F (165 degrees C).', 'To make the lemon filling: Whisk 1 cup sugar, flour, cornstarch, and salt together in a medium saucepan stir in water, lemon juice, and lemon zest. Cook over medium-high heat, stirring frequently, until mixture comes to a boil. Stir in butter.', 'Place egg yolks in a small bowl and gradually whisk in 1/2 cup of hot sugar mixture.', 'Whisk egg yolk mixture back into remaining sugar mixture. Bring to a boil and continue to cook while stirring constantly until thick. Remove from heat pour filling into baked pastry crust.', 'To make the meringue topping: Beat egg whites in a glass, metal, or ceramic bowl with an electric mixer until foamy. Gradually add sugar, continuing to beat until stiff peaks form.', 'Working quickly, spread meringue over pie filling, sealing the edges at the crust. Use the back of the spoon to create peaks on the top of the meringue if you like.', 'Bake pie in the preheated oven until meringue is golden brown, about 20 to 25 minutes.', 'Serve and enjoy!']",
+"quiz_label": "fast_food",
+"calories": 472.0,
+"fat": 16.0,
+"sugar": 45.0,
+"sodium": 326.0,
+"protein": 9.0,
+"saturated_fat": 6.0,
+"fiber": 5.0,
+"ingredients": [
+{
+"ingredient_name": "cornstarch",
+"quantity": "3",
+"unit": "tablespoons",
+"misc": ""
+},
+{
+"ingredient_name": "water",
+"quantity": "1.5",
+"unit": "cups",
+"misc": ""
+},
+{
+"ingredient_name": "all-purpose flour",
+"quantity": "2",
+"unit": "tablespoons",
+"misc": ""
+},
+{
+"ingredient_name": "salt",
+"quantity": "0.25",
+"unit": "teaspoon",
+"misc": ""
+},
+{
+"ingredient_name": "white sugar",
+"quantity": "1",
+"unit": "cup",
+"misc": ""
+},
+{
+"ingredient_name": "lemon",
+"quantity": "2",
+"unit": "",
+"misc": "juiced and zested"
+},
+{
+"ingredient_name": "butter",
+"quantity": "2",
+"unit": "tablespoons",
+"misc": ""
+},
+{
+"ingredient_name": "yolk",
+"quantity": "4",
+"unit": "egg",
+"misc": "beaten"
+},
+{
+"ingredient_name": "crust",
+"quantity": "1",
+"unit": "pie",
+"misc": "baked 9 inch"
+},
+{
+"ingredient_name": "white",
+"quantity": "4",
+"unit": "egg",
+"misc": ""
+}
+]
+},
+{
+"recipe_id": 7,
+"recipe_name": "Punjabi Sukha Urad Dal",
+"prep_time": "10",
+"cook_time": "45",
+"category": "['Dinner', 'Lunch', 'Entree']",
+"cuisine": "['Indian']",
+"n_steps": 5,
+"servings_count": 4,
+"instructions": "['Place lentils in a large bowl cover with several inches of cool water. Soak for 4 hours or overnight. Drain and rinse.', 'Heat oil in a heavy-bottomed saucepan over medium heat. Add onion, chile peppers, garlic, and ginger cook until onion is golden brown, about 5 minutes.', 'Stir lentils and 1 cup water into onion mixture season with salt. Reduce heat to low simmer until lentils are mostly cooked, about 30 minutes.', 'Add tomato, garam masala, and turmeric cook until lentils are tender, about 10 minutes more.', 'Garnish servings with cilantro.']",
+"quiz_label": "balanced",
+"calories": 277.0,
+"fat": 8.0,
+"sugar": 5.0,
+"sodium": 31.0,
+"protein": 14.0,
+"saturated_fat": 1.0,
+"fiber": 2.0,
+"ingredients": [
+{
+"ingredient_name": "onion",
+"quantity": "1",
+"unit": "",
+"misc": "chopped"
+},
+{
+"ingredient_name": "water",
+"quantity": "1",
+"unit": "cup",
+"misc": ""
+},
+{
+"ingredient_name": "cooking oil",
+"quantity": "2",
+"unit": "tablespoons",
+"misc": ""
+},
+{
+"ingredient_name": "chile pepper",
+"quantity": "4",
+"unit": "green",
+"misc": "cut into large chunks"
+},
+{
+"ingredient_name": "garlic",
+"quantity": "4",
+"unit": "cloves",
+"misc": "minced"
+},
+{
+"ingredient_name": "ginger root",
+"quantity": "1",
+"unit": "tablespoon",
+"misc": "minced fresh"
+},
+{
+"ingredient_name": "tomato",
+"quantity": "1",
+"unit": "large",
+"misc": "chopped"
+},
+{
+"ingredient_name": "garam masala",
+"quantity": "1",
+"unit": "teaspoon",
+"misc": ""
+},
+{
+"ingredient_name": "turmeric",
+"quantity": "0.5",
+"unit": "teaspoon",
+"misc": "ground"
+},
+{
+"ingredient_name": "cilantro",
+"quantity": "0.25",
+"unit": "cup",
+"misc": "chopped fresh"
+}
+]
+},
+{
+"recipe_id": 8,
+"recipe_name": "Green Chile Chicken and Rice Soup",
+"prep_time": "15",
+"cook_time": "30",
+"category": "['Entree', 'Dinner', 'Lunch', 'Brunch']",
+"cuisine": "['American', 'Tex-Mex']",
+"n_steps": 5,
+"servings_count": 4,
+"instructions": "['Bring water to a boil in a saucepan add 1 tablespoon dried oregano, salt, and 1/4 teaspoon garlic powder. Reduce heat, add chicken, and simmer until chicken is no longer pink in centers, 10 to 15 minutes. Transfer chicken to a plate set aside to cool.', 'Strain cooking liquid transfer 2 cups to a saucepan and bring to a boil. Add rice, reduce heat to low, cover, and cook until rice is tender and water is absorbed, about 17 minutes.', 'Meanwhile, heat oil in a stockpot over medium heat. Add onion cook until softened, about 10 minutes. Add chicken broth, chile peppers, cumin, remaining 1 tablespoon dried oregano, and remaining 1/4 teaspoon garlic powder cover stockpot and simmer.', 'Shred chicken using two forks add to simmering broth. Cook until chicken is warmed through, 5 to 10 minutes.', 'Divide rice between 4 serving bowls sprinkle each with 1 ounce Monterey Jack cheese. Divide soup between bowls.']",
+"quiz_label": "fast_food",
+"calories": 400.0,
+"fat": 12.0,
+"sugar": 4.0,
+"sodium": 753.0,
+"protein": 25.0,
+"saturated_fat": 6.0,
+"fiber": 3.0,
+"ingredients": [
+{
+"ingredient_name": "garlic powder",
+"quantity": "0.25",
+"unit": "teaspoon",
+"misc": ""
+},
+{
+"ingredient_name": "water",
+"quantity": "3",
+"unit": "cups",
+"misc": ""
+},
+{
+"ingredient_name": "olive oil",
+"quantity": "1",
+"unit": "teaspoon",
+"misc": ""
+},
+{
+"ingredient_name": "cumin",
+"quantity": "1",
+"unit": "tablespoon",
+"misc": "ground"
+},
+{
+"ingredient_name": "kosher salt",
+"quantity": "1",
+"unit": "teaspoon",
+"misc": ""
+},
+{
+"ingredient_name": "oregano",
+"quantity": "1",
+"unit": "tablespoon",
+"misc": "dried"
+},
+{
+"ingredient_name": "medium-grain white rice",
+"quantity": "1",
+"unit": "cup",
+"misc": ""
+},
+{
+"ingredient_name": "white onion",
+"quantity": "1",
+"unit": "small",
+"misc": "diced"
+},
+{
+"ingredient_name": "low-sodium chicken broth",
+"quantity": "3",
+"unit": "cups",
+"misc": ""
+},
+{
+"ingredient_name": "green chile pepper",
+"quantity": "1",
+"unit": "cup",
+"misc": "chopped"
+},
+{
+"ingredient_name": "monterey jack cheese",
+"quantity": "4",
+"unit": "ounces",
+"misc": "shredded"
+}
+]
+},
+{
+"recipe_id": 9,
+"recipe_name": "Cheesy Scalloped Potatoes",
+"prep_time": "15",
+"cook_time": "70",
+"category": "['Dinner', 'Side Dish']",
+"cuisine": "['American']",
+"n_steps": 4,
+"servings_count": 6,
+"instructions": "['Preheat the oven to 375 degrees F (190 degrees C). Grease a casserole dish.', 'Arrange sliced potatoes in the casserole dish season with salt.', 'Melt butter in a saucepan over medium heat whisk in flour to form a thick paste. Pour in milk gradually, stirring constantly, until a thick white sauce forms, about 5 minutes. Stir in cheese and remove from heat. Pour sauce over potatoes.', 'Bake in the preheated oven until potatoes are tender and the tops are golden brown, about 1 hour.']",
+"quiz_label": "fast_food",
+"calories": 289.0,
+"fat": 9.0,
+"sugar": 5.0,
+"sodium": 866.0,
+"protein": 10.0,
+"saturated_fat": 6.0,
+"fiber": 5.0,
+"ingredients": [
+{
+"ingredient_name": "potatoe",
+"quantity": "6",
+"unit": "medium",
+"misc": "peeled and thinly sliced"
+},
+{
+"ingredient_name": "all-purpose flour",
+"quantity": "2",
+"unit": "tablespoons",
+"misc": ""
+},
+{
+"ingredient_name": "salt",
+"quantity": "2",
+"unit": "teaspoons",
+"misc": ""
+},
+{
+"ingredient_name": "butter",
+"quantity": "2",
+"unit": "tablespoons",
+"misc": ""
+},
+{
+"ingredient_name": "milk",
+"quantity": "1.5",
+"unit": "cups",
+"misc": ""
+},
+{
+"ingredient_name": "swiss cheese",
+"quantity": "0.75",
+"unit": "cup",
+"misc": "shredded"
+}
+]
+},
+{
+"recipe_id": 10,
+"recipe_name": "Honey Brie Spread",
+"prep_time": "5",
+"cook_time": "30",
+"category": "['Appetizer']",
+"cuisine": "['French']",
+"n_steps": 3,
+"servings_count": 8,
+"instructions": "['Preheat the oven to 375 degrees F (190 degrees C).', 'Unroll crescent roll dough on a flat work surface place Brie wheel in center of dough. Wrap dough around Brie wheel press seams together to seal and enclose cheese. Transfer dough-covered cheese to a 9x9-inch baking dish top with pecans and drizzle with honey.', 'Bake in the preheated oven until cheese is soft and crust is golden, about 30 minutes. Serve with apple slices or cornbread crackers.']",
+"quiz_label": "fast_food",
+"calories": 651.0,
+"fat": 37.0,
+"sugar": 56.0,
+"sodium": 591.0,
+"protein": 15.0,
+"saturated_fat": 12.0,
+"fiber": 2.0,
+"ingredients": [
+{
+"ingredient_name": "crescent roll dough",
+"quantity": "1",
+"unit": "",
+"misc": "10 ounce refrigerated"
+},
+{
+"ingredient_name": "brie cheese",
+"quantity": "1",
+"unit": "round",
+"misc": "14 ounce"
+},
+{
+"ingredient_name": "pecan halve",
+"quantity": "1.5",
+"unit": "cups",
+"misc": ""
+},
+{
+"ingredient_name": "honey",
+"quantity": "1.5",
+"unit": "cups",
+"misc": ""
+}
+]
+},
+{
+"recipe_id": 11,
+"recipe_name": "Old-Fashioned Scalloped Corn",
+"prep_time": "15",
+"cook_time": "30",
+"category": "['Dinner', 'Side Dish']",
+"cuisine": "['American']",
+"n_steps": 6,
+"servings_count": 10,
+"instructions": "['Gather all ingredients.', 'Preheat the oven to 350 degrees F (175 degrees C). Butter an 8x11-inch casserole dish.', 'Combine creamed corn, 1/2 cup cracker crumbs, 1/4 cup melted butter, and eggs in a large bowl mix well.', 'Pour mixture into the prepared dish.', 'Mix remaining 1/2 cup cracker crumbs and remaining 1/4 cup melted butter with paprika and pepper in a small bowl. Sprinkle crumb topping over casserole.', 'Bake in the preheated oven until crumb topping is golden brown and the filling is bubbling along the edges, 30 to 40 minutes.']",
+"quiz_label": "fast_food",
+"calories": 212.0,
+"fat": 11.0,
+"sugar": 4.0,
+"sodium": 474.0,
+"protein": 4.0,
+"saturated_fat": 6.0,
+"fiber": 2.0,
+"ingredients": [
+{
+"ingredient_name": "egg",
+"quantity": "2",
+"unit": "large",
+"misc": ""
+},
+{
+"ingredient_name": "butter",
+"quantity": "0.5",
+"unit": "cup",
+"misc": "melted divided"
+},
+{
+"ingredient_name": "cream-style corn",
+"quantity": "3",
+"unit": "",
+"misc": "15 ounce"
+},
+{
+"ingredient_name": "saltine crackers",
+"quantity": "1",
+"unit": "cup",
+"misc": "divided crushed"
+},
+{
+"ingredient_name": "paprika",
+"quantity": "0.5",
+"unit": "teaspoon",
+"misc": ""
+},
+{
+"ingredient_name": "black pepper",
+"quantity": "0.25",
+"unit": "teaspoon",
+"misc": "ground"
+}
+]
+},
+{
+"recipe_id": 12,
+"recipe_name": "Scalloped Potatoes and Ham",
+"prep_time": "25",
+"cook_time": "85",
+"category": "['Dinner', 'Side Dish']",
+"cuisine": "['American']",
+"n_steps": 5,
+"servings_count": 10,
+"instructions": "['Gather all the ingredients. Preheat the oven to 350 degrees F (175 degrees C). Spray a 9x13-inch baking dish with cooking spray.', 'Bring a large pot of water to a boil. Add potatoes and cook until almost tender, 5 to 10 minutes. Transfer to a colander and rinse with cold water until cool enough to handle. Drain well and set aside.', 'Melt butter in a large skillet over medium heat. Add onion cook and stir until tender, about 5 minutes. Stir in flour, Dijon mustard, salt, and pepper cook for 1 minute. Gradually pour in milk, stirring constantly until sauce is thickened, about 5 minutes. Stir in Cheddar cheese until melted.', 'Layer \u00bd of the potatoes in the bottom of the prepared baking dish. Top with 1 \u00bd cups diced ham and \u00bd of the Cheddar cheese sauce. Repeat another layer with remaining potatoes, ham, and sauce.', 'Bake in the preheated oven until the sauce is bubbling and the top of the casserole is golden brown, about 1 hour.']",
+"quiz_label": "fast_food",
+"calories": 422.0,
+"fat": 21.0,
+"sugar": 6.0,
+"sodium": 900.0,
+"protein": 21.0,
+"saturated_fat": 11.0,
+"fiber": 3.0,
+"ingredients": [
+{
+"ingredient_name": "onion",
+"quantity": "1",
+"unit": "",
+"misc": "finely chopped"
+},
+{
+"ingredient_name": "potatoe",
+"quantity": "8",
+"unit": "",
+"misc": "peeled and thinly sliced"
+},
+{
+"ingredient_name": "ham",
+"quantity": "3",
+"unit": "cups",
+"misc": "diced"
+},
+{
+"ingredient_name": "oil spray",
+"quantity": "",
+"unit": "cooking",
+"misc": ""
+},
+{
+"ingredient_name": "all-purpose flour",
+"quantity": "0.5",
+"unit": "cup",
+"misc": ""
+},
+{
+"ingredient_name": "salt",
+"quantity": "1",
+"unit": "teaspoon",
+"misc": ""
+},
+{
+"ingredient_name": "butter",
+"quantity": "0.5",
+"unit": "cup",
+"misc": ""
+},
+{
+"ingredient_name": "milk",
+"quantity": "3",
+"unit": "cups",
+"misc": ""
+},
+{
+"ingredient_name": "black pepper",
+"quantity": "0.25",
+"unit": "teaspoon",
+"misc": "ground"
+},
+{
+"ingredient_name": "dijon mustard",
+"quantity": "2",
+"unit": "teaspoons",
+"misc": ""
+},
+{
+"ingredient_name": "cheddar cheese",
+"quantity": "2",
+"unit": "cups",
+"misc": "shredded"
+}
+]
+},
+{
+"recipe_id": 13,
+"recipe_name": "Scalloped Potatoes",
+"prep_time": "30",
+"cook_time": "45",
+"category": "['Side Dish']",
+"cuisine": "['American']",
+"n_steps": 4,
+"servings_count": 6,
+"instructions": "['Gather the ingredients. Preheat the oven to 375 degrees F (190 degrees C). Grease a 9x13-inch baking dish.', 'Spread about 1/3 of the potato slices into the bottom of the prepared baking dish. Top with about 1/3 of the onion slices. Sprinkle 3 tablespoons flour over the potato and onion. Arrange 2 tablespoons butter atop the flour. Season the entire layer with salt and pepper. Repeat layering twice more.', 'Heat milk in a saucepan until warm. Pour enough warm milk over the mixture in the baking dish so the top of the liquid is level with the final layer of potatoes.', 'Bake in the preheated oven until potatoes are tender and the creamy sauce is bubbling with a golden brown crust on top, 45 to 60 minutes. The cream sauce may bubble up over the sides of the baking dish place a baking sheet underneath to catch any drips. Serve hot and enjoy!']",
+"quiz_label": "fast_food",
+"calories": 396.0,
+"fat": 16.0,
+"sugar": 8.0,
+"sodium": 171.0,
+"protein": 10.0,
+"saturated_fat": 10.0,
+"fiber": 6.0,
+"ingredients": [
+{
+"ingredient_name": "onion",
+"quantity": "0.5",
+"unit": "",
+"misc": "thinly sliced"
+},
+{
+"ingredient_name": "potatoe",
+"quantity": "3",
+"unit": "pounds",
+"misc": "thinly sliced"
+},
+{
+"ingredient_name": "all-purpose flour",
+"quantity": "9",
+"unit": "tablespoons",
+"misc": "divided"
+},
+{
+"ingredient_name": "butter",
+"quantity": "6",
+"unit": "tablespoons",
+"misc": "diced and divided"
+},
+{
+"ingredient_name": "black pepper",
+"quantity": "",
+"unit": "salt",
+"misc": "ground"
+},
+{
+"ingredient_name": "whole milk",
+"quantity": "3",
+"unit": "cups",
+"misc": "or as needed"
+}
+]
+},
+{
+"recipe_id": 14,
+"recipe_name": "Easy French Toast Casserole",
+"prep_time": "15",
+"cook_time": "30",
+"category": "['Breakfast', 'Brunch']",
+"cuisine": "['American']",
+"n_steps": 8,
+"servings_count": 8,
+"instructions": "['Gather all ingredients and grease a 9x13-inch baking dish.', 'To make the French toast: Stir brown sugar and butter together in a saucepan over medium-low heat until butter is melted and sugar has dissolved, 2 to 4 minutes. Pour butter-brown sugar mixture into the prepared baking dish.', 'Scatter French bread pieces over top in a 1 \u00bd- to 2-inch layer.', 'Whisk milk, eggs, and vanilla together in a bowl until well combined. Pour over bread pieces, then press bread down with a spatula so the bread absorbs the liquid. Cover the dish with plastic wrap and refrigerate, 8 hours to overnight.', 'When ready to bake, remove French toast from the refrigerator and discard plastic wrap. Preheat the oven to 450 degrees F (230 degrees C).', 'To make the topping: Mix brown sugar and cinnamon together in a small bowl sprinkle evenly over the top of French toast.', 'Bake in the preheated oven until casserole is browned and bubbling, about 30 minutes, covering with aluminum foil at any point if the top is browning too much.', 'Cut into squares serve with some of the caramel from the bottom of the pan spooned on top.']",
+"quiz_label": "fast_food",
+"calories": 358.0,
+"fat": 17.0,
+"sugar": 28.0,
+"sodium": 261.0,
+"protein": 10.0,
+"saturated_fat": 9.0,
+"fiber": 1.0,
+"ingredients": [
+{
+"ingredient_name": "brown sugar",
+"quantity": "1",
+"unit": "cup",
+"misc": ""
+},
+{
+"ingredient_name": "egg",
+"quantity": "6",
+"unit": "large",
+"misc": ""
+},
+{
+"ingredient_name": "cinnamon",
+"quantity": "0.25",
+"unit": "teaspoon",
+"misc": "or to taste ground"
+},
+{
+"ingredient_name": "milk",
+"quantity": "2",
+"unit": "cups",
+"misc": ""
+},
+{
+"ingredient_name": "unsalted butter",
+"quantity": "0.5",
+"unit": "cup",
+"misc": ""
+},
+{
+"ingredient_name": "crusty french bread",
+"quantity": "1",
+"unit": "loaf",
+"misc": "cut into bite-sized pieces or more as needed 8 ounce"
+},
+{
+"ingredient_name": "vanilla extract",
+"quantity": "2",
+"unit": "teaspoons",
+"misc": ""
+}
+]
+},
+{
+"recipe_id": 15,
+"recipe_name": "Old-Fashioned Coconut Cream Pie",
+"prep_time": "10",
+"cook_time": "20",
+"category": "['Dessert']",
+"cuisine": "['American']",
+"n_steps": 8,
+"servings_count": 8,
+"instructions": "['Gather all ingredients.', 'Preheat the oven to 350 degrees F (175 degrees C). Spread coconut on a baking sheet.', 'Bake coconut in the preheated oven, stirring occasionally, until golden brown, about 5 minutes.', 'Combine half-and-half, sugar, flour, eggs, and salt in a medium pot. Bring to a boil over low heat, stirring constantly, until mixture thickens and coats the back of a wooden spoon, about 15 minutes.', 'Remove the pan from heat and stir in 3/4 cup toasted coconut and vanilla reserve remaining toasted coconut for garnishing the pie.', 'Pour custard into pie shell and chill until firm, about 4 hours.', 'Top with whipped topping and reserved toasted coconut.', 'Enjoy!']",
+"quiz_label": "fast_food",
+"calories": 423.0,
+"fat": 24.0,
+"sugar": 23.0,
+"sodium": 276.0,
+"protein": 7.0,
+"saturated_fat": 13.0,
+"fiber": 2.0,
+"ingredients": [
+{
+"ingredient_name": "egg",
+"quantity": "2",
+"unit": "large",
+"misc": "beaten"
+},
+{
+"ingredient_name": "all-purpose flour",
+"quantity": "0.5",
+"unit": "cup",
+"misc": ""
+},
+{
+"ingredient_name": "salt",
+"quantity": "0.25",
+"unit": "teaspoon",
+"misc": ""
+},
+{
+"ingredient_name": "white sugar",
+"quantity": "0.75",
+"unit": "cup",
+"misc": ""
+},
+{
+"ingredient_name": "vanilla extract",
+"quantity": "1",
+"unit": "teaspoon",
+"misc": ""
+},
+{
+"ingredient_name": "sweetened flaked coconut",
+"quantity": "1",
+"unit": "cup",
+"misc": ""
+},
+{
+"ingredient_name": "half-and-half",
+"quantity": "3",
+"unit": "cups",
+"misc": ""
+},
+{
+"ingredient_name": "shell",
+"quantity": "1",
+"unit": "pie",
+"misc": "baked 9 inch"
+},
+{
+"ingredient_name": "frozen whipped topping",
+"quantity": "1",
+"unit": "cup",
+"misc": "thawed"
+}
+]
+},
+{
+"recipe_id": 16,
+"recipe_name": "Sea Bass Veracruz",
+"prep_time": "30",
+"cook_time": "15",
+"category": "['Dinner']",
+"cuisine": "['Mexican Inspired', 'Mexican']",
+"n_steps": 6,
+"servings_count": 4,
+"instructions": "['Preheat the oven to 375 degrees F (190 degrees C).', 'Combine tomatoes, olives, cilantro, jalape\u00f1o, lime juice, and capers in a bowl. Place flour in a shallow bowl.', 'Place fillets on a flat work surface season with salt and black pepper. Dredge one side of each fillet in flour.', 'Heat oil in a large, ovenproof skillet over medium-high heat. Add fillets, floured-sides down cook, undisturbed, until lightly brown, about 3 minutes. Transfer to a plate. Stir broth into skillet, scraping the browned bits of food off the bottom of the skillet with a wooden spoon. Add 1/2 tomato mixture, onion, garlic, bay leaves, and thyme cook for 3 minutes. Nestle fillets into the skillet.', 'Transfer the skillet to the preheated oven bake until fish flakes easily with a fork, 5 to 7 minutes.', 'Remove and discard bay leaves. Add remaining tomato mixture to the skillet season with salt and black pepper. Serve fillets topped with tomato mixture.']",
+"quiz_label": "high_protein",
+"calories": 340.0,
+"fat": 13.0,
+"sugar": 6.0,
+"sodium": 604.0,
+"protein": 34.0,
+"saturated_fat": 2.0,
+"fiber": 3.0,
+"ingredients": [
+{
+"ingredient_name": "onion",
+"quantity": "2",
+"unit": "cups",
+"misc": "sliced"
+},
+{
+"ingredient_name": "all-purpose flour",
+"quantity": "0.25",
+"unit": "cup",
+"misc": ""
+},
+{
+"ingredient_name": "garlic",
+"quantity": "1",
+"unit": "tablespoon",
+"misc": "minced"
+},
+{
+"ingredient_name": "cilantro",
+"quantity": "0.5",
+"unit": "cup",
+"misc": ""
+},
+{
+"ingredient_name": "roma tomato",
+"quantity": "2",
+"unit": "cups",
+"misc": "seeded and diced"
+},
+{
+"ingredient_name": "pimento-stuffed olive",
+"quantity": "0.5",
+"unit": "cup",
+"misc": "chopped"
+},
+{
+"ingredient_name": "jalapeno pepper",
+"quantity": "0.25",
+"unit": "cup",
+"misc": "seeded and diced"
+},
+{
+"ingredient_name": "lime juice",
+"quantity": "3",
+"unit": "tablespoons",
+"misc": ""
+},
+{
+"ingredient_name": "caper",
+"quantity": "2",
+"unit": "tablespoons",
+"misc": ""
+},
+{
+"ingredient_name": "sea bass",
+"quantity": "4",
+"unit": "fillets",
+"misc": "6 ounce"
+},
+{
+"ingredient_name": "extra-virgin olive oil",
+"quantity": "6",
+"unit": "tablespoons",
+"misc": ""
+},
+{
+"ingredient_name": "chicken broth",
+"quantity": "0.25",
+"unit": "cup",
+"misc": ""
+},
+{
+"ingredient_name": "leaf",
+"quantity": "2",
+"unit": "bay",
+"misc": ""
+},
+{
+"ingredient_name": "thyme",
+"quantity": "1",
+"unit": "teaspoon",
+"misc": "dried"
+}
+]
+},
+{
+"recipe_id": 17,
+"recipe_name": "Sfouf (Lebanese Turmeric Cake)",
+"prep_time": "15",
+"cook_time": "30",
+"category": "['Dessert']",
+"cuisine": "['Lebanese']",
+"n_steps": 5,
+"servings_count": 16,
+"instructions": "['Preheat the oven to 325 degrees F (165 degrees C). Grease a 9x13-inch baking pan with tahini.', 'Combine boiling water and anise seeds in a glass measuring cup steep, about 5 minutes. Strain into a bowl discard anise seeds. Stir sugar into anise-flavored water until dissolved.', 'Whisk flour, turmeric, baking powder, and anise seed powder together in a bowl make a well in the center. Add oil and butter to the well stir in sweetened anise-flavored water until batter is the consistency of thick yogurt.', 'Pour batter into the prepared baking pan score top into diamond shapes using the tip of a knife. Place 1 pine nut in center of each diamond.', 'Bake in the preheated oven until top is lightly browned, about 30 minutes.']",
+"quiz_label": "fast_food",
+"calories": 283.0,
+"fat": 14.0,
+"sugar": 19.0,
+"sodium": 49.0,
+"protein": 3.0,
+"saturated_fat": 5.0,
+"fiber": 1.0,
+"ingredients": [
+{
+"ingredient_name": "vegetable oil",
+"quantity": "0.5",
+"unit": "cup",
+"misc": ""
+},
+{
+"ingredient_name": "all-purpose flour",
+"quantity": "3",
+"unit": "cups",
+"misc": ""
+},
+{
+"ingredient_name": "white sugar",
+"quantity": "1.5",
+"unit": "cups",
+"misc": ""
+},
+{
+"ingredient_name": "turmeric",
+"quantity": "2",
+"unit": "teaspoons",
+"misc": "ground"
+},
+{
+"ingredient_name": "unsalted butter",
+"quantity": "0.5",
+"unit": "cup",
+"misc": "melted"
+},
+{
+"ingredient_name": "tahini",
+"quantity": "1",
+"unit": "tablespoon",
+"misc": ""
+},
+{
+"ingredient_name": "boiling water",
+"quantity": "1.5",
+"unit": "cups",
+"misc": ""
+},
+{
+"ingredient_name": "whole anise seed",
+"quantity": "2",
+"unit": "teaspoons",
+"misc": ""
+},
+{
+"ingredient_name": "baking powder",
+"quantity": "1.5",
+"unit": "teaspoons",
+"misc": ""
+},
+{
+"ingredient_name": "anise seed powder",
+"quantity": "1.25",
+"unit": "teaspoons",
+"misc": ""
+},
+{
+"ingredient_name": "pine nut",
+"quantity": "2",
+"unit": "tablespoons",
+"misc": ""
+}
+]
+},
+{
+"recipe_id": 18,
+"recipe_name": "Apple-Stuffed Turkey",
+"prep_time": "30",
+"cook_time": "150",
+"category": "['Dinner']",
+"cuisine": "['American']",
+"n_steps": 4,
+"servings_count": 15,
+"instructions": "['Preheat the oven to 375 degrees F (190 degrees C).', 'Unbind turkey legs, if necessary pat turkey dry with paper towels. Place turkey into a roasting pan with a lid rub oil inside and outside turkey.', 'Stuff body and neck cavity with apple quarters arrange whole apples around turkey in the roasting pan. Scatter any extra apple quarters into the pan. Cover the roasting pan.', 'Bake in the preheated oven until the skin is brown and the meat begins to separate from the legs, 2 1/2 to 3 hours. Remove the lid during the last 20 minutes of baking to further brown the skin. An instant-read thermometer inserted into the thickest part of the breast should read at least 165 degrees F (74 degrees C).']",
+"quiz_label": "fast_food",
+"calories": 671.0,
+"fat": 29.0,
+"sugar": 21.0,
+"sodium": 177.0,
+"protein": 73.0,
+"saturated_fat": 8.0,
+"fiber": 5.0,
+"ingredients": [
+{
+"ingredient_name": "vegetable oil",
+"quantity": "0.25",
+"unit": "cup",
+"misc": "or as needed"
+},
+{
+"ingredient_name": "apple",
+"quantity": "5",
+"unit": "",
+"misc": "cored and quartered"
+},
+{
+"ingredient_name": "turkey",
+"quantity": "1",
+"unit": "whole",
+"misc": "neck and giblets removed 12 pound thawed"
+},
+{
+"ingredient_name": "whole unpeeled apple",
+"quantity": "5",
+"unit": "pounds",
+"misc": ""
+}
+]
+},
+{
+"recipe_id": 19,
+"recipe_name": "Apple Shortbread Pie",
+"prep_time": "30",
+"cook_time": "35",
+"category": "['Dessert']",
+"cuisine": "['Irish']",
+"n_steps": 4,
+"servings_count": 8,
+"instructions": "['Preheat the oven to 400 degrees F (200 degrees C.)', 'Sift 2 cups four, white sugar, and salt into a large bowl cut in butter until mixture resembles coarse crumbs. Stir in egg yolks mixture will be crumbly. Set aside 1/4 crumb mixture press remaining 3/4 crumb mixture into bottom and up sides of an 8-inch tart pan or pie plate.', 'Combine apples, brown sugar, 1 tablespoon flour, cinnamon, and nutmeg in a bowl spoon into the crust. Sprinkle reserved crumb mixture evenly over top. Place pie on a baking sheet.', 'Bake in the preheated oven for 15 minutes. Reduce the oven temperature to 350 degrees F (175 degrees C) continue baking until top is golden brown and filling is bubbling, about 20 minutes more.']",
+"quiz_label": "fast_food",
+"calories": 389.0,
+"fat": 19.0,
+"sugar": 27.0,
+"sodium": 201.0,
+"protein": 4.0,
+"saturated_fat": 11.0,
+"fiber": 2.0,
+"ingredients": [
+{
+"ingredient_name": "all-purpose flour",
+"quantity": "2",
+"unit": "cups",
+"misc": ""
+},
+{
+"ingredient_name": "salt",
+"quantity": "0.25",
+"unit": "teaspoon",
+"misc": ""
+},
+{
+"ingredient_name": "white sugar",
+"quantity": "0.5",
+"unit": "cup",
+"misc": ""
+},
+{
+"ingredient_name": "cinnamon",
+"quantity": "0.5",
+"unit": "teaspoon",
+"misc": "ground"
+},
+{
+"ingredient_name": "butter",
+"quantity": "0.75",
+"unit": "cup",
+"misc": "diced chilled"
+},
+{
+"ingredient_name": "yolk",
+"quantity": "2",
+"unit": "egg",
+"misc": "beaten"
+},
+{
+"ingredient_name": "golden delicious apple",
+"quantity": "1.25",
+"unit": "pounds",
+"misc": "cored and cut into 14 inch slices peeled"
+},
+{
+"ingredient_name": "light brown sugar",
+"quantity": "0.25",
+"unit": "cup",
+"misc": "packed"
+},
+{
+"ingredient_name": "nutmeg",
+"quantity": "0.5",
+"unit": "teaspoon",
+"misc": "ground"
+}
+]
+},
+{
+"recipe_id": 20,
+"recipe_name": "Sheet Pan Chicken Breast with Feta and Vegetables",
+"prep_time": "20",
+"cook_time": "20",
+"category": "['Dinner']",
+"cuisine": "['American']",
+"n_steps": 3,
+"servings_count": 6,
+"instructions": "['Preheat the oven to 375 degrees F (190 degrees C). Lightly oil a sheet pan.', 'Spread chicken, mini bell peppers, and onion on the prepared sheet pan sprinkle with feta, dressing, and oregano. Toss gently to coat.', 'Bake in the preheated oven until chicken is no longer pink in centers and juices run clear, 20 to 25 minutes. An instant-read thermometer inserted into centers should read at least 165 degrees F (74 degrees C).']",
+"quiz_label": "fast_food",
+"calories": 441.0,
+"fat": 27.0,
+"sugar": 4.0,
+"sodium": 920.0,
+"protein": 30.0,
+"saturated_fat": 9.0,
+"fiber": 2.0,
+"ingredients": [
+{
+"ingredient_name": "vegetable oil",
+"quantity": "1",
+"unit": "tablespoon",
+"misc": ""
+},
+{
+"ingredient_name": "oregano",
+"quantity": "2",
+"unit": "teaspoons",
+"misc": "dried"
+},
+{
+"ingredient_name": "white onion",
+"quantity": "1",
+"unit": "medium",
+"misc": "quartered"
+},
+{
+"ingredient_name": "boneless chicken breast cut into cube",
+"quantity": "2",
+"unit": "pounds",
+"misc": ""
+},
+{
+"ingredient_name": "mini bell pepper",
+"quantity": "12",
+"unit": "ounces",
+"misc": "halved lengthwise and seeded"
+},
+{
+"ingredient_name": "crumbled feta cheese",
+"quantity": "6",
+"unit": "ounces",
+"misc": ""
+},
+{
+"ingredient_name": "italian-style salad dressing",
+"quantity": "0.5",
+"unit": "cup",
+"misc": ""
+}
+]
+},
+{
+"recipe_id": 21,
+"recipe_name": "Cheddar Pear Pie",
+"prep_time": "20",
+"cook_time": "45",
+"category": "['Dessert']",
+"cuisine": "['U.S.']",
+"n_steps": 4,
+"servings_count": 6,
+"instructions": "['Preheat the oven to 400 degrees F (200 degrees C).', 'Combine flour, 1/2 cup brown sugar, and Cheddar cheese in a bowl cut in butter until mixture resembles coarse crumbs. Set crumble topping aside.', 'Toss pears and lemon juice together in a large bowl. Combine 1/2 cup brown sugar, cornstarch, and cinnamon in a separate bowl stir into pears and toss to coat. Transfer pear filling to pie crust sprinkle with crumble topping.', 'Bake in the preheated oven until the top is golden brown, about 45 minutes.']",
+"quiz_label": "fast_food",
+"calories": 547.0,
+"fat": 21.0,
+"sugar": 52.0,
+"sodium": 281.0,
+"protein": 6.0,
+"saturated_fat": 9.0,
+"fiber": 7.0,
+"ingredients": [
+{
+"ingredient_name": "brown sugar",
+"quantity": "0.5",
+"unit": "cup",
+"misc": ""
+},
+{
+"ingredient_name": "cornstarch",
+"quantity": "3",
+"unit": "tablespoons",
+"misc": ""
+},
+{
+"ingredient_name": "all-purpose flour",
+"quantity": "0.5",
+"unit": "cup",
+"misc": ""
+},
+{
+"ingredient_name": "cinnamon",
+"quantity": "0.75",
+"unit": "teaspoon",
+"misc": "ground"
+},
+{
+"ingredient_name": "butter",
+"quantity": "0.25",
+"unit": "cup",
+"misc": ""
+},
+{
+"ingredient_name": "cheddar cheese",
+"quantity": "0.5",
+"unit": "cup",
+"misc": "shredded"
+},
+{
+"ingredient_name": "pear",
+"quantity": "6",
+"unit": "cups",
+"misc": "peeled sliced"
+},
+{
+"ingredient_name": "lemon juice",
+"quantity": "1",
+"unit": "tablespoon",
+"misc": "fresh"
+},
+{
+"ingredient_name": "pie crust",
+"quantity": "",
+"unit": "unbaked",
+"misc": ""
+}
+]
+}
+]
+}

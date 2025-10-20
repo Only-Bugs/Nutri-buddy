@@ -9,11 +9,21 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { applyAuthGuards } from '@/router/guards/authGuards'
 
-import LandingPage from '@/pages/LandingPage.vue'
+import HomePage from '@/pages/HomePage.vue'
+import FeaturesPage from '@/pages/FeaturesPage.vue'
+import AboutPage from '@/pages/AboutPage.vue'
+import ContactPage from '@/pages/ContactPage.vue'
 import AuthPage from '@/pages/AuthPage.vue'
 import DashboardLayout from '@/layouts/DashboardLayout.vue'
 import DashboardPage from '@/pages/DashboardPage.vue'
 import MealsPage from '@/pages/MealsPage.vue'
+import RecipesPage from '@/pages/RecipesPage.vue'
+import RecipeDetailPage from '@/pages/RecipeDetailPage.vue'
+import SettingsPage from '@/pages/SettingsPage.vue'
+import HistoryPage from '@/pages/HistoryPage.vue'
+import PrivacyPage from '@/pages/legal/PrivacyPage.vue'
+import TermsPage from '@/pages/legal/TermsPage.vue'
+import NotFoundPage from '@/pages/NotFoundPage.vue'
 
 /**
  * @constant {import('vue-router').RouteRecordRaw[]} routes
@@ -23,20 +33,59 @@ import MealsPage from '@/pages/MealsPage.vue'
 const routes = [
   {
     path: '/',
-    component: LandingPage,
+    name: 'Home',
+    component: HomePage,
+  },
+  {
+    path: '/features',
+    name: 'FeaturesPage',
+    component: FeaturesPage,
+  },
+  {
+    path: '/about',
+    name: 'AboutPage',
+    component: AboutPage,
+  },
+  {
+    path: '/contact',
+    name: 'ContactPage',
+    component: ContactPage,
+  },
+  {
+    path: '/privacy',
+    name: 'PrivacyPage',
+    component: PrivacyPage,
+  },
+  {
+    path: '/terms',
+    name: 'TermsPage',
+    component: TermsPage,
   },
   {
     path: '/auth',
+    name: 'Auth',
     component: AuthPage,
   },
   {
-    path: '/',
+    path: '/app',
     component: DashboardLayout,
     meta: { requiresAuth: true },
     children: [
-      { path: 'dashboard', component: DashboardPage },
-      { path: 'meal-plans', component: MealsPage },
+      { path: 'dashboard', name: 'Dashboard', component: DashboardPage },
+      { path: 'meal-plans', name: 'MealPlans', component: MealsPage },
+      { path: 'history', name: 'History', component: HistoryPage },
+      { path: 'recipes', name: 'Recipes', component: RecipesPage },
+      { path: 'recipes/:id', name: 'RecipeDetail', component: RecipeDetailPage },
+      { path: 'settings', name: 'Settings', component: SettingsPage },
     ],
+  },
+  { path: '/dashboard', redirect: '/app/dashboard' },
+  { path: '/meal-plans', redirect: '/app/meal-plans' },
+  { path: '/recipes', redirect: '/app/recipes' },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: NotFoundPage,
   },
 ]
 

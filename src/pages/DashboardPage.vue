@@ -1,56 +1,225 @@
+/** * @file DashboardPage.vue * @description Focused dashboard overview — shows user stats, charts,
+and recent activity. * @module pages/DashboardPage * */
+
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useAuthStore } from '../store/auth'
-import { useRatingsStore } from '../store/ratings'
-import RatingStars from '../components/RatingStars.vue'
+import { ref, watch, onBeforeUnmount, computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import DashboardHeader from '@/components/dashboard/DashboardHeader.vue'
+import DailyCalorieSummary from '@/components/dashboard/DailyCalorieSummary.vue'
+import CaloriesDistribution from '@/components/dashboard/CaloriesDistribution.vue'
+import NutritionDistribution from '@/components/dashboard/NutritionDistribution.vue'
+import ActiveMealPlansSummary from '@/components/dashboard/ActiveMealPlansSummary.vue'
+import FavoriteRecipesSection from '@/components/dashboard/FavoriteRecipesSection.vue'
+import SearchOverlay from '@/components/dashboard/SearchOverlay.vue'
+import AddToMealPlanModal from '@/components/mealPlans/AddToMealPlanModal.vue'
+import { useAuthStore } from '@/store/auth'
+import { useDashboardStore } from '@/store/dashboard'
+import { useMealPlanStore } from '@/store/mealplan/mealPlanStore'
+import { useRecipeStore } from '@/store/recipes'
+import { useUserProfileStore } from '@/store/userProfile'
 
 const auth = useAuthStore()
-const ratings = useRatingsStore()
+const dashboard = useDashboardStore()
+const mealPlans = useMealPlanStore()
+const recipeStore = useRecipeStore()
+const userProfile = useUserProfileStore()
+const router = useRouter()
+const route = useRoute()
+recipeStore.initialize()
 
-const foods = ref([])
+const query = ref('')
+const searchOverlayOpen = ref(false)
+const addModalOpen = ref(false)
+const selectedItem = ref(null)
+const selectedTotals = ref(null)
 
-onMounted(async () => {
-  const res = await fetch('/data/foods.json')
-  foods.value = await res.json()
+const activePlans = computed(() => {
+  const map = new Map()
+  mealPlans.plans.forEach((plan) => {
+    if (plan.status === 'active' || plan.id === mealPlans.activePlanId) {
+      map.set(plan.id, plan)
+    }
+  })
+  if (!map.size && mealPlans.plans.length) {
+    map.set(mealPlans.plans[0].id, mealPlans.plans[0])
+  }
+  return Array.from(map.values())
 })
 
-function rateFood(foodId, score) {
-  ratings.addRating(foodId, score)
+function normaliseNumber(value) {
+  const numeric = Number(value)
+  return Number.isFinite(numeric) ? numeric : 0
 }
+
+const consumedCalories = computed(() => normaliseNumber(dashboard.totalNutrition.calories))
+
+const calorieLastUpdated = computed(() => dashboard.foods[0]?.createdAt || '')
+
+const latestNutrients = computed(() => dashboard.latestResult?.nutrients || {})
+
+function handleSearch() {
+  dashboard.searchFood(query.value)
+}
+
+function updateQuery(val) {
+  query.value = val
+}
+
+function openSearchOverlay() {
+  searchOverlayOpen.value = true
+}
+
+function closeSearchOverlay() {
+  searchOverlayOpen.value = false
+}
+
+function openAddModal(payload = {}) {
+  selectedItem.value = payload.item || null
+  selectedTotals.value = payload.totals || null
+  addModalOpen.value = true
+}
+
+function closeAddModal() {
+  addModalOpen.value = false
+}
+
+function handleItemLinked() {
+  addModalOpen.value = false
+}
+
+function handleOverlayAddToPlan() {
+  if (!dashboard.latestResult) return
+  openAddModal({
+    item: { ...dashboard.latestResult, type: 'food' },
+    totals: dashboard.latestTotals,
+  })
+  closeSearchOverlay()
+}
+
+function handleFavoriteRecipeAdd(recipe) {
+  if (!recipe) return
+  openAddModal({
+    item: { ...recipe, type: 'recipe', recipeId: recipe.id },
+    totals: {
+      calories: normaliseNumber(recipe.nutrition?.calories),
+      protein: normaliseNumber(recipe.nutrition?.protein),
+      carbs: normaliseNumber(recipe.nutrition?.carbs),
+      fats: normaliseNumber(recipe.nutrition?.fat),
+      fiber: normaliseNumber(recipe.nutrition?.fiber),
+      sugar: normaliseNumber(recipe.nutrition?.sugar),
+      sodium: normaliseNumber(recipe.nutrition?.sodium),
+    },
+  })
+}
+
+function handleFavoriteRecipeView(recipe) {
+  if (!recipe) return
+  router.push({ name: 'RecipeDetail', params: { id: recipe.id } })
+}
+
+function handlePlanNavigate(planId) {
+  if (!planId) return
+  mealPlans.selectPlan(planId)
+  router.push({ name: 'MealPlans', query: { planId } })
+}
+
+function goToHistory() {
+  router.push({ name: 'History' })
+}
+
+watch(
+  () => auth.user?.uid,
+  (uid) => {
+    mealPlans.loadPlans(uid)
+  },
+  { immediate: true },
+)
+
+watch(addModalOpen, (isOpen) => {
+  if (!isOpen) {
+    selectedItem.value = null
+    selectedTotals.value = null
+  }
+})
+
+watch(searchOverlayOpen, (isOpen) => {
+  if (typeof document === 'undefined') return
+  document.body.style.overflow = isOpen ? 'hidden' : ''
+})
+
+watch(
+  () => route.query.openSearch,
+  (value) => {
+    if (value === 'true') {
+      openSearchOverlay()
+      router.replace({ query: { ...route.query, openSearch: undefined } })
+    }
+  },
+  { immediate: true },
+)
+
+onBeforeUnmount(() => {
+  if (typeof document === 'undefined') return
+  document.body.style.overflow = ''
+})
 </script>
 
 <template>
-  <div class="space-y-6 w-full max-w-3xl mx-auto">
-    <div class="text-center">
-      <h2 class="text-3xl font-bold">Welcome to NutriBuddy</h2>
-      <p class="mt-2">
-        Logged in as: <strong>{{ auth.user?.email }}</strong>
-      </p>
+  <section class="relative space-y-6">
+    <div :class="[searchOverlayOpen ? 'pointer-events-none blur-sm' : '']" class="space-y-6">
+      <DashboardHeader />
+
+      <div class="grid gap-6 lg:grid-cols-3">
+        <DailyCalorieSummary
+          :limit="userProfile.dailyCalorieLimit"
+          :consumed="consumedCalories"
+          :lastUpdated="calorieLastUpdated"
+          @open-history="goToHistory"
+        />
+        <CaloriesDistribution :totals="dashboard.totalNutrition" />
+        <NutritionDistribution
+          :totals="dashboard.totalNutrition"
+          :nutrients="latestNutrients"
+        />
+      </div>
+
+      <div class="grid gap-6 lg:grid-cols-2">
+        <ActiveMealPlansSummary :plans="activePlans" @open-plan="handlePlanNavigate" />
+        <FavoriteRecipesSection
+          @add-to-plan="handleFavoriteRecipeAdd"
+          @view-detail="handleFavoriteRecipeView"
+        />
+      </div>
     </div>
 
-    <div>
-      <h3 class="text-xl font-semibold mb-2">Nutrition List</h3>
-      <table class="w-full border-collapse border border-gray-300">
-        <thead>
-          <tr class="bg-gray-100">
-            <th class="border px-3 py-2 text-left">Name</th>
-            <th class="border px-3 py-2 text-left">Category</th>
-            <th class="border px-3 py-2 text-left">Calories</th>
-            <th class="border px-3 py-2 text-left">Rating</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="food in foods" :key="food.id" class="odd:bg-white even:bg-gray-50">
-            <td class="border px-3 py-2">{{ food.name }}</td>
-            <td class="border px-3 py-2">{{ food.category }}</td>
-            <td class="border px-3 py-2">{{ food.calories }}</td>
-            <td class="border px-3 py-2">
-              <RatingStars :modelValue="0" @update:modelValue="rateFood(food.id, $event)" />
-              <div class="text-sm text-gray-600 mt-1">Avg: {{ ratings.getAverage(food.id) }}</div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+    <button
+      class="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-green-600 text-white shadow-xl transition hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300"
+      :class="searchOverlayOpen ? 'pointer-events-none opacity-0 scale-95' : 'opacity-100 scale-100'"
+      type="button"
+      aria-label="Open nutrition search"
+      @click="openSearchOverlay"
+    >
+      <FontAwesomeIcon icon="magnifying-glass" class="text-xl" />
+    </button>
+
+    <SearchOverlay
+      :show="searchOverlayOpen"
+      :query="query"
+      :loading="dashboard.loading"
+      :error="dashboard.error"
+      :result="dashboard.latestResult"
+      @update:query="updateQuery"
+      @search="handleSearch"
+      @close="closeSearchOverlay"
+      @add-to-plan="handleOverlayAddToPlan"
+    />
+
+    <AddToMealPlanModal
+      :show="addModalOpen"
+      :item="selectedItem"
+      :totals="selectedTotals || dashboard.latestTotals"
+      @close="closeAddModal"
+      @added="handleItemLinked"
+    />
+  </section>
 </template>

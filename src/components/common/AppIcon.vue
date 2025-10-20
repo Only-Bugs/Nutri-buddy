@@ -16,8 +16,26 @@ const props = defineProps({
         star: 'star',
         analytics: 'chart-line',
         check: 'check',
+        access: 'user',
+        dashboard: 'gauge',
+        planning: 'clipboard-list',
+        history: 'clock-rotate-left',
+        reliability: 'gear',
+        search: 'magnifying-glass',
+        plan: 'clipboard-list',
+        track: 'chart-line',
+        quote: 'quote-left',
+        insight: 'gauge',
+        privacy: 'lock',
+        shield: 'shield-halved',
+        sustain: 'leaf',
+        email: 'envelope',
+        google: ['fab', 'google'],
+        apple: ['fab', 'apple'],
+        linkedin: ['fab', 'linkedin'],
+        github: ['fab', 'github'],
       }[name]
     "
   />
 </template>
-<!-- # Generated under NutriBuddy SpecGuard v1.0.0 -->
+<!--   -->

@@ -1,10 +1,10 @@
 <script setup>
 import { useRouter } from 'vue-router'
-// import StatsCard from './StatsCard.vue'
+import AppIcon from '@/components/common/AppIcon.vue'
 
 const router = useRouter()
 
-function goToAuth() {
+function goToDashboard() {
   router.push('/auth')
 }
 
@@ -17,51 +17,66 @@ function scrollToFeatures() {
 </script>
 
 <template>
-  <section class="bg-gray-50 px-6 py-12 md:py-20 grid md:grid-cols-2 gap-8 items-center">
+  <section class="bg-gray-50 px-6 py-12 md:py-20 grid md:grid-cols-2 gap-10 items-center">
     <!-- Text -->
-    <div>
-      <h2 class="text-4xl md:text-5xl font-extrabold leading-tight">
-        Track Your Way to <span class="text-green-600">Healthier</span> Eating
+    <div class="max-w-xl">
+      <p class="text-lg font-semibold tracking-wide text-green-600 uppercase">NutriBuddy</p>
+      <h2 class="mt-3 text-4xl md:text-5xl font-extrabold leading-tight text-gray-900">
+        Smarter nutrition starts with one search.
       </h2>
-      <p class="mt-4 text-gray-700 text-lg">
-        Transform your nutrition journey with NutriBuddy. Get personalized meal plans, track your
-        progress, and achieve your health goals.
+      <p class="mt-5 text-lg text-gray-700">
+        NutriBuddy makes meal tracking feel effortless with live nutrition search, adaptive meal
+        planning, and insights that keep progress visible.
       </p>
 
-      <div class="mt-6 flex space-x-4">
+      <div class="mt-8 flex flex-col sm:flex-row sm:items-center gap-4">
         <!-- Primary CTA -->
         <button
-          @click="goToAuth"
-          class="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition"
+          @click="goToDashboard"
+          class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition"
         >
-          Start Your Journey
+          Try the Dashboard
         </button>
 
         <!-- Secondary CTA -->
         <button
           @click="scrollToFeatures"
-          class="border border-green-600 text-green-600 px-6 py-3 rounded-lg font-medium hover:bg-green-50 transition"
+          class="border border-green-600 text-green-600 px-6 py-3 rounded-lg font-semibold hover:bg-green-50 transition"
         >
-          Watch Demo
+          See How It Works
         </button>
       </div>
 
-      <div class="mt-10 flex space-x-8">
-        <!-- <StatsCard value="50K+" label="Active Users" />
-        <StatsCard value="4.9★" label="App Rating" />
-        <StatsCard value="1M+" label="Meals Tracked" /> -->
-      </div>
+      <ul class="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <li
+          v-for="highlight in [
+            'Live nutrition search',
+            'Meal planning that adapts',
+            'History and favorites',
+            'Sync across devices',
+          ]"
+          :key="highlight"
+          class="flex items-start gap-3 rounded-lg bg-white/70 px-4 py-3 shadow-sm"
+        >
+          <span class="mt-1 text-green-600">
+            <AppIcon name="check" />
+          </span>
+          <span class="text-base font-medium text-gray-800">{{ highlight }}</span>
+        </li>
+      </ul>
     </div>
 
     <!-- Hero image -->
     <div class="relative">
       <img
         src="../../assets/tracking.webp"
-        alt="NutriBuddy preview"
-        class="w-full rounded-lg shadow"
+        alt="Preview of NutriBuddy nutrition dashboard"
+        class="w-full rounded-2xl shadow-lg ring-1 ring-black/5"
       />
-      <span class="absolute top-4 right-4 bg-white text-green-600 px-3 py-1 text-sm rounded shadow">
-        ● Live Tracking
+      <span
+        class="absolute top-4 right-4 bg-white text-green-600 px-3 py-1 text-lg font-semibold rounded-full shadow"
+      >
+        Live insights, zero clutter
       </span>
     </div>
   </section>

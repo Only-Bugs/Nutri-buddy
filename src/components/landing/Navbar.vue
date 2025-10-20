@@ -21,11 +21,10 @@
 
     <!-- Auth buttons -->
     <div class="space-x-2">
-      <router-link to="/auth" class="px-4 py-2 text-gray-700 hover:text-green-600">Login</router-link>
-      <router-link
-        to="/auth"
-        class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+      <router-link to="/auth" class="px-4 py-2 text-gray-700 hover:text-green-600"
+        >Login</router-link
       >
+      <router-link to="/auth" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
         Register
       </router-link>
     </div>

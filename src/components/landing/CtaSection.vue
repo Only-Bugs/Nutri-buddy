@@ -19,7 +19,11 @@ function scrollToAbout() {
   <section class="bg-green-600 text-white py-16 px-6 text-center">
     <div class="max-w-2xl mx-auto">
       <!-- Heading -->
-      <h2 class="text-3xl font-bold mb-4">Ready to Transform Your Nutrition?</h2>
+      <h2 class="text-3xl font-bold mb-4">Ready to see progress, not perfection?</h2>
+      <p class="text-lg text-green-50 mb-8">
+        Take NutriBuddy for a spin and experience how a single search can organise meals, insights,
+        and motivation.
+      </p>
 
       <!-- Buttons -->
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
@@ -28,7 +32,7 @@ function scrollToAbout() {
           @click="goToAuth"
           class="bg-white text-green-600 font-semibold px-6 py-3 rounded-lg shadow hover:bg-green-50 transition flex items-center gap-2"
         >
-          Get Started
+          Try the Dashboard
           <span aria-hidden="true">→</span>
         </button>
 
@@ -37,7 +41,7 @@ function scrollToAbout() {
           @click="scrollToAbout"
           class="border border-white text-white font-semibold px-6 py-3 rounded-lg hover:bg-green-700 transition"
         >
-          Learn More
+          Meet the Team
         </button>
       </div>
     </div>

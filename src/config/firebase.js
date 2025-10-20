@@ -1,10 +1,11 @@
 /**
  * @config firebase
  * Initializes Firebase App and Auth instance using Vite env vars.
- * # Generated under NutriBuddy SpecGuard v1.0.0
+ *
  */
 import { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
+import { getFirestore } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -18,4 +19,6 @@ export function getFirebaseApp() {
   if (!_app) _app = initializeApp(firebaseConfig)
   return _app
 }
+
 export const firebaseAuth = getAuth(getFirebaseApp())
+export const firebaseDb = getFirestore(getFirebaseApp())

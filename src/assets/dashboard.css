@@ -1,0 +1,17 @@
+:root {
+  --dash-gap: 1.5rem;
+  --dash-radius: 1rem;
+  --dash-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.dash-card {
+  @apply bg-white rounded-[var(--dash-radius)] shadow-sm p-6;
+}
+
+.dash-title {
+  @apply text-2xl font-bold text-gray-800;
+}
+
+.dash-subtitle {
+  @apply text-lg text-gray-500;
+}

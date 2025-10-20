@@ -1,0 +1,343 @@
+/**
+ * @file dashboard.js
+ * @description Pinia store for user dashboard data and actions.
+ * Validates queries, syncs with normalized backend output,
+ * and updates searchable history with safe defaults.
+ * @module store/dashboard
+ */
+
+import { defineStore } from 'pinia'
+import { getNutritionData } from '@/services/nutritionService'
+import { useUserProfileStore } from '@/store/userProfile'
+import { fetchNutritionHistory, saveNutritionEntry } from '@/services/firestoreService'
+import { useAuthStore } from '@/store/auth'
+
+const DEBUG_SEARCH = import.meta.env?.VITE_DEBUG_SEARCH === 'true'
+
+const EMPTY_TOTALS = Object.freeze({
+  calories: 0,
+  protein: 0,
+  carbs: 0,
+  fats: 0,
+  fiber: 0,
+  sugar: 0,
+  sodium: 0,
+})
+
+function toFiniteNumber(value) {
+  const numeric = Number(value)
+  return Number.isFinite(numeric) ? numeric : 0
+}
+
+function round(value) {
+  const number = Number(value) || 0
+  return Math.round(number * 10) / 10
+}
+
+function extractTotalsFromResult(result) {
+  if (!result) return { ...EMPTY_TOTALS }
+  const nutrients = result.nutrients || {}
+
+  return {
+    calories: round(result.calories),
+    protein: round(nutrients.PROCNT?.quantity),
+    carbs: round(nutrients.CHOCDF?.quantity),
+    fats: round(nutrients.FAT?.quantity),
+    fiber: round(nutrients.FIBTG?.quantity),
+    sugar: round(nutrients.SUGAR?.quantity),
+    sodium: round(nutrients.NA?.quantity),
+  }
+}
+
+function normalizeNutritionData(raw, query) {
+  if (!raw) return null
+
+  if (DEBUG_SEARCH) {
+    console.info('[DashboardStore] Normalizing payload', raw)
+  }
+
+  const totalWeight = round(raw.totalWeight)
+  const calories = round(raw.calories)
+  const totalNutrients = raw.totalNutrients || raw.nutrients || {}
+
+  const ingredient = raw.ingredients?.[0]?.parsed?.[0] || raw.ingredients?.[0] || {}
+  const foodName = ingredient.foodMatch || ingredient.food || raw.food || query
+  const quantity = ingredient.quantity ?? ingredient.parsedQuantity ?? ingredient.qty
+  const measure =
+    ingredient.measure ||
+    (ingredient.measureURI && ingredient.measureURI.split('#').pop()) ||
+    ingredient.parsedMeasure ||
+    raw.measure ||
+    'serving'
+
+  const nutrients = Object.keys(totalNutrients).reduce((acc, key) => {
+    const nutrient = totalNutrients[key]
+    if (!nutrient) return acc
+    acc[key] = {
+      label: nutrient.label || key,
+      quantity: nutrient.quantity ?? 0,
+      unit: nutrient.unit || '',
+    }
+    return acc
+  }, {})
+
+  return {
+    id: raw.uri || `${foodName}-${Date.now()}`,
+    food: foodName || query,
+    quantity: quantity ?? '—',
+    measure,
+    weight: totalWeight || round(ingredient.weight),
+    calories,
+    nutrients,
+    cautions: Array.isArray(raw.cautions) ? raw.cautions : [],
+  }
+}
+
+function aggregateTotals(foods = []) {
+  return foods.reduce(
+    (acc, food) => {
+      acc.calories += toFiniteNumber(food.calories)
+      acc.protein += toFiniteNumber(food.protein)
+      acc.carbs += toFiniteNumber(food.carbs)
+      acc.fats += toFiniteNumber(food.fat ?? food.fats)
+      acc.fiber += toFiniteNumber(food.fiber)
+      acc.sugar += toFiniteNumber(food.sugar)
+      acc.sodium += toFiniteNumber(food.sodium)
+      return acc
+    },
+    {
+      calories: 0,
+      protein: 0,
+      carbs: 0,
+      fats: 0,
+      fiber: 0,
+      sugar: 0,
+      sodium: 0,
+    },
+  )
+}
+
+function buildHistoryEntry(result, query, previous = null) {
+  const macros = result.nutrients || {}
+  const calories = round(macros.ENERC_KCAL?.quantity ?? result.calories)
+  const protein = round(macros.PROCNT?.quantity)
+  const carbs = round(macros.CHOCDF?.quantity)
+  const fat = round(macros.FAT?.quantity)
+  const fiber = round(macros.FIBTG?.quantity)
+  const sugar = round(macros.SUGAR?.quantity)
+  const sodium = round(macros.NA?.quantity)
+
+  return {
+    id: result.id,
+    name: result.food || query,
+    quantity: result.quantity ?? '—',
+    measure: result.measure ?? '—',
+    weight: result.weight ?? 0,
+    calories,
+    protein,
+    carbs,
+    fat,
+    fiber,
+    sugar,
+    sodium,
+    nutrients: result.nutrients || {},
+    createdAt: previous?.createdAt || new Date().toISOString(),
+    cautions: result.cautions && result.cautions.length ? result.cautions : [],
+  }
+}
+
+export const useDashboardStore = defineStore('dashboard', {
+  state: () => ({
+    foods: [], // search history
+    latestResult: null, // latest API result for NutritionResultCard
+    loading: false,
+    error: null,
+    totalNutrition: { ...EMPTY_TOTALS },
+    latestTotals: { ...EMPTY_TOTALS },
+    sessionCache: {},
+  }),
+
+  actions: {
+    reset() {
+      this.foods = []
+      this.latestResult = null
+      this.loading = false
+      this.error = null
+      this.totalNutrition = { ...EMPTY_TOTALS }
+      this.latestTotals = { ...EMPTY_TOTALS }
+      this.sessionCache = {}
+    },
+
+    async initializeForUser(userId) {
+      this.reset()
+      if (!userId) return
+      this.loading = true
+      try {
+        const records = await fetchNutritionHistory(userId, 25)
+        const parsed = records.map((record) => {
+          const entry = {
+            ...(record.entry || {}),
+            id: record.entry?.id || record.id,
+            createdAt: record.createdAt || record.entry?.createdAt || new Date().toISOString(),
+          }
+          const result = record.result
+            ? {
+                ...record.result,
+                id: record.result.id || entry.id,
+              }
+            : null
+          const query = record.query || entry.name || ''
+          return { entry, result, query }
+        })
+        this.foods = parsed.map((item) => item.entry)
+        this.latestResult = parsed[0]?.result || null
+        this.latestTotals = this.latestResult ? extractTotalsFromResult(this.latestResult) : { ...EMPTY_TOTALS }
+        const totals = aggregateTotals(this.foods)
+        this.totalNutrition = {
+          calories: round(totals.calories),
+          protein: round(totals.protein),
+          carbs: round(totals.carbs),
+          fats: round(totals.fats),
+          fiber: round(totals.fiber),
+          sugar: round(totals.sugar),
+          sodium: round(totals.sodium),
+        }
+        this.sessionCache = parsed.reduce((acc, item) => {
+          if (item.result) {
+            acc[item.result.id] = item.result
+            acc[(item.query || '').toLowerCase()] = item.result
+          }
+          return acc
+        }, {})
+      } catch (error) {
+        console.warn('[DashboardStore] Failed to load persisted nutrition history', error)
+        this.error = error?.message || 'Failed to load nutrition history'
+      } finally {
+        this.loading = false
+      }
+    },
+
+    /** Performs live search against API */
+    async searchFood(query) {
+      if (!query?.trim()) return
+
+      this.loading = true
+      this.error = null
+      if (DEBUG_SEARCH) {
+        console.info('[DashboardStore] Searching for:', query)
+      }
+
+      const cacheKey = query.toLowerCase()
+
+      try {
+        const rawResult = await getNutritionData(query)
+        if (DEBUG_SEARCH) {
+          console.info('[DashboardStore] API raw payload', rawResult)
+        }
+
+        const result = normalizeNutritionData(rawResult, query)
+
+        if (!result) {
+          this.latestResult = null
+          this.error = 'No nutrition data found'
+          if (DEBUG_SEARCH) {
+            console.warn('[DashboardStore] Normalized result empty')
+          }
+          return
+        }
+
+        // Save the latest normalized response
+        this.latestResult = result
+        this.latestTotals = extractTotalsFromResult(result)
+        this.sessionCache = {
+          ...this.sessionCache,
+          [result.id]: result,
+          [cacheKey]: result,
+        }
+
+        // Build entry for history table (with safe defaults)
+        const existing = this.foods.find((f) => f.id === result.id || f.name === result.food)
+        const entry = buildHistoryEntry(result, query, existing || null)
+
+        const existingIndex = this.foods.findIndex((f) => f.name === entry.name)
+        if (existingIndex >= 0) {
+          this.foods.splice(existingIndex, 1)
+        } else {
+          if (this.foods.length >= 25) {
+            this.foods.pop()
+          }
+        }
+        this.foods.unshift(entry)
+
+        const totals = aggregateTotals(this.foods)
+        this.totalNutrition = {
+          calories: round(totals.calories),
+          protein: round(totals.protein),
+          carbs: round(totals.carbs),
+          fats: round(totals.fats),
+          fiber: round(totals.fiber),
+          sugar: round(totals.sugar),
+          sodium: round(totals.sodium),
+        }
+        useUserProfileStore().syncFromIntake(this.totalNutrition.calories)
+
+        const authStore = useAuthStore()
+        const userId = authStore.user?.uid
+        if (userId) {
+          saveNutritionEntry(userId, {
+            id: entry.id,
+            entry,
+            result,
+            query,
+            createdAt: entry.createdAt,
+          }).catch((error) => {
+            console.warn('[DashboardStore] Failed to persist nutrition entry', error)
+          })
+        }
+      } catch (err) {
+        console.error('[DashboardStore] Search failed:', err)
+        if (DEBUG_SEARCH) {
+          console.error('[DashboardStore] Error detail', {
+            message: err?.message,
+            status: err?.response?.status,
+            data: err?.response?.data,
+          })
+        }
+        const cached = this.sessionCache[cacheKey]
+        if (cached) {
+          this.error = err?.message
+            ? `${err.message}. Showing cached data.`
+            : 'Showing cached data.'
+          this.latestResult = cached
+          this.latestTotals = extractTotalsFromResult(cached)
+          const existing = this.foods.find((f) => f.id === cached.id || f.name === cached.food)
+          const entry = buildHistoryEntry(cached, query, existing || null)
+          const existingIndex = this.foods.findIndex((f) => f.name === entry.name)
+          if (existingIndex >= 0) {
+            this.foods.splice(existingIndex, 1)
+          } else if (this.foods.length >= 25) {
+            this.foods.pop()
+          }
+          this.foods.unshift(entry)
+          const totals = aggregateTotals(this.foods)
+          this.totalNutrition = {
+            calories: round(totals.calories),
+            protein: round(totals.protein),
+            carbs: round(totals.carbs),
+            fats: round(totals.fats),
+            fiber: round(totals.fiber),
+            sugar: round(totals.sugar),
+            sodium: round(totals.sodium),
+          }
+          useUserProfileStore().syncFromIntake(this.totalNutrition.calories)
+        } else {
+          this.error = err?.message || 'Search failed'
+          this.latestResult = null
+          this.latestTotals = { ...EMPTY_TOTALS }
+        }
+      } finally {
+        this.loading = false
+      }
+    },
+  },
+})

@@ -1,19 +1,21 @@
-/** * @file DashboardLayout.vue * @description Main authenticated layout for NutriBuddy. * Displays
-a persistent sidebar and a dynamic content area that * renders nested routes (e.g., dashboard,
-meals, profile pages). * @module layouts/DashboardLayout */
+/** * @file DashboardLayout.vue * @description Refined dashboard grid layout with balanced main
+padding. * Fixes main content alignment beside sidebar. * @module layouts/DashboardLayout * # */
 
 <script setup>
 import Sidebar from '@/components/dashboard/Sidebar.vue'
+import '@/assets/dashboard.css'
 </script>
 
 <template>
-  <div class="flex min-h-screen">
-    <!-- Persistent sidebar for navigation and logout -->
+  <div class="min-h-screen grid grid-cols-[16rem_minmax(0,1fr)] bg-gray-50">
+    <!-- Sidebar -->
     <Sidebar />
 
-    <!-- Dynamic routed page content -->
-    <main class="flex-1 bg-gray-50 p-6">
-      <router-view />
+    <!-- Main content -->
+    <main class="overflow-y-auto bg-white/50">
+      <div class="px-10 py-10 max-w-[90rem] mx-auto space-y-[var(--dash-gap)]">
+        <router-view />
+      </div>
     </main>
   </div>
 </template>

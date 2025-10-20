@@ -1,11 +1,17 @@
 /**
  * @composable useChartConfig
  * Centralize Chart.js registration and common configs
- * # Generated under NutriBuddy SpecGuard v1.0.0
+ *
  */
 import {
-  Chart as ChartJS, Title, Tooltip, Legend,
-  ArcElement, CategoryScale, LinearScale, BarElement
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+  CategoryScale,
+  LinearScale,
+  BarElement,
 } from 'chart.js'
 
 let _registered = false

@@ -24,13 +24,13 @@ const props = defineProps({
     </h3>
 
     <!-- Description -->
-    <p class="text-gray-600 text-sm mb-4">
+    <p class="text-gray-600 text-lg mb-4">
       {{ description }}
     </p>
 
     <!-- Checklist -->
     <ul class="space-y-2">
-      <li v-for="(point, i) in points" :key="i" class="flex items-start text-sm text-gray-700">
+      <li v-for="(point, i) in points" :key="i" class="flex items-start text-lg text-gray-700">
         <AppIcon name="check" class="text-green-600 mr-2" />
         <span>{{ point }}</span>
       </li>
